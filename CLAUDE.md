@@ -27,6 +27,7 @@ src/
       mutations/         useMutation-hookar
       <koncept>Keys.ts   query key-fabriken för modulen
     pages/               vyn som routern pekar på
+  pages/                 appens egna sidor, t.ex. startsidan — hör inte till något koncept
   services/              gemensamt för hela appen — skapas först när något behöver HTTP
     api/                 anropen mot API:et, och typerna för svaren
     axios/               konfigurerad Axios-instans
@@ -36,6 +37,8 @@ src/
   styles/                colors.tsx och theme.tsx för MUI-temat
   templates/             sidlayouter, t.ex. pageTemplate.tsx
 En modul är ett koncept, inte en produktfunktion. Den ska gå att förstå isolerad, utan att läsaren behöver känna till någon annan modul.
+
+Appens egna sidor ligger därför i src/pages/, inte i modules/. Startsidan är kartan över koncepten och 404-vyn är ett felmeddelande — ingen av dem demonstrerar något. Läggs de bland modulerna stämmer det inte längre att varje mapp i modules/ är ett koncept, och regeln ovan tappar sin skärpa.
 
 components, hooks och pages är stommen. En modul får lägga till egna segment när den behöver dem — types/ för modulinterna modeller, helpers/, mocks/. Lägg till dem när de fylls, inte i förväg.
 

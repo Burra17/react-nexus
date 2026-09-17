@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { appRoutes } from './navigation';
+import { navItems } from './navigation';
 import { PageTemplate } from './templates/pageTemplate';
 
 // En layoutrutt: pageTemplate renderar ramen, och barnens element hamnar i
@@ -8,6 +8,6 @@ import { PageTemplate } from './templates/pageTemplate';
 export const router = createBrowserRouter([
   {
     element: <PageTemplate />,
-    children: appRoutes.map(({ path, element }) => ({ path, element })),
+    children: navItems.map(({ path, element }) => ({ path, element })),
   },
 ]);

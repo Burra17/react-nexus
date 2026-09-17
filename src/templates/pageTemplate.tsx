@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import { useColorScheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { appRoutes } from '../navigation';
+import { navItems } from '../navigation';
 
 const openWidth = 240;
 const closedWidth = 64;
@@ -79,16 +79,16 @@ export const PageTemplate = () => {
         <Toolbar />
 
         <List component="nav">
-          {appRoutes.map((route) => {
-            const isActive = pathname === route.path;
+          {navItems.map((item) => {
+            const isActive = pathname === item.path;
 
             return (
               // Tooltipen är inte dekoration - hopfälld meny visar bara ikoner,
               // och då är den enda kvarvarande ledtråden till vad länken gör.
-              <Tooltip key={route.path} title={isOpen ? '' : route.label} placement="right">
+              <Tooltip key={item.path} title={isOpen ? '' : item.label} placement="right">
                 <ListItemButton
                   component={Link}
-                  to={route.path}
+                  to={item.path}
                   selected={isActive}
                   // aria-current är hur en skärmläsare får veta vilken sida som
                   // är den aktuella. MUI:s selected ger bara en bakgrundsfärg.
@@ -103,8 +103,8 @@ export const PageTemplate = () => {
                     '&.Mui-selected .MuiListItemIcon-root': { color: 'primary.main' },
                   }}
                 >
-                  <ListItemIcon sx={{ minWidth: 0, mr: isOpen ? 2 : 'auto', justifyContent: 'center' }}>{route.icon}</ListItemIcon>
-                  {isOpen && <ListItemText primary={route.label} />}
+                  <ListItemIcon sx={{ minWidth: 0, mr: isOpen ? 2 : 'auto', justifyContent: 'center' }}>{item.icon}</ListItemIcon>
+                  {isOpen && <ListItemText primary={item.label} />}
                 </ListItemButton>
               </Tooltip>
             );
