@@ -3,7 +3,7 @@ React Nexus — ett interaktivt kodlabb och en playground där React, TypeScript
 
 Varje vy ska visa ett koncept i arbete: hur state uppdateras, hur en omrendering utlöses, hur TanStack Query cachar ett svar. Målet är att förstå mekanismen, inte att leverera en produkt.
 
-Arkitekturen är densamma som i systerprojektet Movie App (Övningsprojekt A). Mönstren är beprövade där och kan slås upp i dess docs/ARKITEKTUR.md.
+Arkitekturen och kodreglerna följer Apptechs produktionsstandard: feature-baserad modulindelning, servicelager på rotnivå, envägsdataflöde och query-nycklar i en fabrik.
 
 Pedagogiskt läge
 Det här repot är ett inlärningsprojekt. Målet är att koden ska förstås, inte att den ska bli klar fort.
@@ -14,7 +14,7 @@ Skriv kod som går att skriva själv nästa gång. Inga smarta one-liners, inga 
 Svara på svenska.
 Finns flera rimliga vägar: ge en rekommendation med ett kort skäl, inte en katalog över alternativ.
 Kommandon
-Pakethanteraren är yarn. Ett npm install skapar en package-lock.json som krockar med yarn.lock — det har redan hänt en gång i Movie App.
+Pakethanteraren är yarn. Kör aldrig npm install här: det skapar en package-lock.json bredvid yarn.lock, och två lockfiler betyder två olika sanningar om vilka versioner som gäller. Nästa person som klonar kan få andra paket än du har.
 
 yarn build kör tsc -b före Vite-bygget och är den riktiga kvalitetsgrinden: TypeScript-reglerna nedan ger byggfel, inte varningar. Kör den innan varje PR. Att yarn dev startar utan att klaga betyder inte att koden kompilerar.
 
@@ -22,25 +22,31 @@ Arkitektur
 src/
   modules/<koncept>/     en demonstration, t.ex. rendering, queryCache, forms
     components/          komponenter som bara används i den här modulen
-    hooks/               egna hookar och TanStack Query-hookar
+    hooks/               modulens hookar
+      queries/           useQuery-hookar
+      mutations/         useMutation-hookar
+      <koncept>Keys.ts   query key-fabriken för modulen
     pages/               vyn som routern pekar på
-    services/            API-anrop — bara i moduler som faktiskt hämtar data
-    types/               modeller för svaren
+  services/              gemensamt för hela appen — skapas först när något behöver HTTP
+    api/                 anropen mot API:et, och typerna för svaren
+    axios/               konfigurerad Axios-instans
   shared/
-    api/axiosClient.ts   skapas först när något behöver HTTP
     components/          komponenter som används av flera moduler
     forms/               formulärkomponenter (React Hook Form)
   styles/                colors.tsx och theme.tsx för MUI-temat
   templates/             sidlayouter, t.ex. pageTemplate.tsx
 En modul är ett koncept, inte en produktfunktion. Den ska gå att förstå isolerad, utan att läsaren behöver känna till någon annan modul.
 
-Skillnaden mot Movie App: där hade varje modul en service, eftersom allt kom från ett API. Här har de flesta moduler ingen HTTP alls — en vy som demonstrerar useState har inget att hämta. Regeln är därför:
+components, hooks och pages är stommen. En modul får lägga till egna segment när den behöver dem — types/ för modulinterna modeller, helpers/, mocks/. Lägg till dem när de fylls, inte i förväg.
 
-All HTTP går genom en service, aldrig axios direkt i en komponent.
-Men varje modul behöver ingen service. Skapa services/ först när modulen faktiskt anropar något. Tomma mappar är ceremoni.
-När data hämtas gäller samma envägsflöde som i Movie App:
+Servicelagret ligger på rotnivå, inte i modulen. Så ser det ut i Apptechs produktionsprojekt, och det passar det här repot extra bra: de flesta moduler demonstrerar något som inte har med HTTP att göra — en vy om useState har inget att hämta. Ett gemensamt services/ slipper frågan helt, i stället för att varje modul får en tom mapp.
+
+Skapa services/ först när den första modulen faktiskt anropar något. Tomma mappar är ceremoni.
+
+När data hämtas gäller ett envägsflöde:
 
 page → hook → service → axiosClient → API
+All HTTP går genom servicelagret, aldrig axios direkt i en komponent.
 Services innehåller ingen React — bara funktioner som returnerar typad data.
 Behöver en andra modul en komponent flyttas den till shared/components/. Flytta, kopiera inte.
 Namngivning
@@ -62,8 +68,10 @@ export const DEMO_STATES = ['idle', 'running', 'done'] as const;
 export type DemoState = (typeof DEMO_STATES)[number];
 noUnusedLocals / noUnusedParameters — en oanvänd variabel eller parameter stoppar bygget. Städa bort experimentkod före commit.
 
-any är förbjudet (noImplicitAny). Saknas en typ: skriv den i modulens types/-mapp.
+any är förbjudet (noImplicitAny). Saknas en typ:
 
+Typ för ett API-svar → services/api/, bredvid anropet den hör till.
+Typ som bara rör en modul — ett unions-läge för en demo, en props-typ → i modulen, nära det som använder den.
 Kodstil
 KISS — kod som en kollega förstår vid första genomläsningen.
 DRY — upprepas något på ett tredje ställe, bryt ut det. Inte vid det första.
@@ -77,7 +85,28 @@ TanStack Query hanterar all serverdata. Hämta aldrig med useEffect + useState.
 
 Ett undantag, unikt för det här repot: en vy vars syfte är att visa vad useEffect-hämtning gör fel — dubbelanrop i StrictMode, kapplöpningar, saknad avbrytning — får använda mönstret. Sådan kod märks med en kommentar om att den är avsiktligt felaktig och vad den demonstrerar, så att den inte kopieras i god tro.
 
-queryKey beskriver anropet och alla dess parametrar.
+Query-nycklar skrivs i en fabrik, inte på plats
+Varje modul som hämtar data får en <koncept>Keys.ts bredvid sina hookar:
+
+export const cacheDemoKeys = {
+  all: ['cacheDemo'] as const,
+  lists: () => [...cacheDemoKeys.all, 'list'] as const,
+  list: (page: number) => [...cacheDemoKeys.lists(), page] as const,
+  byId: (id: string) => [...cacheDemoKeys.all, id] as const,
+};
+Mönstret kommer från Apptechs produktionsprojekt och från tkdodo-bloggen som deras kodregler länkar till.
+
+Varför en fabrik i stället för ['cacheDemo', 'list', page] i hooken?
+
+Nycklarna byggs ovanpå varandra, så cacheDemoKeys.all invaliderar allt modulrelaterat på en gång — utan att du behöver minnas hur de underliggande nycklarna såg ut.
+En felstavad eller bortglömd parameter blir ett typfel i stället för en cache-bugg som visar fel data i tysthet.
+Alla nycklar för en modul står på ett ställe och går att läsa som en lista.
+queryKey ska fortfarande innehålla varje parameter som påverkar svaret — fabriken gör bara att du inte kan glömma det.
+
+Hookarna delas i queries/ och mutations/
+Läsning och skrivning skiljer sig åt: en useQuery cachar, en useMutation invaliderar. Uppdelningen gör det synligt vilken sorts hook du har framför dig.
+
+Skapa mutations/ först när den första mutationen finns.
 
 Design och MUI
 MUI:s komponenter före egen HTML och CSS. Skapa inga nya .css-filer.
