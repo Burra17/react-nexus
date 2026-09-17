@@ -112,7 +112,11 @@ export const PageTemplate = () => {
         </List>
       </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 4 }}>
+      {/* minWidth: 0 är inte kosmetik. Ett flex-barn har min-width: auto, vilket
+          betyder att det vägrar bli smalare än sitt innehåll. Utan raden växer
+          main förbi fönstret så fort en vy innehåller ett brett kodstycke, i
+          stället för att låta kodstycket scrolla inuti sig självt. */}
+      <Box component="main" sx={{ flexGrow: 1, minWidth: 0, p: 4 }}>
         <Toolbar />
         <Outlet />
       </Box>

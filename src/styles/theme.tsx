@@ -1,6 +1,17 @@
 import { createTheme } from '@mui/material/styles';
 import { accent, status, surface, text } from './colors';
 
+// Säger till TypeScript att temat har CSS-variabler påslagna.
+//
+// Utan den här augmenteringen är theme.vars typad som möjligen undefined, för
+// MUI kan inte se att vi skickar cssVariables till createTheme längre ner i
+// filen. Den som vill läsa theme.vars i en sx-prop får annars ett byggfel.
+declare module '@mui/material/styles' {
+  interface CssThemeVariables {
+    enabled: true;
+  }
+}
+
 // Typsnittet för kod. Exporteras separat eftersom kodvisaren i #5 behöver samma
 // stack, och den ska inte gissa sig till namnet.
 export const monoFontFamily = "'JetBrains Mono Variable', ui-monospace, Consolas, monospace";
