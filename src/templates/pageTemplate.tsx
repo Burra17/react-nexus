@@ -49,7 +49,10 @@ export const PageTemplate = () => {
             <MenuOutlined />
           </IconButton>
 
-          <Typography variant="h3" component="h1" sx={{ flexGrow: 1, ml: 2 }}>
+          {/* Appnamnet är inte sidans rubrik utan ramens. Renderas det som h1
+              får varje vy två toppnivårubriker, och rubrikstrukturen slutar
+              berätta vad sidan handlar om. Varje vy sätter sin egen h1. */}
+          <Typography variant="h3" component="div" sx={{ flexGrow: 1, ml: 2 }}>
             React Nexus
           </Typography>
 
