@@ -19,6 +19,8 @@ Pakethanteraren är yarn. Kör aldrig npm install här: det skapar en package-lo
 yarn build kör tsc -b före Vite-bygget och är den riktiga kvalitetsgrinden: TypeScript-reglerna nedan ger byggfel, inte varningar. Kör den innan varje PR. Att yarn dev startar utan att klaga betyder inte att koden kompilerar.
 
 Arkitektur
+
+```text
 src/
   modules/<koncept>/     en demonstration, t.ex. rendering, queryCache, forms
     components/          komponenter som bara används i den här modulen
@@ -36,6 +38,8 @@ src/
     forms/               formulärkomponenter (React Hook Form)
   styles/                colors.tsx och theme.tsx för MUI-temat
   templates/             sidlayouter, t.ex. pageTemplate.tsx
+```
+
 En modul är ett koncept, inte en produktfunktion. Den ska gå att förstå isolerad, utan att läsaren behöver känna till någon annan modul.
 
 Appens egna sidor ligger därför i src/pages/, inte i modules/. Startsidan är kartan över koncepten och 404-vyn är ett felmeddelande — ingen av dem demonstrerar något. Läggs de bland modulerna stämmer det inte längre att varje mapp i modules/ är ett koncept, och regeln ovan tappar sin skärpa.
@@ -48,7 +52,10 @@ Skapa services/ först när den första modulen faktiskt anropar något. Tomma m
 
 När data hämtas gäller ett envägsflöde:
 
+```text
 page → hook → service → axiosClient → API
+```
+
 All HTTP går genom servicelagret, aldrig axios direkt i en komponent.
 Services innehåller ingen React — bara funktioner som returnerar typad data.
 Behöver en andra modul en komponent flyttas den till shared/components/. Flytta, kopiera inte.
@@ -63,12 +70,18 @@ Tre inställningar i tsconfig.app.json gör att vanliga mönster inte kompilerar
 
 verbatimModuleSyntax — typer måste importeras med import type:
 
+```ts
 import type { CacheEntry } from '../types/cache'; // rätt
-import { CacheEntry } from '../types/cache';      // byggfel
+import { CacheEntry } from '../types/cache'; // byggfel
+```
+
 erasableSyntaxOnly — enum, namespace och parameter-properties är förbjudna. Använd union eller as const:
 
+```ts
 export const DEMO_STATES = ['idle', 'running', 'done'] as const;
 export type DemoState = (typeof DEMO_STATES)[number];
+```
+
 noUnusedLocals / noUnusedParameters — en oanvänd variabel eller parameter stoppar bygget. Städa bort experimentkod före commit.
 
 any är förbjudet (noImplicitAny). Saknas en typ:
@@ -91,12 +104,15 @@ Ett undantag, unikt för det här repot: en vy vars syfte är att visa vad useEf
 Query-nycklar skrivs i en fabrik, inte på plats
 Varje modul som hämtar data får en <koncept>Keys.ts bredvid sina hookar:
 
+```ts
 export const cacheDemoKeys = {
   all: ['cacheDemo'] as const,
   lists: () => [...cacheDemoKeys.all, 'list'] as const,
   list: (page: number) => [...cacheDemoKeys.lists(), page] as const,
   byId: (id: string) => [...cacheDemoKeys.all, id] as const,
 };
+```
+
 Mönstret kommer från Apptechs produktionsprojekt och från tkdodo-bloggen som deras kodregler länkar till.
 
 Varför en fabrik i stället för ['cacheDemo', 'list', page] i hooken?
@@ -125,8 +141,11 @@ Variabler läses på ett enda ställe: axiosClient. En nyckel skrivs aldrig i en
 Git-arbetsflöde
 main är skyddad — allt går via Pull Request.
 
+```bash
 git checkout main && git pull
 git checkout -b feature/<ticketnummer>
+```
+
 Commits på svenska, alla inom samma ticket
 PR med Closes #<ticketnummer> i beskrivningen så att ticketen stängs vid merge
 Merga och dra ticketen till Done
