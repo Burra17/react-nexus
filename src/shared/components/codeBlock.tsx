@@ -1,6 +1,7 @@
 import CheckOutlined from '@mui/icons-material/CheckOutlined';
 import ContentCopyOutlined from '@mui/icons-material/ContentCopyOutlined';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Tooltip from '@mui/material/Tooltip';
@@ -40,8 +41,20 @@ type CodeBlockProps = {
   highlightedLines?: number[];
 };
 
+// Längre filer fälls ihop. Utan gränsen trycker en demo på åttio rader ner
+// teoridelen utom synhåll, och vyn blir en vägg av kod.
+const COLLAPSE_AFTER_LINES = 25;
+
 export const CodeBlock = ({ code, language, fileName, highlightedLines = [] }: CodeBlockProps) => {
   const [isCopied, setIsCopied] = useState(false);
+
+  const lineCount = code.trimEnd().split('\n').length;
+  const isCollapsible = lineCount > COLLAPSE_AFTER_LINES;
+
+  // Ligger en markerad rad under vikningen börjar stycket utfällt. Att gömma
+  // just den rad som är poängen vore fel, inte en inställning.
+  const pointIsBelowFold = highlightedLines.some((line) => line > COLLAPSE_AFTER_LINES);
+  const [isExpanded, setIsExpanded] = useState(!isCollapsible || pointIsBelowFold);
 
   // Båda temana renderas samtidigt, som CSS-variabler på varje span.
   // Alternativet vore att färglägga om vid lägesbyte, vilket skulle rendera om
@@ -110,6 +123,11 @@ export const CodeBlock = ({ code, language, fileName, highlightedLines = [] }: C
             '& .shiki': { backgroundColor: 'var(--shiki-dark-bg)' },
           }),
 
+          // Ihopfälld höjd räknas ur radhöjden, så att snittet hamnar mellan två
+          // rader i stället för mitt i en.
+          maxHeight: isExpanded ? 'none' : `calc(${COLLAPSE_AFTER_LINES} * 0.875rem * 1.7 + ${theme.spacing(4)})`,
+          overflow: 'hidden',
+
           '& pre': { margin: 0, padding: theme.spacing(2), overflowX: 'auto' },
           '& code': {
             // Grid gör varje rad till ett block över hela bredden, så att en
@@ -134,6 +152,17 @@ export const CodeBlock = ({ code, language, fileName, highlightedLines = [] }: C
             något som kommer utifrån. */}
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </Box>
+
+      {isCollapsible && (
+        <Button
+          fullWidth
+          size="small"
+          onClick={() => setIsExpanded(!isExpanded)}
+          sx={{ borderTop: 1, borderColor: 'divider', borderRadius: 0, py: 1 }}
+        >
+          {isExpanded ? 'Visa mindre' : `Visa hela filen (${lineCount} rader)`}
+        </Button>
+      )}
     </Paper>
   );
 };
