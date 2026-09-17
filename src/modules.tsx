@@ -10,6 +10,7 @@ import SpeedOutlined from '@mui/icons-material/SpeedOutlined';
 import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
+import { StatePage } from './modules/state/pages/statePage';
 
 export type AppModule = {
   path: string;
@@ -36,6 +37,7 @@ export const appModules: AppModule[] = [
     label: 'State',
     description: 'useState, batchning och funktionell uppdatering: varför state är en ögonblicksbild och inte en variabel.',
     icon: <ToggleOnOutlined />,
+    element: <StatePage />,
   },
   {
     path: '/rendering',
