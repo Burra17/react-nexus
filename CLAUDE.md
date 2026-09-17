@@ -1,7 +1,7 @@
 CLAUDE.md
-React Nexus — ett interaktivt kodlabb och en playground där React, TypeScript, TanStack Query, Material UI och arkitektur demonstreras visuellt i stället för att antecknas.
+React Nexus — en levande lärobok och ett interaktivt kodlabb där React, TypeScript, TanStack Query, Material UI och arkitektur både förklaras och demonstreras.
 
-Varje vy ska visa ett koncept i arbete: hur state uppdateras, hur en omrendering utlöses, hur TanStack Query cachar ett svar. Målet är att förstå mekanismen, inte att leverera en produkt.
+Varje vy ska förklara ett koncept och visa det i arbete: hur state uppdateras, hur en omrendering utlöses, hur TanStack Query cachar ett svar. Målet är att förstå mekanismen och varför den spelar roll, inte att leverera en produkt.
 
 Arkitekturen och kodreglerna följer Apptechs produktionsstandard: feature-baserad modulindelning, servicelager på rotnivå, envägsdataflöde och query-nycklar i en fabrik.
 
@@ -93,6 +93,24 @@ KISS — kod som en kollega förstår vid första genomläsningen.
 DRY — upprepas något på ett tredje ställe, bryt ut det. Inte vid det första.
 Svenska kommentarer. Varje funktion får en rad om vad den gör, varje workaround en rad om varför den finns. Kommentaren förklarar avsikten, den upprepar inte kodraden.
 Prettier (.prettierrc) sköter formateringen: enkla citattecken, semikolon, 150 tecken per rad. Formatera on save. Formatering diskuteras aldrig i en PR.
+Varje konceptvy har tre delar
+
+React Nexus är en lärobok, inte en samling experiment. Varje konceptvy består därför av tre delar, i den här ordningen:
+
+- Teori. En pedagogisk förklaring på svenska av vad konceptet är och varför man använder det. En demo utan teori visar att något händer, utan att säga varför det spelar roll.
+- Demo. Den interaktiva delen, där man klickar och testar.
+- Kod. Källkoden som driver demon.
+
+Ordningen är inte valfri. Bestäms den i varje modul kommer den elfte vyn inte se ut som den första, och i en lärobok är igenkänning halva poängen — läsaren ska veta var teorin står utan att leta. Den delade mallen i templates/ bestämmer ordningen och rubrikerna en gång.
+
+Kod-delen läser den riktiga källfilen, aldrig en kopierad sträng. Vite kan importera en fil som text:
+
+```ts
+import demoSource from '../components/counterDemo.tsx?raw';
+```
+
+En kopia driver isär från demon första gången demon ändras, och då lär läroboken ut något som inte längre är sant. Läses filen med ?raw är det som visas samma fil som körs, och de kan inte hamna i otakt.
+
 Demonstrationskod ska visa mekanismen, inte dölja den
 Det här repot har ett syfte som skiljer sig från en vanlig app: koden är poängen, inte bara medlet. En abstraktion som gör en vy kortare men gömmer det som ska demonstreras är fel väg här, även om den vore rätt i en produkt.
 
