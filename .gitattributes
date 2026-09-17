@@ -1,0 +1,4 @@
+# Radslut är LF i repot och LF vid utcheckning, oavsett operativsystem.
+# Utan den här raden checkar git ut CRLF på Windows (core.autocrlf), medan
+# Prettier skriver LF — och då vill Prettier skriva om varje fil efter varje klon.
+* text=auto eol=lf

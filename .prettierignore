@@ -1,0 +1,11 @@
+# Byggresultat och beroenden formateras aldrig
+dist
+node_modules
+
+# Lockfilen ägs av yarn, inte av oss
+yarn.lock
+
+# CLAUDE.md har kodexempel utan ```-fencing. Prettier läser dem som vanliga
+# stycken och plattar ut indenteringen, vilket ändrar vad dokumentet betyder.
+# Tas bort när exemplen fencats, se #7.
+CLAUDE.md
