@@ -9,7 +9,7 @@ export type ConceptSource = {
   fileName: string;
   code: string;
   language: CodeLanguage;
-  highlightedLines?: number[];
+  highlight?: string[];
 };
 
 type ConceptTemplateProps = {
@@ -73,7 +73,7 @@ export const ConceptTemplate = ({ title, theory, demo, sources }: ConceptTemplat
           code={source.code}
           language={source.language}
           fileName={source.fileName}
-          highlightedLines={source.highlightedLines}
+          highlight={source.highlight}
         />
       ))}
     </Stack>

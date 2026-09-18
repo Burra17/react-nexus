@@ -73,14 +73,14 @@ export const StatePage = () => (
         code: batchingSource,
         language: 'tsx',
         // Raderna som skiljer de två sätten åt: samma tre anrop, olika resultat.
-        highlightedLines: [14, 15, 16, 22, 23, 24],
+        highlight: ['setCount(count + 1);', 'setCount((current) => current + 1);'],
       },
       {
         fileName: 'src/modules/state/components/snapshotDemo.tsx',
         code: snapshotSource,
         language: 'tsx',
         // Avläsningen som visar att count inte ändrats av raden ovanför.
-        highlightedLines: [12, 16],
+        highlight: ['setCount(count + 1);', 'setReadBack(count);'],
       },
       {
         fileName: 'src/shared/components/renderCounter.tsx',
