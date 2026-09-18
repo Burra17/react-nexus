@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { accent, status, surface, text } from './colors';
+import { accent, onAccent, status, surface, text } from './colors';
 
 // Säger till TypeScript att temat har CSS-variabler påslagna.
 //
@@ -34,7 +34,7 @@ export const theme = createTheme({
   colorSchemes: {
     light: {
       palette: {
-        primary: { main: accent.light, contrastText: '#FFFFFF' },
+        primary: { main: accent.light, contrastText: onAccent.light },
         background: { default: surface.light.background, paper: surface.light.paper },
         text: { primary: text.light.primary, secondary: text.light.secondary },
         divider: surface.light.border,
@@ -46,8 +46,7 @@ export const theme = createTheme({
     },
     dark: {
       palette: {
-        // Mörk text på den ljusa accenten, inte tvärtom: 12.05:1 mot 1.3:1.
-        primary: { main: accent.dark, contrastText: surface.dark.background },
+        primary: { main: accent.dark, contrastText: onAccent.dark },
         background: { default: surface.dark.background, paper: surface.dark.paper },
         text: { primary: text.dark.primary, secondary: text.dark.secondary },
         divider: surface.dark.border,
