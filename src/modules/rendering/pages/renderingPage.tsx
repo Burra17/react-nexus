@@ -70,14 +70,14 @@ export const RenderingPage = () => (
         language: 'tsx',
         // Objektet som ligger still, memo-inpackningen, och raden där ett nytt
         // objekt skapas vid varje render.
-        highlightedLines: [19, 36, 45],
+        highlight: ['const stableSettings =', 'const MemoChild = memo(Child);', 'const settings = newObjectEachRender'],
       },
       {
         fileName: 'src/modules/rendering/components/domUnchangedDemo.tsx',
         code: domUnchangedSource,
         language: 'tsx',
         // Textfältet React aldrig rör vid en omrendering.
-        highlightedLines: [23],
+        highlight: ['<TextField'],
       },
     ]}
   />

@@ -37,23 +37,56 @@ type CodeBlockProps = {
   code: string;
   language: CodeLanguage;
   fileName?: string;
-  // Radnummer som ska pekas ut, 1-indexerade - "det är den här raden som är poängen".
-  highlightedLines?: number[];
+  // Textbitar ur koden som ska pekas ut - "det är de här raderna som är poängen".
+  //
+  // Innehåll i stället för radnummer. Källkoden läses med ?raw ur den riktiga
+  // filen just för att en kopia driver isär från originalet, och ett handskrivet
+  // radnummer är en kopia av samma sort: flyttas raden pekar det tyst på fel
+  // rad. Ett textfragment följer med raden det hör till.
+  highlight?: string[];
 };
 
 // Längre filer fälls ihop. Utan gränsen trycker en demo på åttio rader ner
 // teoridelen utom synhåll, och vyn blir en vägg av kod.
 const COLLAPSE_AFTER_LINES = 25;
 
-export const CodeBlock = ({ code, language, fileName, highlightedLines = [] }: CodeBlockProps) => {
+// Slår upp vilka rader som ska markeras genom att leta efter texten i koden.
+//
+// Ett fragment får träffa flera rader, och det är meningen: tre likadana
+// setCount-anrop i följd är ett påstående, inte tre.
+const findHighlightedLines = (code: string, fragments: string[], fileName?: string) => {
+  const lines = code.split('\n');
+  const highlighted = new Set<number>();
+
+  fragments.forEach((fragment) => {
+    // flatMap i stället för filter: raden ska bli sitt radnummer, och rader utan
+    // träff ska försvinna. Radnumren är 1-indexerade, som Shikis.
+    const hits = lines.flatMap((line, index) => (line.includes(fragment) ? [index + 1] : []));
+
+    // Ett fragment utan träff betyder att koden skrivits om under markeringen.
+    // Utan raden nedan vore det tyst, och tyst fel är hela skälet till att
+    // radnumren byttes ut mot innehåll.
+    if (hits.length === 0 && import.meta.env.DEV) {
+      console.warn(`CodeBlock: ingen rad i ${fileName ?? 'kodstycket'} innehåller "${fragment}". Markeringen uteblir.`);
+    }
+
+    hits.forEach((lineNumber) => highlighted.add(lineNumber));
+  });
+
+  return highlighted;
+};
+
+export const CodeBlock = ({ code, language, fileName, highlight = [] }: CodeBlockProps) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const lineCount = code.trimEnd().split('\n').length;
   const isCollapsible = lineCount > COLLAPSE_AFTER_LINES;
 
+  const highlightedLines = findHighlightedLines(code, highlight, fileName);
+
   // Ligger en markerad rad under vikningen börjar stycket utfällt. Att gömma
   // just den rad som är poängen vore fel, inte en inställning.
-  const pointIsBelowFold = highlightedLines.some((line) => line > COLLAPSE_AFTER_LINES);
+  const pointIsBelowFold = [...highlightedLines].some((line) => line > COLLAPSE_AFTER_LINES);
   const [isExpanded, setIsExpanded] = useState(!isCollapsible || pointIsBelowFold);
 
   // Båda temana renderas samtidigt, som CSS-variabler på varje span.
@@ -66,7 +99,7 @@ export const CodeBlock = ({ code, language, fileName, highlightedLines = [] }: C
     transformers: [
       {
         line(node, lineNumber) {
-          if (highlightedLines.includes(lineNumber)) {
+          if (highlightedLines.has(lineNumber)) {
             this.addClassToHast(node, 'markerad-rad');
           }
         },
