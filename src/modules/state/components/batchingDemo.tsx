@@ -44,7 +44,7 @@ export const BatchingDemo = () => {
         Båda knapparna anropar setCount tre gånger. Den vänstra ökar med ett, den högra med tre — och båda ritar om vyn bara en gång.
       </Typography>
 
-      <RenderCounter />
+      <RenderCounter showStrictModeNote />
     </Stack>
   );
 };

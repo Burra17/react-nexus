@@ -54,7 +54,9 @@ export const RenderTriggerDemo = () => {
         Ändra förälderns state
       </Button>
 
-      <RenderCounter />
+      {/* Sidans enda not om StrictMode sitter här. Barnen nedan får den inte:
+          memo-barnets siffra står still, och då hade noten sagt emot demon. */}
+      <RenderCounter showStrictModeNote />
 
       <FormControlLabel
         control={<Switch checked={newObjectEachRender} onChange={(event) => setNewObjectEachRender(event.target.checked)} />}
