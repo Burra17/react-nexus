@@ -19,7 +19,7 @@ export const RenderCounter = () => {
   /* eslint-enable react-hooks/refs */
 
   return (
-    <Typography variant="body2" color="text.secondary">
+    <Typography variant="body2" color="textSecondary">
       Ritad om <strong>{renderCount}</strong> gånger. Siffran ökar med två per klick, inte med ett: StrictMode ritar allt dubbelt i utvecklingsläge
       för att avslöja kod som inte tål det. I ett byggt projekt ökar den med ett.
     </Typography>

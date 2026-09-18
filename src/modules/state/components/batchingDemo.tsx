@@ -40,7 +40,7 @@ export const BatchingDemo = () => {
         <Button onClick={() => setCount(0)}>Nollställ</Button>
       </Stack>
 
-      <Typography color="text.secondary">
+      <Typography color="textSecondary">
         Båda knapparna anropar setCount tre gånger. Den vänstra ökar med ett, den högra med tre — och båda ritar om vyn bara en gång.
       </Typography>
 

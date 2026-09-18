@@ -27,7 +27,7 @@ export const SnapshotDemo = () => {
       </Button>
 
       {readBack !== null && (
-        <Typography color="text.secondary">
+        <Typography color="textSecondary">
           Direkt efter anropet till setCount var count fortfarande <strong>{readBack}</strong> — inte {readBack + 1}.
         </Typography>
       )}
