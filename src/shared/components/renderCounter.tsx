@@ -20,8 +20,8 @@ export const RenderCounter = () => {
 
   return (
     <Typography variant="body2" color="textSecondary">
-      Ritad om <strong>{renderCount}</strong> gånger. Siffran ökar med två per klick, inte med ett: StrictMode ritar allt dubbelt i utvecklingsläge
-      för att avslöja kod som inte tål det. I ett byggt projekt ökar den med ett.
+      Ritad om <strong>{renderCount}</strong> gånger. Siffran ökar med två per klick, inte med ett: StrictMode ritar varje komponent en extra gång i
+      utvecklingsläge, för att avslöja renderingskod som inte är ren. I ett byggt projekt ökar den med ett.
     </Typography>
   );
 };
