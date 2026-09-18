@@ -14,3 +14,5 @@ import { lazy } from 'react';
 // data i samma fil slutar Fast Refresh fungera för den, och varje ändring
 // tvingar fram en full omladdning av sidan.
 export const StatePage = lazy(() => import('./modules/state/pages/statePage').then((imported) => ({ default: imported.StatePage })));
+
+export const RenderingPage = lazy(() => import('./modules/rendering/pages/renderingPage').then((imported) => ({ default: imported.RenderingPage })));

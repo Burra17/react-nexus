@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import { RenderCounter } from './renderCounter';
+import { RenderCounter } from '../../../shared/components/renderCounter';
 
 // Samma tre anrop, skrivna på två sätt. Resultatet skiljer sig.
 export const BatchingDemo = () => {

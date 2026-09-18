@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
 import { BatchingDemo } from '../components/batchingDemo';
 import batchingSource from '../components/batchingDemo.tsx?raw';
-import renderCounterSource from '../components/renderCounter.tsx?raw';
+import renderCounterSource from '../../../shared/components/renderCounter.tsx?raw';
 import { SnapshotDemo } from '../components/snapshotDemo';
 import snapshotSource from '../components/snapshotDemo.tsx?raw';
 
@@ -80,7 +80,7 @@ export const StatePage = () => (
         highlightedLines: [12, 16],
       },
       {
-        fileName: 'src/modules/state/components/renderCounter.tsx',
+        fileName: 'src/shared/components/renderCounter.tsx',
         code: renderCounterSource,
         language: 'tsx',
       },

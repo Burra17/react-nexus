@@ -10,7 +10,7 @@ import SpeedOutlined from '@mui/icons-material/SpeedOutlined';
 import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
-import { StatePage } from './lazyPages';
+import { RenderingPage, StatePage } from './lazyPages';
 
 export type AppModule = {
   path: string;
@@ -44,6 +44,7 @@ export const appModules: AppModule[] = [
     label: 'Rendering',
     description: 'Vad som faktiskt utlöser en omrendering, med renderräknare per komponent och referenslikhet.',
     icon: <RefreshOutlined />,
+    element: <RenderingPage />,
   },
   {
     path: '/effects',
