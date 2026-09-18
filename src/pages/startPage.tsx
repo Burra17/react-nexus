@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import { appModules, isBuilt, type AppModule } from '../modules';
+import { ReadableColumn } from '../shared/components/readableColumn';
 
 // Kortets innehåll är detsamma vare sig modulen går att klicka på eller inte.
 // Bara skalet runt omkring skiljer, så innehållet skrivs en gång.
@@ -44,10 +45,12 @@ export const StartPage = () => (
       <Typography variant="h1" gutterBottom>
         React Nexus
       </Typography>
-      <Typography color="text.secondary">
-        En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får tre delar: teorin bakom det, en demo att klicka på, och koden
-        som driver demon. De planerade korten går ännu inte att öppna.
-      </Typography>
+      <ReadableColumn>
+        <Typography color="text.secondary">
+          En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får tre delar: teorin bakom det, en demo att klicka på, och koden
+          som driver demon. De planerade korten går ännu inte att öppna.
+        </Typography>
+      </ReadableColumn>
     </Box>
 
     <Grid container spacing={2}>

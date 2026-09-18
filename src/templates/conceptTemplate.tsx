@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
 import { CodeBlock, type CodeLanguage } from '../shared/components/codeBlock';
+import { ReadableColumn } from '../shared/components/readableColumn';
 
 export type ConceptSource = {
   fileName: string;
@@ -36,7 +37,10 @@ export const ConceptTemplate = ({ title, theory, demo, sources }: ConceptTemplat
       <Typography id="rubrik-teori" variant="h2">
         Teori
       </Typography>
-      {theory}
+
+      {/* Bara teoridelen smalnas av. Demon och koden får hela sidans bredd,
+          eftersom de inte läses rad för rad på samma sätt som text. */}
+      <ReadableColumn>{theory}</ReadableColumn>
     </Stack>
 
     <Stack component="section" aria-labelledby="rubrik-demo" spacing={2}>

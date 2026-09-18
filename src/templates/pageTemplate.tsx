@@ -21,6 +21,13 @@ import { DelayedProgress } from '../shared/components/delayedProgress';
 const openWidth = 240;
 const closedWidth = 64;
 
+// Så bred innehållsytan får bli, oavsett hur bred skärmen är.
+//
+// Utan taket sträckte sig både text och kortrutnät över hela skärmen - 1601 px
+// text vid en skärm på 1920. Kodblocken och demona får använda hela den här
+// bredden; texten begränsas ytterligare av ReadableColumn.
+const PAGE_WIDTH = 1200;
+
 // Sidlayouten som varje vy delar: rubrikrad, ihopfällbar sidomeny och en yta
 // där rutten renderas. Ligger i templates och inte i en modul, eftersom den
 // inte hör till något enskilt koncept.
@@ -123,12 +130,17 @@ export const PageTemplate = () => {
       <Box component="main" sx={{ flexGrow: 1, minWidth: 0, p: 4 }}>
         <Toolbar />
 
-        {/* En Suspense för hela innehållsytan, inte en per vy. Ramen står kvar
-            medan vyn hämtas: sidomenyn och rubrikraden ska inte blinka bara
-            för att innehållet byts ut. */}
-        <Suspense fallback={<DelayedProgress />}>
-          <Outlet />
-        </Suspense>
+        {/* Sidans bredd bestäms här och ingen annanstans, så att innehållets
+            vänsterkant står stilla när man byter vy. Enskilda vyer bestämmer
+            bara hur brett deras eget innehåll får bli inuti den här ytan. */}
+        <Box sx={{ maxWidth: PAGE_WIDTH, mx: 'auto' }}>
+          {/* En Suspense för hela innehållsytan, inte en per vy. Ramen står kvar
+              medan vyn hämtas: sidomenyn och rubrikraden ska inte blinka bara
+              för att innehållet byts ut. */}
+          <Suspense fallback={<DelayedProgress />}>
+            <Outlet />
+          </Suspense>
+        </Box>
       </Box>
     </Box>
   );
