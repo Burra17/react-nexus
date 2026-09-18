@@ -26,13 +26,22 @@ const ModuleCardContent = ({ module }: { module: AppModule }) => {
         </Typography>
       </Stack>
 
-      <Typography color="text.secondary" sx={{ mb: 2 }}>
+      <Typography color="textSecondary" sx={{ mb: 2 }}>
         {module.description}
       </Typography>
 
-      {/* Statusen står som text och inte bara som färg - en markering som bara
-          syns på färgen når inte den som inte ser skillnaden. */}
-      <Chip size="small" label={built ? 'Klar' : 'Planerad'} color={built ? 'primary' : 'default'} variant={built ? 'filled' : 'outlined'} />
+      {/* Statusen står som text i båda fallen, inte bara som färg eller form -
+          en markering som bara syns på stilen når inte den som inte ser den.
+          Det som skiljer är tyngden: byggda får en ifylld chip, planerade bara
+          ett ord. Kontrasten mellan korten kommer alltså av att de planerade
+          tonas ned, inte av att de byggda förstärks med ännu en färg. */}
+      {built ? (
+        <Chip size="small" label="Klar" color="primary" />
+      ) : (
+        <Typography variant="body2" color="textSecondary">
+          Planerad
+        </Typography>
+      )}
     </CardContent>
   );
 };
@@ -46,7 +55,7 @@ export const StartPage = () => (
         React Nexus
       </Typography>
       <ReadableColumn>
-        <Typography color="text.secondary">
+        <Typography color="textSecondary">
           En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får tre delar: teorin bakom det, en demo att klicka på, och koden
           som driver demon. De planerade korten går ännu inte att öppna.
         </Typography>
@@ -58,12 +67,26 @@ export const StartPage = () => (
         <Grid key={module.path} size={{ xs: 12, sm: 6, md: 4 }}>
           <Card
             variant="outlined"
-            sx={{
+            sx={(theme) => ({
               height: '100%',
               // Streckad kant på det som inte är byggt. En signal till som inte
               // är färg, för den som inte uppfattar skillnaden mellan chiparna.
               borderStyle: isBuilt(module) ? 'solid' : 'dashed',
-            }}
+
+              // Bara byggda kort svarar på pekaren. Ett planerat kort som rörde
+              // sig skulle lova något det inte kan hålla.
+              ...(isBuilt(module) && {
+                transition: theme.transitions.create(['border-color', 'transform'], { duration: 150 }),
+                '&:hover': { borderColor: 'primary.main', transform: 'translateY(-1px)' },
+
+                // Den som bett operativsystemet om mindre rörelse får kantfärgen
+                // men inget lyft. Signalen finns kvar, rörelsen försvinner.
+                '@media (prefers-reduced-motion: reduce)': {
+                  transition: theme.transitions.create('border-color', { duration: 150 }),
+                  '&:hover': { transform: 'none' },
+                },
+              }),
+            })}
           >
             {isBuilt(module) ? (
               <CardActionArea component={Link} to={module.path} sx={{ height: '100%' }}>
