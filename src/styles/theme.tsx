@@ -72,6 +72,12 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        // Plats för rullningslisten reserveras alltid, även på sidor som ryms
+        // utan den. Annars krymper ytan när listen dyker upp, och allt
+        // centrerat innehåll hoppar en halv listbredd i sidled vid varje
+        // navigering mellan en kort och en lång vy.
+        html: { scrollbarGutter: 'stable' },
+
         // Inline-kod får rätt typsnitt utan att varje vy behöver be om det.
         'code, pre': { fontFamily: monoFontFamily },
       },
