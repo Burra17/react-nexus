@@ -12,6 +12,17 @@ export const accent = {
   dark: '#5EEAD4',
 };
 
+// Texten som ligger ovanpå accentfärgen, till exempel i en ifylld knapp.
+//
+// Den följer inte text-färgerna nedan, eftersom den ska kontrastera mot
+// accenten och inte mot sidans bakgrund. Ljust läge har en mörk accent och
+// behöver ljus text; mörkt läge har en ljus accent och behöver mörk.
+// Ljus: 6.61:1 mot accenten. Mörk: 12.05:1.
+export const onAccent = {
+  light: '#FFFFFF',
+  dark: '#14181D',
+};
+
 // Ytorna: background är sidan, paper är kort och paneler ovanpå den.
 // Skillnaden mellan dem är medvetet liten - ett kort ska läsas som upphöjt,
 // inte som ett eget färgfält.
