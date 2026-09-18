@@ -13,9 +13,10 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useColorScheme } from '@mui/material/styles';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { navItems } from '../navigation';
+import { DelayedProgress } from '../shared/components/delayedProgress';
 
 const openWidth = 240;
 const closedWidth = 64;
@@ -121,7 +122,13 @@ export const PageTemplate = () => {
           stället för att låta kodstycket scrolla inuti sig självt. */}
       <Box component="main" sx={{ flexGrow: 1, minWidth: 0, p: 4 }}>
         <Toolbar />
-        <Outlet />
+
+        {/* En Suspense för hela innehållsytan, inte en per vy. Ramen står kvar
+            medan vyn hämtas: sidomenyn och rubrikraden ska inte blinka bara
+            för att innehållet byts ut. */}
+        <Suspense fallback={<DelayedProgress />}>
+          <Outlet />
+        </Suspense>
       </Box>
     </Box>
   );
