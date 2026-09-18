@@ -61,9 +61,17 @@ export const theme = createTheme({
 
   typography: {
     fontFamily: sansFontFamily,
+    // Fyra nivåer: 40, 22, 18 och 16 px.
+    //
+    // h2 är sektionsrubriker som Teori, Demo och Kod. De är etiketter i ett
+    // flöde och inte konkurrenter till sidans rubrik - på 1.75rem vägde de
+    // nästan lika tungt som h1.
+    //
+    // h3 följer med ned. Hade den stannat på 1.25rem låge den 2 px från h2,
+    // och två rubriknivåer som skiljer 2 px läses som en enda nivå.
     h1: { fontSize: '2.5rem', fontWeight: 600, letterSpacing: '-0.02em' },
-    h2: { fontSize: '1.75rem', fontWeight: 600, letterSpacing: '-0.01em' },
-    h3: { fontSize: '1.25rem', fontWeight: 600 },
+    h2: { fontSize: '1.375rem', fontWeight: 600, letterSpacing: '-0.01em' },
+    h3: { fontSize: '1.125rem', fontWeight: 600 },
     button: { textTransform: 'none', fontWeight: 500 },
   },
 

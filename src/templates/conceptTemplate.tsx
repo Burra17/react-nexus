@@ -33,17 +33,25 @@ export const ConceptTemplate = ({ title, theory, demo, sources }: ConceptTemplat
 
     {/* section + aria-labelledby gör delarna till landmärken en skärmläsare kan
         hoppa mellan, i stället för tre rubriker i ett enda textflöde. */}
-    <Stack component="section" aria-labelledby="rubrik-teori" spacing={2}>
+    <Stack component="section" aria-labelledby="rubrik-teori" spacing={1.5}>
       <Typography id="rubrik-teori" variant="h2">
         Teori
       </Typography>
 
       {/* Bara teoridelen smalnas av. Demon och koden får hela sidans bredd,
-          eftersom de inte läses rad för rad på samma sätt som text. */}
-      <ReadableColumn>{theory}</ReadableColumn>
+          eftersom de inte läses rad för rad på samma sätt som text.
+
+          Stacken inuti ger avstånd mellan teorins stycken. Utan den blir de en
+          textmassa: ReadableColumn är ett enda barn till sektionen, så
+          sektionens avstånd hamnar runt hela spalten i stället för mellan
+          styckena. Rytmen tillhör mallen, av samma skäl som ordningen gör det -
+          bestäms den per modul ser den elfte vyn inte ut som den första. */}
+      <ReadableColumn>
+        <Stack spacing={2}>{theory}</Stack>
+      </ReadableColumn>
     </Stack>
 
-    <Stack component="section" aria-labelledby="rubrik-demo" spacing={2}>
+    <Stack component="section" aria-labelledby="rubrik-demo" spacing={1.5}>
       <Typography id="rubrik-demo" variant="h2">
         Demo
       </Typography>
@@ -53,7 +61,7 @@ export const ConceptTemplate = ({ title, theory, demo, sources }: ConceptTemplat
       </Paper>
     </Stack>
 
-    <Stack component="section" aria-labelledby="rubrik-kod" spacing={2}>
+    <Stack component="section" aria-labelledby="rubrik-kod" spacing={1.5}>
       <Typography id="rubrik-kod" variant="h2">
         Kod
       </Typography>
