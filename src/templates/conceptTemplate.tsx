@@ -19,7 +19,7 @@ type ConceptTemplateProps = {
   sources: ConceptSource[];
 };
 
-// Sidmallen för en konceptvy: Teori, Demo, Kod - i den ordningen, varje gång.
+// Sidmallen för en konceptvy: Teori, Demo, Kod, Quiz - i den ordningen, varje gång.
 //
 // Ordningen ligger här och inte i modulerna. Bestämdes den per modul skulle den
 // elfte vyn inte se ut som den första, och i en lärobok är igenkänning halva
@@ -32,7 +32,7 @@ export const ConceptTemplate = ({ title, theory, demo, sources }: ConceptTemplat
     <Typography variant="h1">{title}</Typography>
 
     {/* section + aria-labelledby gör delarna till landmärken en skärmläsare kan
-        hoppa mellan, i stället för tre rubriker i ett enda textflöde. */}
+        hoppa mellan, i stället för fyra rubriker i ett enda textflöde. */}
     <Stack component="section" aria-labelledby="rubrik-teori" spacing={1.5}>
       <Typography id="rubrik-teori" variant="h2">
         Teori

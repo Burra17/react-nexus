@@ -62,7 +62,7 @@ export const theme = createTheme({
     fontFamily: sansFontFamily,
     // Fyra nivåer: 40, 22, 18 och 16 px.
     //
-    // h2 är sektionsrubriker som Teori, Demo och Kod. De är etiketter i ett
+    // h2 är sektionsrubriker som Teori, Demo, Kod och Quiz. De är etiketter i ett
     // flöde och inte konkurrenter till sidans rubrik - på 1.75rem vägde de
     // nästan lika tungt som h1.
     //
