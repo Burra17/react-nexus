@@ -68,13 +68,7 @@ export const ConceptTemplate = ({ title, theory, demo, sources }: ConceptTemplat
       {/* Flera filer, eftersom en demo ofta är en komponent plus en hook.
           Källkoden läses med ?raw ur de riktiga filerna - se CLAUDE.md. */}
       {sources.map((source) => (
-        <CodeBlock
-          key={source.fileName}
-          code={source.code}
-          language={source.language}
-          fileName={source.fileName}
-          highlight={source.highlight}
-        />
+        <CodeBlock key={source.fileName} code={source.code} language={source.language} fileName={source.fileName} highlight={source.highlight} />
       ))}
     </Stack>
   </Stack>
