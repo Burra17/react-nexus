@@ -34,7 +34,7 @@ src/
       <koncept>Keys.ts   query key-fabriken för modulen
     pages/               vyn som routern pekar på
   pages/                 appens egna sidor, t.ex. startsidan — hör inte till något koncept
-  services/              gemensamt för hela appen — skapas först när något behöver HTTP
+  services/              infrastruktur för hela appen — HTTP, lagring, allt utanför React
     api/                 anropen mot API:et, och typerna för svaren
     axios/               konfigurerad Axios-instans
   shared/
@@ -57,7 +57,9 @@ components, hooks och pages är stommen. En modul får lägga till egna segment 
 
 Servicelagret ligger på rotnivå, inte i modulen. Så ser det ut i Apptechs produktionsprojekt, och det passar det här repot extra bra: de flesta moduler demonstrerar något som inte har med HTTP att göra — en vy om useState har inget att hämta. Ett gemensamt services/ slipper frågan helt, i stället för att varje modul får en tom mapp.
 
-Skapa services/ först när den första modulen faktiskt anropar något. Tomma mappar är ceremoni.
+services/ är infrastruktur, inte bara HTTP. Där hör allt hemma som hela appen delar, som inte är React och som ingen enskild modul äger — anropen mot ett API, den konfigurerade Axios-instansen, lagring som ska överleva en sidladdning. HTTP är det vanligaste exemplet, inte villkoret.
+
+Skapa varje del av services/ först när något faktiskt behöver den. Tomma mappar är ceremoni.
 
 När data hämtas gäller ett envägsflöde:
 
@@ -131,15 +133,18 @@ any är förbjudet (noImplicitAny). Saknas en typ:
 - Svenska kommentarer. Varje funktion får en rad om vad den gör, varje workaround en rad om varför den finns. Kommentaren förklarar avsikten, den upprepar inte kodraden.
 - Prettier (.prettierrc) sköter formateringen: enkla citattecken, semikolon, 150 tecken per rad. Formatera on save. Formatering diskuteras aldrig i en PR.
 
-## Varje konceptvy har tre delar
+## Varje konceptvy har fyra delar
 
-React Nexus är en lärobok, inte en samling experiment. Varje konceptvy består därför av tre delar, i den här ordningen:
+React Nexus är en lärobok, inte en samling experiment. Varje konceptvy består därför av fyra delar, i den här ordningen:
 
 - Teori. En pedagogisk förklaring på svenska av vad konceptet är och varför man använder det. En demo utan teori visar att något händer, utan att säga varför det spelar roll.
 - Demo. Den interaktiva delen, där man klickar och testar.
 - Kod. Källkoden som driver demon.
+- Quiz. Några frågor som kontrollerar att konceptet fastnade. Att känna igen en förklaring känns som kunskap, men förutsäger inte att man kan återkalla den senare. Det gör bara ett test.
 
 Ordningen är inte valfri. Bestäms den i varje modul kommer den elfte vyn inte se ut som den första, och i en lärobok är igenkänning halva poängen — läsaren ska veta var teorin står utan att leta. Den delade mallen i templates/ bestämmer ordningen och rubrikerna en gång.
+
+Quizen står sist, efter Kod. I det här repot är källkoden en del av läromedlet och inte ett uppslagsverk vid sidan om — testar man före den testar man på halva materialet.
 
 Kod-delen läser den riktiga källfilen, aldrig en kopierad sträng. Vite kan importera en fil som text:
 
@@ -148,6 +153,15 @@ import demoSource from '../components/counterDemo.tsx?raw';
 ```
 
 En kopia driver isär från demon första gången demon ändras, och då lär läroboken ut något som inte längre är sant. Läses filen med ?raw är det som visas samma fil som körs, och de kan inte hamna i otakt.
+
+### Quizens regler
+
+- Tre frågor som riktmärke, spann två till fyra. Varje fråga träffar en egen poäng ur teorin — tre frågor om samma sak är en fråga ställd tre gånger.
+- Tre svarsalternativ, märkta A, B och C.
+- De två felaktiga alternativen ska vara missuppfattningar läsaren faktiskt kan ha. Ett alternativ ingen skulle välja lär inte ut något.
+- Facit förklarar varje alternativ, även det rätta. Annars går den som gissade rätt vidare i tron att hen kunde det.
+- Svaret låses när det väljs. Kan man klicka runt tills rutan blir grön är det en gissningsövning och inte en kunskapskontroll. En knapp gör om hela modulens quiz.
+- Inga poäng, inga streaks, inga märken. Syftet är att avslöja var förståelsen inte sitter, inte att belöna.
 
 ## Demonstrationskod ska visa mekanismen, inte dölja den
 

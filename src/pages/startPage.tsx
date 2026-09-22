@@ -56,8 +56,8 @@ export const StartPage = () => (
       </Typography>
       <ReadableColumn>
         <Typography color="textSecondary">
-          En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får tre delar: teorin bakom det, en demo att klicka på, och koden
-          som driver demon. De planerade korten går ännu inte att öppna.
+          En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får fyra delar: teorin bakom det, en demo att klicka på, koden som
+          driver demon, och några frågor som kontrollerar att det fastnade. De planerade korten går ännu inte att öppna.
         </Typography>
       </ReadableColumn>
     </Box>
