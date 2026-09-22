@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
 import { CodeBlock, type CodeLanguage } from '../shared/components/codeBlock';
+import { ModuleNav } from '../shared/components/moduleNav';
 import { Quiz, type QuizQuestion } from '../shared/components/quiz';
 import { ReadableColumn } from '../shared/components/readableColumn';
 import { SECTION_SCROLL_MARGIN, sectionIds } from '../shared/components/conceptSections';
@@ -98,5 +99,9 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
         <Quiz questions={quiz} />
       </ReadableColumn>
     </Stack>
+
+    {/* Vägen vidare. Ligger utanför sektionerna: den hör inte till konceptet
+        utan till läroboken, och ska därför inte dyka upp i sektionsraden. */}
+    <ModuleNav />
   </Stack>
 );
