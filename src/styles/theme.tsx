@@ -86,7 +86,20 @@ export const theme = createTheme({
         html: { scrollbarGutter: 'stable' },
 
         // Inline-kod får rätt typsnitt utan att varje vy behöver be om det.
-        'code, pre': { fontFamily: monoFontFamily },
+        //
+        // Ligaturerna stängs av. JetBrains Mono slår annars ihop => till en
+        // dubbelpil och !== till ett genomstruket likhetstecken - glyfer som
+        // inte finns på tangentbordet. I en lärobok arbetar det emot syftet:
+        // den som läser setCount(c => c + 1) ska kunna skriva av det.
+        //
+        // none räcker och täcker båda fallen. JetBrains Mono bygger sina
+        // kodligaturer på kontextuella alternativ och inte bara på liga, men
+        // none stänger av båda - uppmätt, inte antaget. Se #64.
+        //
+        // Regeln står här och inte i en komponent, så att inline-kod och
+        // kodblock behandlas lika. Sätts den per vy ser den elfte inte ut som
+        // den första.
+        'code, pre': { fontFamily: monoFontFamily, fontVariantLigatures: 'none' },
       },
     },
   },
