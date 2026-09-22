@@ -1,6 +1,7 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
+import { renderingQuestions } from '../renderingQuestions';
 import { DomUnchangedDemo } from '../components/domUnchangedDemo';
 import domUnchangedSource from '../components/domUnchangedDemo.tsx?raw';
 import { RenderTriggerDemo } from '../components/renderTriggerDemo';
@@ -80,5 +81,6 @@ export const RenderingPage = () => (
         highlight: ['<TextField'],
       },
     ]}
+    quiz={renderingQuestions}
   />
 );

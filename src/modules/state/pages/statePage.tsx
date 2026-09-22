@@ -1,6 +1,7 @@
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
+import { stateQuestions } from '../stateQuestions';
 import { BatchingDemo } from '../components/batchingDemo';
 import batchingSource from '../components/batchingDemo.tsx?raw';
 import renderCounterSource from '../../../shared/components/renderCounter.tsx?raw';
@@ -88,5 +89,6 @@ export const StatePage = () => (
         language: 'tsx',
       },
     ]}
+    quiz={stateQuestions}
   />
 );
