@@ -10,28 +10,28 @@ import snapshotSource from '../components/snapshotDemo.tsx?raw';
 
 const Theory = () => (
   <>
-    <Typography color="textSecondary">
+    <Typography>
       I vanliga JavaScript-variabler försvinner data så fort en funktion körs om. State är komponentens eget minne. När du använder{' '}
       <code>const [count, setCount] = useState(0)</code> ber du React att spara ett värde och komma ihåg det, även när komponenten ritas om.
     </Typography>
 
-    <Typography color="textSecondary">
+    <Typography>
       Det absolut viktigaste att förstå med state är att det fungerar som en ögonblicksbild — ett foto. När React ritar upp din vy låser den värdet
       för just den ritningen. Om <code>count</code> är 0, är den 0 under exakt hela det rendret.
     </Typography>
 
-    <Typography color="textSecondary">
+    <Typography>
       När du anropar <code>setCount(count + 1)</code> ändrar du alltså inte variabeln <code>count</code> magiskt på stället. I stället lägger du en
       beställning hos React: &quot;nästa gång du ritar om vyn, låt värdet vara 1&quot;.
     </Typography>
 
-    <Typography color="textSecondary">
+    <Typography>
       Eftersom state är en ögonblicksbild kan du inte anropa <code>setCount(count + 1)</code> tre gånger på rad och förvänta dig att siffran ökar med
       tre. Eftersom <code>count</code> är 0 i det nuvarande fotot säger alla tre anropen exakt samma sak: &quot;sätt nästa värde till 0 + 1&quot;. Att
       React dessutom samlar ihop alla dessa beställningar och bara gör en enda omrendering kallas för <strong>batching</strong>.
     </Typography>
 
-    <Typography color="textSecondary">
+    <Typography>
       <strong>Regeln att ta med sig:</strong> om ditt nya värde beror på det gamla — som när du plussar på en räknare — skicka in en funktion i
       stället: <code>setCount(c =&gt; c + 1)</code>. Den kallas en <em>updater function</em>, och med den utgår React från det senaste värdet i kön i
       stället för från värdet i den frysta ögonblicksbilden. Det spelar roll när du gör <strong>flera uppdateringar i samma händelse</strong> — för
