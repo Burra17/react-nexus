@@ -18,6 +18,7 @@ import { Suspense, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { navItems } from '../navigation';
 import { DelayedProgress } from '../shared/components/delayedProgress';
+import { ScrollToTop } from '../shared/components/scrollToTop';
 
 const openWidth = 240;
 const closedWidth = 64;
@@ -74,6 +75,14 @@ export const PageTemplate = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Utan den här följer scrollpositionen med mellan vyer: läser man halvvägs
+          ner i en modul och klickar på nästa hamnar man mitt i den, utan
+          sammanhang. React Router scrollar inte till toppen av sig själv.
+
+          Den gör bara det, ingenting mer. Bakåt, framåt och ankarlänkar lämnas
+          orörda - de fungerar redan, och skälen står i komponenten. Se #71. */}
+      <ScrollToTop />
+
       <AppBar
         position="fixed"
         color="default"
