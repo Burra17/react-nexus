@@ -83,9 +83,25 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
         Kod
       </Typography>
       {/* Flera filer, eftersom en demo ofta är en komponent plus en hook.
-          Källkoden läses med ?raw ur de riktiga filerna - se CLAUDE.md. */}
-      {sources.map((source) => (
-        <CodeBlock key={source.fileName} code={source.code} language={source.language} fileName={source.fileName} highlight={source.highlight} />
+          Källkoden läses med ?raw ur de riktiga filerna - se CLAUDE.md.
+
+          Ordningen i sources är en prioritering: första filen är huvudfilen och
+          visar sin kod, resten fälls ihop till en rad med filnamnet. Utan det är
+          Kod-delen nästan halva sidan, och den som vill nå quizen får scrolla
+          förbi varenda fil för att komma dit.
+
+          Hopfällt och inte flikar, eftersom poängen ofta är att jämföra två
+          filer - batchingDemo mot snapshotDemo. Flikar visar en i taget och
+          tvingar läsaren att hålla den förra koden i huvudet. */}
+      {sources.map((source, index) => (
+        <CodeBlock
+          key={source.fileName}
+          code={source.code}
+          language={source.language}
+          fileName={source.fileName}
+          highlight={source.highlight}
+          startCollapsed={index > 0}
+        />
       ))}
     </Stack>
 

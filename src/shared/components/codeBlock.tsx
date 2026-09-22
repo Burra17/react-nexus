@@ -44,6 +44,12 @@ type CodeBlockProps = {
   // radnummer är en kopia av samma sort: flyttas raden pekar det tyst på fel
   // rad. Ett textfragment följer med raden det hör till.
   highlight?: string[];
+  // Stycket börjar helt hopfällt, oavsett hur kort filen är.
+  //
+  // Sätts på sidans sekundära filer. Tröskeln nedan mäter en fil i taget, men
+  // det är summan som bygger väggen: tre filer som var för sig ryms under
+  // tröskeln blir ändå längre än allt annat på sidan tillsammans.
+  startCollapsed?: boolean;
 };
 
 // Längre filer fälls ihop. Utan gränsen trycker en demo på åttio rader ner
@@ -76,18 +82,32 @@ const findHighlightedLines = (code: string, fragments: string[], fileName?: stri
   return highlighted;
 };
 
-export const CodeBlock = ({ code, language, fileName, highlight = [] }: CodeBlockProps) => {
+export const CodeBlock = ({ code, language, fileName, highlight = [], startCollapsed = false }: CodeBlockProps) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const lineCount = code.trimEnd().split('\n').length;
-  const isCollapsible = lineCount > COLLAPSE_AFTER_LINES;
+  const isCollapsible = startCollapsed || lineCount > COLLAPSE_AFTER_LINES;
 
   const highlightedLines = findHighlightedLines(code, highlight, fileName);
 
   // Ligger en markerad rad under vikningen börjar stycket utfällt. Att gömma
   // just den rad som är poängen vore fel, inte en inställning.
   const pointIsBelowFold = [...highlightedLines].some((line) => line > COLLAPSE_AFTER_LINES);
-  const [isExpanded, setIsExpanded] = useState(!isCollapsible || pointIsBelowFold);
+
+  // startCollapsed väger tyngre än markeringen ovan, och det är ett medvetet
+  // val: varje källfil i repot har markerade rader, även de sekundära, så en
+  // regel där markeringen vinner skulle inte fälla ihop någonting alls.
+  //
+  // De två säger inte samma sak. highlight pekar ut de viktiga raderna inuti en
+  // fil; ordningen i sources pekar ut den viktiga filen på sidan. Markeringarna
+  // försvinner inte - de syns så fort stycket öppnas.
+  const [isExpanded, setIsExpanded] = useState(!startCollapsed && (!isCollapsible || pointIsBelowFold));
+
+  // Hopfällt betyder två olika saker. Ett sekundärt stycke visar ingen kod alls,
+  // bara filnamnet i listen - det är hela poängen med att fälla ihop det. En
+  // lång huvudfil visar fortfarande sina första rader, så att sidan inte blir
+  // en rad med stängda lådor där man skulle läst koden.
+  const showsNoCode = startCollapsed && !isExpanded;
 
   // Båda temana renderas samtidigt, som CSS-variabler på varje span.
   // Alternativet vore att färglägga om vid lägesbyte, vilket skulle rendera om
@@ -144,56 +164,67 @@ export const CodeBlock = ({ code, language, fileName, highlight = [] }: CodeBloc
         </Tooltip>
       </Box>
 
-      <Box
-        sx={(theme) => ({
-          // Shiki lägger ut färgerna som --shiki-light och --shiki-dark på varje
-          // span. Här väljs vilken av dem som gäller - ren CSS, ingen omrendering.
-          '& .shiki, & .shiki span': { color: 'var(--shiki-light)' },
-          '& .shiki': { backgroundColor: 'var(--shiki-light-bg)' },
+      {/* Ett stycke som inte visar någon kod renderas inte alls, i stället för
+          att klippas bort med CSS. Överflödet som göms med overflow: hidden
+          läses fortfarande upp av en skärmläsare, och koden vore då hopfälld
+          för den som ser och utfälld för den som lyssnar. */}
+      {!showsNoCode && (
+        <Box
+          sx={(theme) => ({
+            // Shiki lägger ut färgerna som --shiki-light och --shiki-dark på varje
+            // span. Här väljs vilken av dem som gäller - ren CSS, ingen omrendering.
+            '& .shiki, & .shiki span': { color: 'var(--shiki-light)' },
+            '& .shiki': { backgroundColor: 'var(--shiki-light-bg)' },
 
-          ...theme.applyStyles('dark', {
-            '& .shiki, & .shiki span': { color: 'var(--shiki-dark)' },
-            '& .shiki': { backgroundColor: 'var(--shiki-dark-bg)' },
-          }),
+            ...theme.applyStyles('dark', {
+              '& .shiki, & .shiki span': { color: 'var(--shiki-dark)' },
+              '& .shiki': { backgroundColor: 'var(--shiki-dark-bg)' },
+            }),
 
-          // Ihopfälld höjd räknas ur radhöjden, så att snittet hamnar mellan två
-          // rader i stället för mitt i en.
-          maxHeight: isExpanded ? 'none' : `calc(${COLLAPSE_AFTER_LINES} * 0.875rem * 1.7 + ${theme.spacing(4)})`,
-          overflow: 'hidden',
+            // Ihopfälld höjd räknas ur radhöjden, så att snittet hamnar mellan två
+            // rader i stället för mitt i en.
+            maxHeight: isExpanded ? 'none' : `calc(${COLLAPSE_AFTER_LINES} * 0.875rem * 1.7 + ${theme.spacing(4)})`,
+            overflow: 'hidden',
 
-          '& pre': { margin: 0, padding: theme.spacing(2), overflowX: 'auto' },
-          '& code': {
-            // Grid gör varje rad till ett block över hela bredden, så att en
-            // markerad rad får bakgrund hela vägen ut och inte bara bakom texten.
-            display: 'grid',
-            fontFamily: monoFontFamily,
-            fontSize: '0.875rem',
-            lineHeight: 1.7,
-          },
+            '& pre': { margin: 0, padding: theme.spacing(2), overflowX: 'auto' },
+            '& code': {
+              // Grid gör varje rad till ett block över hela bredden, så att en
+              // markerad rad får bakgrund hela vägen ut och inte bara bakom texten.
+              display: 'grid',
+              fontFamily: monoFontFamily,
+              fontSize: '0.875rem',
+              lineHeight: 1.7,
+            },
 
-          '& .markerad-rad': {
-            // mainChannel är accentfärgen som "R G B" utan alfa, vilket är hur
-            // man blandar in genomskinlighet när paletten är CSS-variabler.
-            backgroundColor: `rgba(${theme.vars.palette.primary.mainChannel} / 0.14)`,
-            boxShadow: `inset 3px 0 0 ${theme.vars.palette.primary.main}`,
-            marginInline: theme.spacing(-2),
-            paddingInline: theme.spacing(2),
-          },
-        })}
-      >
-        {/* Shiki returnerar färdig HTML. Innehållet är vår egen källkod, aldrig
-            något som kommer utifrån. */}
-        <div dangerouslySetInnerHTML={{ __html: html }} />
-      </Box>
+            '& .markerad-rad': {
+              // mainChannel är accentfärgen som "R G B" utan alfa, vilket är hur
+              // man blandar in genomskinlighet när paletten är CSS-variabler.
+              backgroundColor: `rgba(${theme.vars.palette.primary.mainChannel} / 0.14)`,
+              boxShadow: `inset 3px 0 0 ${theme.vars.palette.primary.main}`,
+              marginInline: theme.spacing(-2),
+              paddingInline: theme.spacing(2),
+            },
+          })}
+        >
+          {/* Shiki returnerar färdig HTML. Innehållet är vår egen källkod, aldrig
+              något som kommer utifrån. */}
+          <div dangerouslySetInnerHTML={{ __html: html }} />
+        </Box>
+      )}
 
       {isCollapsible && (
         <Button
           fullWidth
           size="small"
           onClick={() => setIsExpanded(!isExpanded)}
-          sx={{ borderTop: 1, borderColor: 'divider', borderRadius: 0, py: 1 }}
+          aria-expanded={isExpanded}
+          sx={{ borderTop: showsNoCode ? 0 : 1, borderColor: 'divider', borderRadius: 0, py: 1 }}
         >
-          {isExpanded ? 'Visa mindre' : `Visa hela filen (${lineCount} rader)`}
+          {/* Radantalet står i knappen och filnamnet i listen ovanför, så ett
+              hopfällt stycke säger vad det innehåller utan att visa det.
+              "Visa hela filen" vore fel när ingen kod syns - då visas den inte
+              i sin helhet, den visas alls. */}
+          {isExpanded ? 'Visa mindre' : `${showsNoCode ? 'Visa koden' : 'Visa hela filen'} (${lineCount} rader)`}
         </Button>
       )}
     </Paper>
