@@ -1,0 +1,64 @@
+name: CI
+
+# PR-körningen är grinden. Push-körningen behövs inte för att granska koden -
+# den ger main ett eget facit i historiken, så att en commit som ändå tagit sig
+# förbi grinden syns som röd i efterhand i stället för att passera obemärkt.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Jobbet läser kod och ska inte kunna göra något annat. Utan raden ärver
+# GITHUB_TOKEN repots standardrättigheter, som kan innefatta skrivning.
+permissions:
+  contents: read
+
+# Pushar man tre rättningar på en minut är de två första körningarna redan
+# ointressanta. På main avbryts ingenting: där är varje körning ett facit på att
+# grenen var hel vid den commiten, och en avbruten körning lämnar ett hål.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Jobbets id är strängen branch protection pekar på. Inget name: här - med två
+  # fält kan de säga emot varandra, och då rapporterar checken under ett namn som
+  # skyddet inte känner igen. Det ser ut som att allt blockeras utan orsak.
+  kontroller:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node-versionen läses ur .nvmrc i stället för att skrivas här. Samma siffra
+      # på två ställen synkas för hand tills någon glömmer.
+      #
+      # Actions är pinnade till major-tagg, inte till commit-sha. Repot har inga
+      # secrets och ingen deploy, så det finns inget att exfiltrera. Omprövas den
+      # dag CD införs, för då finns publiceringsrättigheter att missbruka.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      # --frozen-lockfile: utan den får CI tyst skriva om yarn.lock när den inte
+      # matchar package.json, och bygger då något annat än det du har lokalt.
+      - name: Installera beroenden
+        run: yarn install --frozen-lockfile
+
+      # Stegen står snabbast först, så att det billigaste felet syns först.
+      - name: Format
+        run: yarn format:check
+
+      # !cancelled() gör att steget körs även när ett tidigare fallit. Utan det
+      # stannar jobbet vid första felet, och ett formatfel döljer ett lintfel
+      # till nästa push - två varv för något som syns i ett.
+      - name: Lint
+        if: '!cancelled()'
+        run: yarn lint
+
+      # build kör tsc -b före Vite-bygget, alltså typkontroll och bygge i ett.
+      - name: Bygg
+        if: '!cancelled()'
+        run: yarn build

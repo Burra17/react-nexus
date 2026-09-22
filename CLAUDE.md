@@ -22,6 +22,12 @@ Pakethanteraren är yarn. Kör aldrig npm install här: det skapar en package-lo
 
 yarn build kör tsc -b före Vite-bygget och är den riktiga kvalitetsgrinden: TypeScript-reglerna nedan ger byggfel, inte varningar. Kör den innan varje PR. Att yarn dev startar utan att klaga betyder inte att koden kompilerar.
 
+Tre kommandon granskar koden, och CI kör exakt samma tre på varje PR: `yarn format:check`, `yarn lint` och `yarn build`. Kör dem lokalt först — en röd check ska aldrig vara något du måste öppna en logg för att förstå.
+
+yarn format och yarn format:check är inte samma sak. Den första skriver om filerna, den andra rapporterar bara. CI använder den andra, eftersom ett kommando som rättar tyst alltid rapporterar grönt och därmed inte kontrollerar någonting.
+
+yarn lint kör med --max-warnings=0, så en varning stoppar bygget precis som ett fel. Det gäller särskilt react-hooks/exhaustive-deps, som annars bara viftar med handen åt en ofullständig beroendelista. Demonstrationskod som med flit bryter mot en regel märks med eslint-disable-next-line, på samma rad som den kommentar som ändå ska förklara att koden är avsiktligt felaktig.
+
 ## Arkitektur
 
 ```text
@@ -228,7 +234,10 @@ git checkout -b feature/<ticketnummer>
 
 - Commits på svenska, alla inom samma ticket
 - PR med Closes #<ticketnummer> i beskrivningen så att ticketen stängs vid merge
+- CI-checken kontroller måste vara grön — en röd PR går inte att merga
 - Merga och dra ticketen till Done
+
+Grinden gäller alla, även den som äger repot. Går checken sönder av något annat än koden går ingenting att merga förrän det är löst, och det är avsiktligt: en grind man kan kliva över är ingen grind.
 
 En PR håller sig till en ticket. Dyker något annat upp på vägen blir det en ny ticket, inte en extra fil i den här PR:en.
 
