@@ -43,6 +43,7 @@ src/
   services/              infrastruktur för hela appen — HTTP, lagring, allt utanför React
     api/                 anropen mot API:et, och typerna för svaren
     axios/               konfigurerad Axios-instans
+    storage/             enda vägen till localStorage, och nyckelkatalogen
   shared/
     components/          komponenter som används av flera moduler
     forms/               formulärkomponenter (React Hook Form)
