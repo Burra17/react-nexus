@@ -10,7 +10,7 @@ import SpeedOutlined from '@mui/icons-material/SpeedOutlined';
 import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
-import { RenderingPage, StatePage } from './lazyPages';
+import { EffectsPage, RenderingPage, StatePage } from './lazyPages';
 
 export type AppModule = {
   path: string;
@@ -51,6 +51,7 @@ export const appModules: AppModule[] = [
     label: 'Effects',
     description: 'useEffect, beroendelistan, cleanup och varför StrictMode kör den två gånger.',
     icon: <BoltOutlined />,
+    element: <EffectsPage />,
   },
   {
     path: '/typescript',

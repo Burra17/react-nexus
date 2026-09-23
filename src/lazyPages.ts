@@ -16,3 +16,5 @@ import { lazy } from 'react';
 export const StatePage = lazy(() => import('./modules/state/pages/statePage').then((imported) => ({ default: imported.StatePage })));
 
 export const RenderingPage = lazy(() => import('./modules/rendering/pages/renderingPage').then((imported) => ({ default: imported.RenderingPage })));
+
+export const EffectsPage = lazy(() => import('./modules/effects/pages/effectsPage').then((imported) => ({ default: imported.EffectsPage })));
