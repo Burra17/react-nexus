@@ -2,13 +2,10 @@ import type { QuizQuestion } from '../../shared/components/quiz';
 
 // Kunskapskontrollen för modulen om effekter.
 //
-// Två frågor i den här omgången, inte tre. Spannet är två till fyra, och den
-// tredje hör till kapplöpningen som byggs i #78 - en fråga om något vyn ännu
-// inte visar hade testat på material läsaren inte fått.
-//
-// De två träffar varsin poäng: ordningen mellan städning och uppsättning när
-// ett beroende ändras, och vad en effekt kostar när den sätter ett värde som
-// gick att räkna fram.
+// Tre frågor som träffar varsin poäng: ordningen mellan städning och
+// uppsättning när ett beroende ändras, vad en effekt kostar när den sätter ett
+// värde som gick att räkna fram, och vad städningen faktiskt hindrar när ett
+// gammalt svar kommer tillbaka.
 //
 // Kodfragment markeras med backticks, som i Markdown. Se stateQuestions.ts.
 export const effectsQuestions: QuizQuestion[] = [
@@ -60,6 +57,32 @@ export const effectsQuestions: QuizQuestion[] = [
         text: 'Bara första gången, sedan känner React igen värdet och hoppar över',
         explanation:
           'React jämför inte vad du skickar till en setter mot vad du skulle ha räknat fram. Effekten körs om varje gång ett beroende ändras, och sätter state varje gång.',
+      },
+    ],
+  },
+  {
+    id: 'ignore-flaggan-vid-kapplopning',
+    question:
+      'En effekt hämtar data och sätter `ignore = true` i sin städfunktion. Du byter användare medan den första hämtningen fortfarande pågår. Vad gör flaggan?',
+    correct: 'b',
+    options: [
+      {
+        id: 'a',
+        text: 'Den avbryter den första hämtningen, så att svaret aldrig kommer',
+        explanation:
+          'Ett anrop som redan lämnat klienten går inte att ta tillbaka med en variabel. Svaret kommer fram precis som vanligt - flaggan avgör bara vad som händer sedan. Vill man verkligen avbryta krävs `AbortController`.',
+      },
+      {
+        id: 'b',
+        text: 'Svaret kommer fram, men får inte skriva till state',
+        explanation:
+          'Städningen körde innan den nya hämtningen startade och satte den gamla körningens flagga. När det gamla svaret till slut dyker upp ser det flaggan och lämnar state orört.',
+      },
+      {
+        id: 'c',
+        text: 'Ingenting - React håller själv ordning på vilket svar som är det senaste',
+        explanation:
+          'React vet ingenting om dina löften. Utan flaggan skriver varje svar till state i den ordning det råkar komma fram, och ett långsamt svar vinner över ett snabbt bara för att det kom sist.',
       },
     ],
   },
