@@ -6,7 +6,11 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useRef } from 'react';
 import { monoFontFamily } from '../../../styles/theme';
 
-// Vad raden beskriver: att effekten satte upp något, eller att den städade.
+// Vad raden beskriver.
+//
+// SETUP och CLEANUP är effektens två halvor och används av alla demos.
+// RESOLVE och IGNORED hör till hämtningen: ett svar som kom tillbaka, och ett
+// svar som städningen hann märka som inaktuellt innan det fick skriva något.
 //
 // Engelska termer i en svensk app, med flit. De står ordagrant så i react.dev,
 // och den som slår upp konceptet vidare ska känna igen orden.
@@ -14,7 +18,7 @@ import { monoFontFamily } from '../../../styles/theme';
 // En ren union och ingen as const-array: filen exporterar en komponent, och
 // Fast Refresh slutar fungera för en fil som också exporterar värden. En
 // typ-export räknas inte, eftersom den försvinner vid kompileringen.
-export type LogKind = 'SETUP' | 'CLEANUP';
+export type LogKind = 'SETUP' | 'CLEANUP' | 'RESOLVE' | 'IGNORED';
 
 export type LogEntry = {
   id: number;
@@ -30,9 +34,15 @@ type EffectLogProps = {
 // Prefixet bär informationen, färgen förstärker den bara. Den som inte skiljer
 // grönt från orange läser fortfarande [SETUP] och [CLEANUP] - status ska aldrig
 // sitta enbart i en färg.
+//
+// IGNORED är dämpad och inte röd. Ett bortkastat svar är resultatet av att
+// städningen gjorde sitt jobb, alltså goda nyheter - en felfärg hade läst som
+// att något gick sönder.
 const kindColor: Record<LogKind, string> = {
   SETUP: 'success.main',
   CLEANUP: 'warning.main',
+  RESOLVE: 'info.main',
+  IGNORED: 'text.secondary',
 };
 
 // Loggpanelen som visar effektens körningar i den ordning de skedde.

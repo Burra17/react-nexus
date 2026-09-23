@@ -4,6 +4,8 @@ import { ConceptTemplate } from '../../../templates/conceptTemplate';
 import { EffectLifecycleDemo } from '../components/effectLifecycleDemo';
 import effectLifecycleSource from '../components/effectLifecycleDemo.tsx?raw';
 import effectLogSource from '../components/effectLog.tsx?raw';
+import { RaceConditionDemo } from '../components/raceConditionDemo';
+import raceConditionSource from '../components/raceConditionDemo.tsx?raw';
 import { UnnecessaryEffectDemo } from '../components/unnecessaryEffectDemo';
 import unnecessaryEffectSource from '../components/unnecessaryEffectDemo.tsx?raw';
 import { effectsQuestions } from '../effectsQuestions';
@@ -38,10 +40,25 @@ const Theory = () => (
     </Typography>
 
     <Typography>
-      <strong>Regeln att ta med sig:</strong> de flesta effekter du skriver behöver inte finnas. En effekt är till för att synkronisera med något
-      utanför React. Ska du räkna fram ett värde ur props eller state — gör det under renderingen. Ska något hända när någon klickar — lägg det i
+      <strong>Det viktigaste:</strong> de flesta effekter du skriver behöver inte finnas. En effekt är till för att synkronisera med något utanför
+      React. Ska du räkna fram ett värde ur props eller state — gör det under renderingen. Ska något hända när någon klickar — lägg det i
       klickhanteraren. Är beräkningen dyr — <code>useMemo</code>. Ska ett barn börja om när en prop ändras — ge det en <code>key</code>. Lägger du ett
       härlett värde i state kostar det en omritning extra, och du har skapat något som kan hamna i otakt med det som det räknades fram ur.
+    </Typography>
+
+    <Typography>
+      Kvar blir de fall där en effekt verkligen behövs, och datahämtning är det svåraste av dem. Byter du användare medan en hämtning pågår startar en
+      andra hämtning innan den första svarat, och kommer det gamla svaret sist skriver det över det nya. Skärmen visar då data som hör till något du
+      inte längre tittar på. Ingenting kraschar och inget felmeddelande syns — det är därför felet är så lätt att missa. Botemedlet står i
+      städfunktionen: en flagga som varje körning äger själv, och som säger åt ett svar som hunnit bli inaktuellt att lämna state i fred. Anropet går
+      inte att ta tillbaka, men resultatet går att kasta.
+    </Typography>
+
+    <Typography>
+      <strong>Regeln att ta med sig:</strong> flaggan löser kapplöpningen, men ingenting annat. Hämtar två komponenter samma sak blir det två anrop.
+      Lämnar du vyn och kommer tillbaka hämtas allt igen, eftersom ingenting sparades. Och varje ny hämtning i appen kräver sitt eget laddningsläge,
+      sitt eget felläge och samma flagga en gång till. Det är därför react.dev själva avråder från att hämta direkt i en effekt och pekar på ett
+      bibliotek som håller en cache — här TanStack Query, som är hela modul 7. Det du bygger för hand i demon nedan är precis det den tar över.
     </Typography>
   </>
 );
@@ -65,6 +82,13 @@ export const EffectsPage = () => (
           </Typography>
           <UnnecessaryEffectDemo />
         </Stack>
+
+        <Stack spacing={1}>
+          <Typography variant="h3" component="h3">
+            3. När hämtningen springer om sig själv
+          </Typography>
+          <RaceConditionDemo />
+        </Stack>
       </Stack>
     }
     sources={[
@@ -83,6 +107,14 @@ export const EffectsPage = () => (
         // De två raderna som är hela jämförelsen: värdet i state mot värdet
         // framräknat under renderingen.
         highlight: ['// FEL:', '// RÄTT:'],
+      },
+      {
+        fileName: 'src/modules/effects/components/raceConditionDemo.tsx',
+        code: raceConditionSource,
+        language: 'tsx',
+        // Raden som skriver ett svar utan att fråga om det fortfarande gäller,
+        // raden som kastar det i stället, och flaggan de båda hänger på.
+        highlight: ['// FEL:', '// RÄTT:', 'let ignore = false;'],
       },
       {
         fileName: 'src/modules/effects/components/effectLog.tsx',
