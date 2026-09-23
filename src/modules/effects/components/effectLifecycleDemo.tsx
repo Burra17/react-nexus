@@ -103,6 +103,32 @@ export const EffectLifecycleDemo = () => {
       )}
 
       <EffectLog entries={entries} onClear={clearEntries} />
+
+      {/* Vad monteringen ger för rader, och varför det inte är samma sak i de
+          två lägena.
+
+          Teorin ovanför beskriver dubbelkörningen som tre rader. I ett byggt
+          projekt blir det en, eftersom StrictMode monterar om komponenter bara
+          i utvecklingsläge. Utan den här raden läser man en förklaring och ser
+          en demo som visar något annat, och drar slutsatsen att man klickat
+          fel.
+
+          Paret städning och uppsättning går ändå att se: knapparna ovan gör
+          samma sak för hand, i båda lägena. */}
+      <Typography variant="body2" color="textSecondary">
+        {import.meta.env.DEV ? (
+          <>
+            Monteringen ger tre rader, inte en. StrictMode monterar om komponenten en gång i utvecklingsläge, så uppsättningen körs, städas och körs
+            igen — ett test av att effekten tål att köras om.
+          </>
+        ) : (
+          <>
+            Monteringen ger en enda rad här. Kör du appen lokalt ger den tre: StrictMode monterar då om komponenten en gång, så att uppsättningen
+            körs, städas och körs igen. Det är ett utvecklingsverktyg och finns inte i ett byggt projekt. Klicka avmontera och sedan montera igen, så
+            får du exakt samma tre rader — det enda som skiljer är att du gör om monteringen för hand i stället för att React gör den åt dig.
+          </>
+        )}
+      </Typography>
     </Stack>
   );
 };

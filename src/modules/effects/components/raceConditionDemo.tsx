@@ -192,11 +192,26 @@ export const RaceConditionDemo = () => {
       <EffectLog entries={entries} onClear={clearEntries} />
 
       {/* Noten står under loggen och inte i instruktionen överst: den handlar om
-          något man ser i loggen efteråt, inte om något man ska göra. */}
+          något man ser i loggen efteråt, inte om något man ska göra.
+
+          Två versioner, eftersom StrictMode bara monterar om i utvecklingsläge.
+          Lokalt startar monteringen två hämtningar, i ett byggt projekt en. Den
+          som läser måste få veta vilket av fallen hon tittar på - annars
+          beskriver noten en logg som inte står på skärmen. */}
       <Typography variant="body2" color="textSecondary">
-        Loggen börjar med två hämtningar av samma person. Det är StrictMode som monterar om komponenten en gång i utvecklingsläge, precis som i demo 1
-        — och utan städning slår båda svaren igenom till state. Med städningen påslagen kastas det första, som en kapplöpning i miniatyr redan innan
-        du hunnit klicka.
+        {import.meta.env.DEV ? (
+          <>
+            Loggen börjar med två hämtningar av samma person. Det är StrictMode som monterar om komponenten en gång i utvecklingsläge, precis som i
+            demo 1 — och utan städning slår båda svaren igenom till state. Med städningen påslagen kastas det första, som en kapplöpning i miniatyr
+            redan innan du hunnit klicka.
+          </>
+        ) : (
+          <>
+            Loggen börjar med en enda hämtning. Kör du appen lokalt börjar den med två, eftersom StrictMode monterar om komponenten en gång i
+            utvecklingsläge — och utan städning slår båda svaren igenom till state. Det är en kapplöpning i miniatyr, framkallad av React självt. Här
+            får du framkalla den med knapparna ovan i stället.
+          </>
+        )}
       </Typography>
     </Stack>
   );
