@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { accent, onAccent, status, surface, text } from './colors';
+import { accent, codeSurface, onAccent, status, surface, text } from './colors';
 
 // Säger till TypeScript att temat har CSS-variabler påslagna.
 //
@@ -78,7 +78,9 @@ export const theme = createTheme({
 
   components: {
     MuiCssBaseline: {
-      styleOverrides: {
+      // En funktion och inte ett objekt, eftersom regeln för inline-kod längre
+      // ner behöver theme.applyStyles för att ge mörkt läge en egen platta.
+      styleOverrides: (theme) => ({
         // Plats för rullningslisten reserveras alltid, även på sidor som ryms
         // utan den. Annars krymper ytan när listen dyker upp, och allt
         // centrerat innehåll hoppar en halv listbredd i sidled vid varje
@@ -100,7 +102,45 @@ export const theme = createTheme({
         // kodblock behandlas lika. Sätts den per vy ser den elfte inte ut som
         // den första.
         'code, pre': { fontFamily: monoFontFamily, fontVariantLigatures: 'none' },
-      },
+
+        // Inline-kod får en svag platta, så att den syns utan att läsas.
+        //
+        // Före det här skilde sig ett kodfragment från brödtexten bara genom
+        // bokstavsformerna: ingen bakgrund, ingen padding, samma 16 px. I en
+        // lärobok är inline-kod inte dekoration utan namn på det demon strax
+        // visar, och skillnaden mellan ordet nyckel och API:et key ska synas
+        // när man ögnar ett stycke.
+        //
+        // :not(pre code) håller kodblocken utanför. Shiki renderar
+        // <pre class="shiki"><code>, så en regel på code ensamt hade lagt en
+        // platta bakom varje rad i varje kodblock, ovanpå Shikis egen bakgrund.
+        // Selektorn väljs framför att sätta stilen och nollställa den på
+        // pre code: den säger vad den menar, och nästa person behöver inte
+        // läsa två regler för att veta vad som gäller.
+        //
+        // em och inte rem, så att storleken följer sitt sammanhang och stämmer
+        // även i en rubrik eller i quizens svarsalternativ. JetBrains Mono har
+        // stor x-höjd och ser större ut än Inter vid samma pixelvärde, så 0.875
+        // gör att fragmentet slutar spränga radrytmen. Med plattans padding tar
+        // det ändå ungefär lika stor plats som förut.
+        //
+        // box-decoration-break: clone gäller fragment som bryts över ett
+        // radslut - utan den får den första halvan en öppen högerkant och ser
+        // trasig ut i stället för avsiktlig. Alternativet white-space: nowrap
+        // valdes bort: det tvingar fram horisontell rullning på mobil, vilket
+        // är ett sämre fel än ett delat hörn. Se #81.
+        'code:not(pre code)': {
+          fontSize: '0.875em',
+          padding: '0.15em 0.4em',
+          // 4 och inte temats 8: en platta på en enda textrad ser utsvälld ut
+          // med kortens radie.
+          borderRadius: 4,
+          backgroundColor: codeSurface.light,
+          WebkitBoxDecorationBreak: 'clone',
+          boxDecorationBreak: 'clone',
+          ...theme.applyStyles('dark', { backgroundColor: codeSurface.dark }),
+        },
+      }),
     },
   },
 });
