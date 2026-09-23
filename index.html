@@ -4,7 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>react-nexus</title>
+
+    <!-- Titeln och beskrivningen står här och inte bara i React, eftersom
+         crawlers aldrig kör JavaScript. Google, Slack och LinkedIn ser bara den
+         HTML servern skickar, och där är <body> tom så länge appen inte startat.
+
+         Grundtiteln finns också som SITE_TITLE i useDocumentTitle, som sätter
+         den för besökare som redan har appen igång. Se #88. -->
+    <title>React Nexus – Interaktiv lärobok om React &amp; TypeScript</title>
+    <meta
+      name="description"
+      content="En interaktiv lärobok om React och TypeScript. Varje koncept får teori, en demo du klickar på, källkoden bakom den och en kunskapskontroll."
+    />
   </head>
   <body>
     <div id="root"></div>

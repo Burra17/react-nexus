@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import { appModules, isBuilt, type AppModule } from '../modules';
 import { ReadableColumn } from '../shared/components/readableColumn';
+import { useDocumentTitle } from '../shared/hooks/useDocumentTitle';
 
 // Kortets innehåll är detsamma vare sig modulen går att klicka på eller inte.
 // Bara skalet runt omkring skiljer, så innehållet skrivs en gång.
@@ -48,56 +49,63 @@ const ModuleCardContent = ({ module }: { module: AppModule }) => {
 
 // Kartan över appen: varje koncept som ett kort, byggda som planerade.
 // Listan kommer ur modules.tsx, samma källa som sidomenyn och routern läser.
-export const StartPage = () => (
-  <Stack spacing={3}>
-    <Box>
-      <Typography variant="h1" gutterBottom>
-        React Nexus
-      </Typography>
-      <ReadableColumn>
-        <Typography color="textSecondary">
-          En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får fyra delar: teorin bakom det, en demo att klicka på, koden som
-          driver demon, och några frågor som kontrollerar att det fastnade. De planerade korten går ännu inte att öppna.
+export const StartPage = () => {
+  // Utan argument sätts grundtiteln. Startsidan måste sätta den aktivt, inte
+  // förlita sig på den som står i index.html: document.title är global, och
+  // kommer man hit från en modul står modulens titel kvar annars.
+  useDocumentTitle();
+
+  return (
+    <Stack spacing={3}>
+      <Box>
+        <Typography variant="h1" gutterBottom>
+          React Nexus
         </Typography>
-      </ReadableColumn>
-    </Box>
+        <ReadableColumn>
+          <Typography color="textSecondary">
+            En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får fyra delar: teorin bakom det, en demo att klicka på, koden
+            som driver demon, och några frågor som kontrollerar att det fastnade. De planerade korten går ännu inte att öppna.
+          </Typography>
+        </ReadableColumn>
+      </Box>
 
-    <Grid container spacing={2}>
-      {appModules.map((module) => (
-        <Grid key={module.path} size={{ xs: 12, sm: 6, md: 4 }}>
-          <Card
-            variant="outlined"
-            sx={(theme) => ({
-              height: '100%',
-              // Streckad kant på det som inte är byggt. En signal till som inte
-              // är färg, för den som inte uppfattar skillnaden mellan chiparna.
-              borderStyle: isBuilt(module) ? 'solid' : 'dashed',
+      <Grid container spacing={2}>
+        {appModules.map((module) => (
+          <Grid key={module.path} size={{ xs: 12, sm: 6, md: 4 }}>
+            <Card
+              variant="outlined"
+              sx={(theme) => ({
+                height: '100%',
+                // Streckad kant på det som inte är byggt. En signal till som inte
+                // är färg, för den som inte uppfattar skillnaden mellan chiparna.
+                borderStyle: isBuilt(module) ? 'solid' : 'dashed',
 
-              // Bara byggda kort svarar på pekaren. Ett planerat kort som rörde
-              // sig skulle lova något det inte kan hålla.
-              ...(isBuilt(module) && {
-                transition: theme.transitions.create(['border-color', 'transform'], { duration: 150 }),
-                '&:hover': { borderColor: 'primary.main', transform: 'translateY(-1px)' },
+                // Bara byggda kort svarar på pekaren. Ett planerat kort som rörde
+                // sig skulle lova något det inte kan hålla.
+                ...(isBuilt(module) && {
+                  transition: theme.transitions.create(['border-color', 'transform'], { duration: 150 }),
+                  '&:hover': { borderColor: 'primary.main', transform: 'translateY(-1px)' },
 
-                // Den som bett operativsystemet om mindre rörelse får kantfärgen
-                // men inget lyft. Signalen finns kvar, rörelsen försvinner.
-                '@media (prefers-reduced-motion: reduce)': {
-                  transition: theme.transitions.create('border-color', { duration: 150 }),
-                  '&:hover': { transform: 'none' },
-                },
-              }),
-            })}
-          >
-            {isBuilt(module) ? (
-              <CardActionArea component={Link} to={module.path} sx={{ height: '100%' }}>
+                  // Den som bett operativsystemet om mindre rörelse får kantfärgen
+                  // men inget lyft. Signalen finns kvar, rörelsen försvinner.
+                  '@media (prefers-reduced-motion: reduce)': {
+                    transition: theme.transitions.create('border-color', { duration: 150 }),
+                    '&:hover': { transform: 'none' },
+                  },
+                }),
+              })}
+            >
+              {isBuilt(module) ? (
+                <CardActionArea component={Link} to={module.path} sx={{ height: '100%' }}>
+                  <ModuleCardContent module={module} />
+                </CardActionArea>
+              ) : (
                 <ModuleCardContent module={module} />
-              </CardActionArea>
-            ) : (
-              <ModuleCardContent module={module} />
-            )}
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-  </Stack>
-);
+              )}
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Stack>
+  );
+};

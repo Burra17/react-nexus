@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { CodeBlock, type CodeLanguage } from '../shared/components/codeBlock';
 import { ModuleNav } from '../shared/components/moduleNav';
 import { Quiz, type QuizQuestion } from '../shared/components/quiz';
+import { useDocumentTitle } from '../shared/hooks/useDocumentTitle';
 import { ReadableColumn } from '../shared/components/readableColumn';
 import { SECTION_SCROLL_MARGIN, sectionIds } from '../shared/components/conceptSections';
 import { SectionNav } from '../shared/components/sectionNav';
@@ -39,23 +40,28 @@ type ConceptTemplateProps = {
 //
 // Mallen bestämmer ramen, inte innehållet. Teoridelen är fri text, eftersom
 // useState klarar sig på tre stycken medan Context behöver fler.
-export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptTemplateProps) => (
-  <Stack spacing={5}>
-    <Typography variant="h1">{title}</Typography>
+export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptTemplateProps) => {
+  // Fliken säger vilken modul man står i, inte bara att appen är öppen. Med sex
+  // flikar uppe är de första tecknen allt man ser av titeln.
+  useDocumentTitle(title);
 
-    {/* Sektionsraden ligger direkt under rubriken och fäster där när man
+  return (
+    <Stack spacing={5}>
+      <Typography variant="h1">{title}</Typography>
+
+      {/* Sektionsraden ligger direkt under rubriken och fäster där när man
         scrollar förbi. Quizen börjar 3672 px ner på /state - utan den här
         raden nås den bara genom att scrolla förbi hela Kod-delen. */}
-    <SectionNav />
+      <SectionNav />
 
-    {/* section + aria-labelledby gör delarna till landmärken en skärmläsare kan
+      {/* section + aria-labelledby gör delarna till landmärken en skärmläsare kan
         hoppa mellan, i stället för fyra rubriker i ett enda textflöde. */}
-    <Stack component="section" aria-labelledby={sectionIds.teori} spacing={1.5}>
-      <Typography id={sectionIds.teori} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
-        Teori
-      </Typography>
+      <Stack component="section" aria-labelledby={sectionIds.teori} spacing={1.5}>
+        <Typography id={sectionIds.teori} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
+          Teori
+        </Typography>
 
-      {/* Bara teoridelen smalnas av. Demon och koden får hela sidans bredd,
+        {/* Bara teoridelen smalnas av. Demon och koden får hela sidans bredd,
           eftersom de inte läses rad för rad på samma sätt som text.
 
           Stacken inuti ger avstånd mellan teorins stycken. Utan den blir de en
@@ -63,26 +69,26 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
           sektionens avstånd hamnar runt hela spalten i stället för mellan
           styckena. Rytmen tillhör mallen, av samma skäl som ordningen gör det -
           bestäms den per modul ser den elfte vyn inte ut som den första. */}
-      <ReadableColumn>
-        <Stack spacing={2}>{theory}</Stack>
-      </ReadableColumn>
-    </Stack>
+        <ReadableColumn>
+          <Stack spacing={2}>{theory}</Stack>
+        </ReadableColumn>
+      </Stack>
 
-    <Stack component="section" aria-labelledby={sectionIds.demo} spacing={1.5}>
-      <Typography id={sectionIds.demo} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
-        Demo
-      </Typography>
-      {/* Demon får en egen ram så att det syns var det interaktiva börjar. */}
-      <Paper variant="outlined" sx={{ p: 3 }}>
-        {demo}
-      </Paper>
-    </Stack>
+      <Stack component="section" aria-labelledby={sectionIds.demo} spacing={1.5}>
+        <Typography id={sectionIds.demo} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
+          Demo
+        </Typography>
+        {/* Demon får en egen ram så att det syns var det interaktiva börjar. */}
+        <Paper variant="outlined" sx={{ p: 3 }}>
+          {demo}
+        </Paper>
+      </Stack>
 
-    <Stack component="section" aria-labelledby={sectionIds.kod} spacing={1.5}>
-      <Typography id={sectionIds.kod} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
-        Kod
-      </Typography>
-      {/* Flera filer, eftersom en demo ofta är en komponent plus en hook.
+      <Stack component="section" aria-labelledby={sectionIds.kod} spacing={1.5}>
+        <Typography id={sectionIds.kod} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
+          Kod
+        </Typography>
+        {/* Flera filer, eftersom en demo ofta är en komponent plus en hook.
           Källkoden läses med ?raw ur de riktiga filerna - se CLAUDE.md.
 
           Ordningen i sources är en prioritering: första filen är huvudfilen och
@@ -93,31 +99,32 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
           Hopfällt och inte flikar, eftersom poängen ofta är att jämföra två
           filer - batchingDemo mot snapshotDemo. Flikar visar en i taget och
           tvingar läsaren att hålla den förra koden i huvudet. */}
-      {sources.map((source, index) => (
-        <CodeBlock
-          key={source.fileName}
-          code={source.code}
-          language={source.language}
-          fileName={source.fileName}
-          highlight={source.highlight}
-          startCollapsed={index > 0}
-        />
-      ))}
-    </Stack>
+        {sources.map((source, index) => (
+          <CodeBlock
+            key={source.fileName}
+            code={source.code}
+            language={source.language}
+            fileName={source.fileName}
+            highlight={source.highlight}
+            startCollapsed={index > 0}
+          />
+        ))}
+      </Stack>
 
-    <Stack component="section" aria-labelledby={sectionIds.quiz} spacing={1.5}>
-      <Typography id={sectionIds.quiz} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
-        Quiz
-      </Typography>
-      {/* Frågorna smalnas av som teorin. De läses rad för rad, till skillnad från
+      <Stack component="section" aria-labelledby={sectionIds.quiz} spacing={1.5}>
+        <Typography id={sectionIds.quiz} variant="h2" sx={{ scrollMarginTop: SECTION_SCROLL_MARGIN }}>
+          Quiz
+        </Typography>
+        {/* Frågorna smalnas av som teorin. De läses rad för rad, till skillnad från
           demon och koden. */}
-      <ReadableColumn>
-        <Quiz questions={quiz} />
-      </ReadableColumn>
-    </Stack>
+        <ReadableColumn>
+          <Quiz questions={quiz} />
+        </ReadableColumn>
+      </Stack>
 
-    {/* Vägen vidare. Ligger utanför sektionerna: den hör inte till konceptet
-        utan till läroboken, och ska därför inte dyka upp i sektionsraden. */}
-    <ModuleNav />
-  </Stack>
-);
+      {/* Vägen vidare. Ligger utanför sektionerna: den hör inte till konceptet
+          utan till läroboken, och ska därför inte dyka upp i sektionsraden. */}
+      <ModuleNav />
+    </Stack>
+  );
+};
