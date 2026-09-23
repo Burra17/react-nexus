@@ -38,6 +38,40 @@ export const text = {
   dark: { primary: '#E6EAEF', secondary: '#98A3B0' },
 };
 
+// Plattan bakom inline-kod i löptext.
+//
+// Halvtransparent och inte solid, så att lyftet blir detsamma oavsett underlag.
+// Inline-kod står på två ytor i appen: teorin ligger direkt på sidbakgrunden,
+// medan quizens frågor och demotexterna ligger inuti ett Paper-kort. En solid
+// platta hade blivit identisk på båda medan omgivningen skiljer sig, och därmed
+// synts sämre inuti kortet.
+//
+// Tonen är textfärgen och inte rent svart eller vitt, så att plattan hör ihop
+// med resten av paletten.
+//
+// Kontrasten mellan texten och plattan är aldrig det svåra här: texten behåller
+// sin vanliga färg, så alla fyra kombinationerna ligger långt över WCAG AA.
+// Uppmätt text mot platta:
+//
+//   Ljust läge: 12,93:1 på sidan, 13,61:1 i ett kort
+//   Mörkt läge: 9,77:1 på sidan, 8,92:1 i ett kort
+//
+// Det som avgör hur plattan faktiskt ser ut är i stället hur den står mot sin
+// omgivning, och den skillnaden har inget WCAG-krav: 1,31:1 i ljust läge och
+// 1,51:1 i mörkt. Syns plattan inte alls är det de två talen som ska upp, inte
+// kontrasten ovan.
+//
+// Alfanivåerna är olika med flit, och skillnaden är större än man väntar sig.
+// En ljus yta behöver mycket mer påslag för samma upplevda lyft: 0,13 i ljust
+// läge ger ungefär vad 0,10 ger i mörkt, och för att nå mörkt lägets 1,51:1
+// skulle ljust behöva 0,20. Samma tal i båda lägena ger alltså inte samma
+// resultat - de här två är valda för att se lika starka ut, inte för att vara
+// lika stora.
+export const codeSurface = {
+  light: 'rgba(20, 24, 29, 0.13)',
+  dark: 'rgba(230, 234, 239, 0.15)',
+};
+
 // Statusfärger. De kommer till användning först i query-modulerna, där en vy
 // behöver visa laddning, lyckat svar och fel bredvid varandra.
 export const status = {
