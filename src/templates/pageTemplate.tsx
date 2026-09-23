@@ -18,6 +18,7 @@ import { Suspense, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { navItems } from '../navigation';
 import { DelayedProgress } from '../shared/components/delayedProgress';
+import { HashScroll } from '../shared/components/hashScroll';
 import { ScrollToTop } from '../shared/components/scrollToTop';
 
 const openWidth = 240;
@@ -184,6 +185,13 @@ export const PageTemplate = () => {
               för att innehållet byts ut. */}
           <Suspense fallback={<DelayedProgress />}>
             <Outlet />
+
+            {/* Innanför gränsen, och det är hela poängen. HashScroll renderas
+                först när vyn ovanför laddats klart, så dess effekt hittar den
+                rubrik ett ankarhopp ska landa på. Utanför gränsen hade den
+                körts medan vyn fortfarande hämtades och inte hittat något.
+                Se #74. */}
+            <HashScroll />
           </Suspense>
         </Box>
       </Box>
