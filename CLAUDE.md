@@ -47,6 +47,7 @@ src/
   shared/
     components/          komponenter som används av flera moduler
     forms/               formulärkomponenter (React Hook Form)
+    hooks/               hookar som används av flera moduler eller av en mall
   styles/                colors.tsx och theme.tsx för MUI-temat
   templates/             sidlayouter, t.ex. pageTemplate.tsx
 

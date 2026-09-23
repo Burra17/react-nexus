@@ -3,6 +3,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Link, useLocation } from 'react-router-dom';
 import { ReadableColumn } from '../shared/components/readableColumn';
+import { useDocumentTitle } from '../shared/hooks/useDocumentTitle';
 
 // Appens egen vy för en adress som inte finns.
 //
@@ -16,6 +17,10 @@ export const NotFoundPage = () => {
   // Adressen skrivs ut för att besökaren ska se vad som faktiskt efterfrågades.
   // En felstavning är svår att upptäcka i adressfältet men syns direkt i brödtext.
   const { pathname } = useLocation();
+
+  // Även felsidan sätter sin titel. Kommer man hit från en modul står annars
+  // modulens namn kvar i fliken, och då ser det ut som att den sidan är trasig.
+  useDocumentTitle('Sidan finns inte');
 
   return (
     <Stack spacing={3} sx={{ alignItems: 'flex-start' }}>
