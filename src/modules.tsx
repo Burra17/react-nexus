@@ -10,7 +10,7 @@ import SpeedOutlined from '@mui/icons-material/SpeedOutlined';
 import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
-import { ContextPage, EffectsPage, RenderingPage, StatePage, TypescriptPage } from './lazyPages';
+import { ContextPage, EffectsPage, PerformancePage, RenderingPage, StatePage, TypescriptPage } from './lazyPages';
 
 export type AppModule = {
   path: string;
@@ -70,8 +70,10 @@ export const appModules: AppModule[] = [
   {
     path: '/performance',
     label: 'Performance',
-    description: 'useMemo, useCallback och React.memo: när de hjälper och när de bara kostar.',
+    description:
+      'Mät innan du optimerar: hur du tar reda på om en beräkning är dyr, och varför de flesta memoiseringar löser ett problem som inte fanns.',
     icon: <SpeedOutlined />,
+    element: <PerformancePage />,
   },
   {
     path: '/query-basics',

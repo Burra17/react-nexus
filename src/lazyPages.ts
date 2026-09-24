@@ -24,3 +24,7 @@ export const TypescriptPage = lazy(() =>
 );
 
 export const ContextPage = lazy(() => import('./modules/context/pages/contextPage').then((imported) => ({ default: imported.ContextPage })));
+
+export const PerformancePage = lazy(() =>
+  import('./modules/performance/pages/performancePage').then((imported) => ({ default: imported.PerformancePage })),
+);
