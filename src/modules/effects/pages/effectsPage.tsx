@@ -22,8 +22,8 @@ const Theory = () => (
     <Typography>
       Andra argumentet till <code>useEffect</code> avgör när den körs igen. Ingen lista alls: efter varje rendering. Tom lista: bara när komponenten
       monteras. Lista med värden: när något av dem har ändrats sedan sist. Och <em>ändrats</em> avgörs med <code>Object.is</code>, alltså på{' '}
-      <strong>referens</strong> — exakt samma jämförelse som fick <code>React.memo</code> att tystna i modul 2. Ett objekt eller en funktion som
-      skapas inuti komponenten är ett nytt värde varje gång, och står den i beroendelistan körs effekten om vid varenda rendering.
+      <strong>referens</strong> — exakt samma jämförelse som fick <code>React.memo</code> att tystna i Rendering-modulen. Ett objekt eller en funktion
+      som skapas inuti komponenten är ett nytt värde varje gång, och står den i beroendelistan körs effekten om vid varenda rendering.
     </Typography>
 
     <Typography>
@@ -58,7 +58,8 @@ const Theory = () => (
       <strong>Regeln att ta med sig:</strong> flaggan löser kapplöpningen, men ingenting annat. Hämtar två komponenter samma sak blir det två anrop.
       Lämnar du vyn och kommer tillbaka hämtas allt igen, eftersom ingenting sparades. Och varje ny hämtning i appen kräver sitt eget laddningsläge,
       sitt eget felläge och samma flagga en gång till. Det är därför react.dev själva avråder från att hämta direkt i en effekt och pekar på ett
-      bibliotek som håller en cache — här TanStack Query, som är hela modul 7. Det du bygger för hand i demon nedan är precis det den tar över.
+      bibliotek som håller en cache — här TanStack Query, som Query-modulerna längre fram handlar om. Det du bygger för hand i demon nedan är precis
+      det den tar över.
     </Typography>
   </>
 );
