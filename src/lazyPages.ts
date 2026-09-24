@@ -18,3 +18,7 @@ export const StatePage = lazy(() => import('./modules/state/pages/statePage').th
 export const RenderingPage = lazy(() => import('./modules/rendering/pages/renderingPage').then((imported) => ({ default: imported.RenderingPage })));
 
 export const EffectsPage = lazy(() => import('./modules/effects/pages/effectsPage').then((imported) => ({ default: imported.EffectsPage })));
+
+export const TypescriptPage = lazy(() =>
+  import('./modules/typescript/pages/typescriptPage').then((imported) => ({ default: imported.TypescriptPage })),
+);
