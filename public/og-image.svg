@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="React Nexus – interaktiv lärobok om React och TypeScript">
+  <title>React Nexus</title>
+
+  <!--
+    Källfilen till og-image.png, delningsbilden som Slack, Discord och LinkedIn
+    visar. PNG:en exporteras härifrån i 1200x630 - de plattformarna renderar
+    inte SVG, men en PNG utan källa går inte att ändra utan att börja om.
+
+    Varje färg nedan står också i src/styles/colors.tsx. Hårdkodade här av
+    nödvändighet: filen ligger utanför bygget och kan inte importera temat.
+    Ändras paletten ska den här filen följa med.
+
+      #14181d  surface.dark.background
+      #1b2027  surface.dark.paper
+      #2a313a  surface.dark.border
+      #e6eaef  text.dark.primary
+      #98a3b0  text.dark.secondary
+      #5eead4  accent.dark
+      #4ade80  status.success.dark
+      #fbbf24  status.warning.dark
+
+    Loggpanelen visar SETUP, CLEANUP, SETUP - sekvensen StrictMode ger vid
+    montering i modul 3. Den är vald för att den är appens tydligaste ögonblick
+    och går att läsa på en halv sekund, även när Slack krymper bilden.
+
+    Typsnitten anges med samma stackar som temat, så att exporten faller
+    tillbaka på systemets typsnitt om Inter och JetBrains Mono inte finns.
+  -->
+
+  <rect width="1200" height="630" fill="#14181d" />
+
+  <!-- Nodsymbolen, samma tre noder som faviconen. 32-enheters ruta skalad 1.9. -->
+  <g transform="translate(80 150) scale(1.9)" fill="#5eead4">
+    <g fill="none" stroke="#5eead4" stroke-width="2.4" stroke-linecap="round">
+      <path d="M16 8.5 7.5 23" />
+      <path d="M16 8.5 24.5 23" />
+      <path d="M7.5 23h17" />
+    </g>
+    <circle cx="16" cy="8.5" r="5" />
+    <circle cx="7.5" cy="23" r="5" />
+    <circle cx="24.5" cy="23" r="5" />
+  </g>
+
+  <g font-family="'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif">
+    <text x="80" y="330" font-size="84" font-weight="600" letter-spacing="-2" fill="#e6eaef">React Nexus</text>
+    <text x="80" y="388" font-size="28" font-weight="500" fill="#5eead4">Interaktiv lärobok om React &amp; TypeScript</text>
+    <text x="80" y="446" font-size="23" fill="#98a3b0">Teori · Interaktiva demos · Källkod · Quiz</text>
+  </g>
+
+  <!-- Loggpanelen. Samma form som EffectLog: rundat kort på paper-ytan. -->
+  <g>
+    <rect x="690" y="175" width="430" height="280" rx="16" fill="#1b2027" stroke="#2a313a" stroke-width="1.5" />
+    <text x="722" y="218" font-family="'Inter Variable', Inter, system-ui, sans-serif" font-size="19" font-weight="600" fill="#98a3b0">Logg</text>
+
+    <g font-family="'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, Consolas, monospace" font-size="21">
+      <text x="722" y="285" fill="#98a3b0">1.</text>
+      <text x="756" y="285" font-weight="600" fill="#4ade80">[SETUP]</text>
+      <text x="894" y="285" fill="#e6eaef">Ansluter</text>
+
+      <text x="722" y="345" fill="#98a3b0">2.</text>
+      <text x="756" y="345" font-weight="600" fill="#fbbf24">[CLEANUP]</text>
+      <text x="894" y="345" fill="#e6eaef">Kopplar ner</text>
+
+      <text x="722" y="405" fill="#98a3b0">3.</text>
+      <text x="756" y="405" font-weight="600" fill="#4ade80">[SETUP]</text>
+      <text x="894" y="405" fill="#e6eaef">Ansluter</text>
+    </g>
+  </g>
+</svg>

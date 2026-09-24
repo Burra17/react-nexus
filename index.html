@@ -16,6 +16,43 @@
       name="description"
       content="En interaktiv lärobok om React och TypeScript. Varje koncept får teori, en demo du klickar på, källkoden bakom den och en kunskapskontroll."
     />
+
+    <!-- Förhandsvisningen när adressen delas i Discord, Slack eller LinkedIn.
+         Se #89.
+
+         Adresserna är absoluta och hårdkodade. Open Graph kräver det - flera
+         crawlers hoppar över relativa sökvägar - och en byggvariabel skulle
+         behöva sättas både i .env.local och i Vercels gränssnitt. Glöms det
+         senare byggs sajten med en tom adress, tyst och utan fel. Den här
+         domänen syns åtminstone i diffen den dag den ändras.
+
+         Hela sajten får en enda förhandsvisning. Delas /effects visas samma
+         rubrik och bild som för startsidan: crawlers kör inte JavaScript, så
+         de ser aldrig vilken vy adressen pekar på. Per-vy-förhandsvisning
+         kräver prerendering, vilket är ett annat projekt. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="React Nexus" />
+    <meta property="og:locale" content="sv_SE" />
+    <meta property="og:url" content="https://react-nexus.vercel.app/" />
+    <meta property="og:title" content="React Nexus – Interaktiv lärobok om React &amp; TypeScript" />
+    <meta
+      property="og:description"
+      content="En interaktiv lärobok om React och TypeScript. Varje koncept får teori, en demo du klickar på, källkoden bakom den och en kunskapskontroll."
+    />
+    <meta property="og:image" content="https://react-nexus.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- Alt-texten är inte ceremoni: en skärmläsare i en chattklient läser upp
+         den i stället för bilden. -->
+    <meta
+      property="og:image:alt"
+      content="React Nexus logotyp och en stiliserad interaktiv loggpanel med händelserna setup och cleanup mot mörk bakgrund."
+    />
+
+    <!-- summary_large_image ger en bred bild i stället för en liten ruta vid
+         sidan. Titel och beskrivning ärvs från og-taggarna ovan, så de behöver
+         inte upprepas här. -->
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>
