@@ -10,7 +10,7 @@ import SpeedOutlined from '@mui/icons-material/SpeedOutlined';
 import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
-import { EffectsPage, RenderingPage, StatePage } from './lazyPages';
+import { EffectsPage, RenderingPage, StatePage, TypescriptPage } from './lazyPages';
 
 export type AppModule = {
   path: string;
@@ -56,8 +56,9 @@ export const appModules: AppModule[] = [
   {
     path: '/typescript',
     label: 'TypeScript',
-    description: 'import type, union i stället för enum, generics och narrowing.',
+    description: 'Vad som händer med typerna när koden körs: varför import type krävs, varför enum är förbjudet, och narrowing som blir riktig kod.',
     icon: <CodeOutlined />,
+    element: <TypescriptPage />,
   },
   {
     path: '/context',
