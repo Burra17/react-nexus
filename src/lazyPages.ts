@@ -22,3 +22,5 @@ export const EffectsPage = lazy(() => import('./modules/effects/pages/effectsPag
 export const TypescriptPage = lazy(() =>
   import('./modules/typescript/pages/typescriptPage').then((imported) => ({ default: imported.TypescriptPage })),
 );
+
+export const ContextPage = lazy(() => import('./modules/context/pages/contextPage').then((imported) => ({ default: imported.ContextPage })));

@@ -10,7 +10,7 @@ import SpeedOutlined from '@mui/icons-material/SpeedOutlined';
 import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
-import { EffectsPage, RenderingPage, StatePage, TypescriptPage } from './lazyPages';
+import { ContextPage, EffectsPage, RenderingPage, StatePage, TypescriptPage } from './lazyPages';
 
 export type AppModule = {
   path: string;
@@ -65,6 +65,7 @@ export const appModules: AppModule[] = [
     label: 'Context',
     description: 'Context och varför den renderar om mer än du tror.',
     icon: <AccountTreeOutlined />,
+    element: <ContextPage />,
   },
   {
     path: '/performance',
