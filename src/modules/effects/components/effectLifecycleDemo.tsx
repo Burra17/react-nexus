@@ -53,7 +53,7 @@ export const EffectLifecycleDemo = () => {
   // Utan den skapas en ny funktion varje gång demon ritas om, och eftersom den
   // står i effektens beroendelista skulle effekten då köras om av varje rad den
   // själv skriver. Det är samma referensjämförelse som fick memo att tystna i
-  // modul 2 - här hade den i stället gett en oändlig slinga.
+  // Rendering-modulen - här hade den i stället gett en oändlig slinga.
   const addEntry = useCallback((kind: LogKind, message: string) => {
     setEntries((previous) => [...previous, { id: previous.length + 1, kind, message }]);
   }, []);

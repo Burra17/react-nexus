@@ -42,9 +42,9 @@ const USERS: Record<UserId, User> = {
 // Den fejkade hämtningen. Ingen HTTP, ingen mockserver - bara ett löfte som
 // löser ut efter användarens egen fördröjning.
 //
-// Den ligger i den här filen med flit. Servicelagret skapas först i modul 7 när
-// något faktiskt behöver det, och en demo vars halva förklaring ligger i en
-// annan fil visar inte mekanismen, den gömmer den.
+// Den ligger i den här filen med flit. Servicelagret skapas först i
+// Query-modulerna när något faktiskt behöver det, och en demo vars halva
+// förklaring ligger i en annan fil visar inte mekanismen, den gömmer den.
 const fetchUser = (userId: UserId): Promise<User> =>
   new Promise((resolve) => {
     const user = USERS[userId];

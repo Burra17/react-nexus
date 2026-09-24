@@ -45,9 +45,9 @@ export const HashScroll = () => {
       return;
     }
 
-    // Samma ignore-flagga som modul 3 lär ut, och av samma skäl. Hinner man
-    // navigera vidare medan typsnitten laddas ska det gamla ankaret inte
-    // rycka undan sidan från den vy man just öppnat.
+    // Samma ignore-flagga som Effects-modulen lär ut, och av samma skäl.
+    // Hinner man navigera vidare medan typsnitten laddas ska det gamla ankaret
+    // inte rycka undan sidan från den vy man just öppnat.
     let ignore = false;
 
     void document.fonts.ready.then(() => {
