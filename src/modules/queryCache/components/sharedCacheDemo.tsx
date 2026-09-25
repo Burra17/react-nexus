@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { readUserRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { sharedUsersKeys } from '../hooks/usersKeys';
-import { useRerenderOnCacheChange } from '../hooks/useRerenderOnCacheChange';
+import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { UserListCard } from './userListCard';
 
 // Fyra kort från början. Talet ska vara tydligt skilt från ett, men inte så

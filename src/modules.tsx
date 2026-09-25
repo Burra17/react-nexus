@@ -10,7 +10,17 @@ import SpeedOutlined from '@mui/icons-material/SpeedOutlined';
 import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
-import { ContextPage, EffectsPage, PerformancePage, QueryBasicsPage, QueryCachePage, RenderingPage, StatePage, TypescriptPage } from './lazyPages';
+import {
+  ContextPage,
+  EffectsPage,
+  MutationsPage,
+  PerformancePage,
+  QueryBasicsPage,
+  QueryCachePage,
+  RenderingPage,
+  StatePage,
+  TypescriptPage,
+} from './lazyPages';
 
 export type AppModule = {
   path: string;
@@ -94,6 +104,7 @@ export const appModules: AppModule[] = [
     label: 'Mutations',
     description: 'useMutation, invalidering av nycklar och optimistisk uppdatering.',
     icon: <EditNoteOutlined />,
+    element: <MutationsPage />,
   },
   {
     path: '/forms',

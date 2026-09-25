@@ -18,6 +18,21 @@ const USERS: Record<string, User> = {
   elin: { id: 'elin', name: 'Elin Kvist', role: 'Produktägare', email: 'elin@example.com' },
 };
 
+// Mutationsmodulens egen kopia av datamängden, och den enda som får skrivas i.
+//
+// Modul 9 byter roll på en användare. Skrevs ändringen i USERS ovan skulle Ada
+// stå kvar som Systemarkitekt när läsaren gick tillbaka till modul 7 - tills
+// sidan laddades om och det tyst återställdes. Samma resonemang som de separata
+// nyckelgrenarna i modul 7 och 8: en modul ska gå att förstå isolerad.
+//
+// Objekten kopieras med spread och inte genom att peka på USERS poster, så att
+// en skrivning här inte når den delade datamängden via referensen.
+const MUTATION_USERS: Record<string, User> = {
+  ada: { ...USERS.ada },
+  bo: { ...USERS.bo },
+  cleo: { ...USERS.cleo },
+};
+
 type RequestControls = {
   delayMs: number;
   shouldFail: boolean;
@@ -57,6 +72,12 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 //
 // Den räknas upp här och ingen annanstans, för att det som räknas ska vara
 // anrop som verkligen nådde backenden - inte hookar som kördes.
+//
+// Varje handler räknar upp den, också skrivningen. Räknaren mäter anrop och
+// inte hämtningar, vilket är vad den alltid utgett sig för att vara - och i
+// modul 9 är hela påståendet att en lyckad mutation kostar ett skrivanrop plus
+// de hämtningar invalideringen utlöser. Räknades bara GET skulle panelen visa
+// ett tal som säger emot Network-fliken.
 let userRequestCount = 0;
 
 export const readUserRequestCount = () => userRequestCount;
@@ -98,5 +119,51 @@ export const handlers = [
     }
 
     return HttpResponse.json(user);
+  }),
+
+  // Mutationsmodulens läsning. Egen sökväg, egen datamängd - se MUTATION_USERS.
+  http.get('/api/mutations/users', async ({ request }) => {
+    userRequestCount += 1;
+
+    const { delayMs, shouldFail } = readControls(request);
+
+    await delay(delayMs);
+
+    if (shouldFail) {
+      return serverError();
+    }
+
+    return HttpResponse.json(Object.values(MUTATION_USERS));
+  }),
+
+  // Skrivningen. Den enda handlern i filen som ändrar något.
+  //
+  // Felet styrs av samma fail-parameter som hämtningarna, och det är avsiktligt:
+  // demon om optimistisk uppdatering behöver ett fel den kan beställa, annars
+  // går rollbacken inte att visa. Att felet kommer FÖRE skrivningen spelar roll
+  // - ett misslyckat anrop ska inte ha ändrat något, annars visar demon en
+  // rollback av en ändring som blev kvar på servern.
+  http.put('/api/mutations/users/:id', async ({ request, params }) => {
+    userRequestCount += 1;
+
+    const { delayMs, shouldFail } = readControls(request);
+
+    await delay(delayMs);
+
+    if (shouldFail) {
+      return HttpResponse.json({ message: 'Kunde inte spara rollen just nu.' }, { status: 500 });
+    }
+
+    const user = typeof params.id === 'string' ? MUTATION_USERS[params.id] : undefined;
+
+    if (!user) {
+      return HttpResponse.json({ message: 'Användaren finns inte.' }, { status: 404 });
+    }
+
+    const { role } = (await request.json()) as { role: string };
+
+    MUTATION_USERS[user.id] = { ...user, role };
+
+    return HttpResponse.json(MUTATION_USERS[user.id]);
   }),
 ];
