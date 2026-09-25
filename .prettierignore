@@ -4,3 +4,8 @@ node_modules
 
 # Lockfilen ägs av yarn, inte av oss
 yarn.lock
+
+# Workerskriptet genereras av msw init och ägs av MSW, inte av oss. Formateras
+# det om driver det isär från det verktyget skriver, och nästa msw init ger en
+# diff som ser ut som en ändring utan att vara det.
+public/mockServiceWorker.js
