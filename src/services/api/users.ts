@@ -18,6 +18,23 @@ export type UserRequestOptions = {
   shouldFail?: boolean;
 };
 
+// Hämtar hela listan med användare.
+//
+// Den byggdes först när något faktiskt behövde den. Modulen om cachen visar att
+// flera komponenter som frågar efter samma nyckel ger ett enda anrop, och det
+// går svårligen att demonstrera utan något som flera vyer naturligt vill visa
+// samtidigt.
+export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]> => {
+  const response = await axiosClient.get<User[]>('/users', {
+    params: {
+      delay: options.delayMs,
+      fail: options.shouldFail ? 1 : undefined,
+    },
+  });
+
+  return response.data;
+};
+
 // Hämtar en användare. Servicen innehåller ingen React - den returnerar typad
 // data, och hooken som anropar den bestämmer vad som händer med den.
 //

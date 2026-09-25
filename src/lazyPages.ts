@@ -32,3 +32,7 @@ export const PerformancePage = lazy(() =>
 export const QueryBasicsPage = lazy(() =>
   import('./modules/queryBasics/pages/queryBasicsPage').then((imported) => ({ default: imported.QueryBasicsPage })),
 );
+
+export const QueryCachePage = lazy(() =>
+  import('./modules/queryCache/pages/queryCachePage').then((imported) => ({ default: imported.QueryCachePage })),
+);
