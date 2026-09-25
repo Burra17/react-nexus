@@ -6,9 +6,16 @@ import type { User } from '../api/users';
 // Namnen är desamma som i kapplöpningsdemon i modul 3. Där hämtades de med ett
 // löfte inne i komponenten; här går samma hämtning över riktig HTTP, och det är
 // hela poängen med modulen - det är din egen trasiga hämtning, gjord om.
+//
+// De två första har egna knappar i den modulen. De övriga syns bara när hela
+// listan hämtas, vilket först behövdes i modulen om cachen - en lista på två
+// poster ser inte ut som en lista.
 const USERS: Record<string, User> = {
   ada: { id: 'ada', name: 'Ada Lovelace', role: 'Analytiker', email: 'ada@example.com' },
   bo: { id: 'bo', name: 'Bo Nilsson', role: 'Systemarkitekt', email: 'bo@example.com' },
+  cleo: { id: 'cleo', name: 'Cleo Ahlgren', role: 'Frontendutvecklare', email: 'cleo@example.com' },
+  dag: { id: 'dag', name: 'Dag Ternström', role: 'Testare', email: 'dag@example.com' },
+  elin: { id: 'elin', name: 'Elin Kvist', role: 'Produktägare', email: 'elin@example.com' },
 };
 
 type RequestControls = {
@@ -55,6 +62,22 @@ let userRequestCount = 0;
 export const readUserRequestCount = () => userRequestCount;
 
 export const handlers = [
+  // Listan står före :id-varianten. Ordningen spelar ingen roll för MSW, som
+  // matchar på hela sökvägen, men den läses lättare uppifrån och ner.
+  http.get('/api/users', async ({ request }) => {
+    userRequestCount += 1;
+
+    const { delayMs, shouldFail } = readControls(request);
+
+    await delay(delayMs);
+
+    if (shouldFail) {
+      return serverError();
+    }
+
+    return HttpResponse.json(Object.values(USERS));
+  }),
+
   http.get('/api/users/:id', async ({ request, params }) => {
     userRequestCount += 1;
 
