@@ -1,10 +1,10 @@
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { sharedUsersKeys } from '../hooks/usersKeys';
 import { useRerenderOnCacheChange } from '../hooks/useRerenderOnCacheChange';
 import { UserListCard } from './userListCard';
@@ -50,20 +50,10 @@ export const SharedCacheDemo = () => {
         </Button>
       </Stack>
 
-      <Paper variant='outlined' sx={{ p: 2 }}>
-        <Stack direction='row' spacing={2} sx={{ justifyContent: 'space-between' }}>
-          <Typography variant='body2' color='textSecondary'>
-            HTTP-anrop hittills
-          </Typography>
-          <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>
-            {requestCount}
-          </Typography>
-        </Stack>
-
-        <Typography variant='caption' color='textSecondary'>
-          Träffar i den mockade backenden sedan sidan laddades, alla demonstrationer inräknade. Skriv upp talet innan du monterar korten.
-        </Typography>
-      </Paper>
+      <RequestCounterPanel
+        total={requestCount}
+        caption='Träffar i den mockade backenden, inte renderingar. Nollställ först och gör sedan en sak i taget — montera korten, lägg till ett till — så visar talet exakt vad just den saken kostade.'
+      />
 
       {isMounted ? (
         <Stack direction='row' spacing={2} sx={{ flexWrap: 'wrap', gap: 2, alignItems: 'flex-start' }}>
