@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { useFetchCachedUser } from '../hooks/queries/useFetchCachedUser';
 import { usersKeys } from '../hooks/usersKeys';
 
@@ -246,14 +247,16 @@ export const CacheClockDemo = () => {
           <StatusRow label='posten i cachen' value={cacheValue} />
           <StatusRow label='färskhet (staleTime)' value={freshnessValue} />
           <StatusRow label='städning (gcTime)' value={gcValue} />
-          <StatusRow label='HTTP-anrop hittills' value={String(requestCount)} />
         </Stack>
       </Paper>
 
-      <Typography variant='caption' color='textSecondary'>
-        Räknaren står på antalet anrop den mockade backenden tagit emot sedan sidan laddades, den första demon inräknad. Det är träffar i backenden
-        och inte renderingar — ett tal som betyder samma sak här som i ett bygge.
-      </Typography>
+      {/* Anropen står i en egen panel och inte som en fjärde StatusRow. Raderna
+          ovan är avläsningar av cachen just nu; den här är en mätning läsaren
+          själv startar, och den behöver en knapp. */}
+      <RequestCounterPanel
+        total={requestCount}
+        caption='Träffar i den mockade backenden, inte renderingar — ett tal som betyder samma sak här som i ett bygge. Nollställ före varje steg, så syns det direkt om återbesöket kostade ett anrop eller inte.'
+      />
     </Stack>
   );
 };

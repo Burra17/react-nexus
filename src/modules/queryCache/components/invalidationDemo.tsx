@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { useFetchUser } from '../hooks/queries/useFetchUser';
 import { useFetchUsers } from '../hooks/queries/useFetchUsers';
 import { usersKeys } from '../hooks/usersKeys';
@@ -83,20 +84,10 @@ export const InvalidationDemo = () => {
         <Button onClick={() => void ada.refetch()}>Hämta om bara ada</Button>
       </Stack>
 
-      <Paper variant='outlined' sx={{ p: 2 }}>
-        <Stack direction='row' spacing={2} sx={{ justifyContent: 'space-between' }}>
-          <Typography variant='body2' color='textSecondary'>
-            HTTP-anrop hittills
-          </Typography>
-          <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>
-            {requestCount}
-          </Typography>
-        </Stack>
-
-        <Typography variant='caption' color='textSecondary'>
-          Skriv upp talet före varje knapptryck. Skillnaden är beviset: det breda prefixet träffar tre poster, det smala en.
-        </Typography>
-      </Paper>
+      <RequestCounterPanel
+        total={requestCount}
+        caption='Nollställ före varje knapptryck. Talet är beviset: det breda prefixet träffar tre poster, det smala en.'
+      />
 
       {/* Samma inspektor som i föregående del, här som mätinstrument. Posterna
           växlar till "inaktuell" i samma ögonblick som knappen trycks, och
