@@ -4,7 +4,9 @@ React Nexus — en levande lärobok och ett interaktivt kodlabb där React, Type
 
 Varje vy ska förklara ett koncept och visa det i arbete: hur state uppdateras, hur en omrendering utlöses, hur TanStack Query cachar ett svar. Målet är att förstå mekanismen och varför den spelar roll, inte att leverera en produkt.
 
-Arkitekturen och kodreglerna följer Apptechs produktionsstandard: feature-baserad modulindelning, servicelager på rotnivå, envägsdataflöde och query-nycklar i en fabrik.
+Kodreglerna följer Apptechs standard rakt av: KISS, DRY, Prettier och ESLint, camelCase på filer och PascalCase på komponenter, strikt TypeScript.
+
+Arkitekturen har Apptechs produktionsprojekt som förlaga — feature-baserad modulindelning, servicelager på rotnivå, envägsdataflöde och query-nycklar i en fabrik. Förlagan är en källa, inte en auktoritet: det som är bra härmas, det som kan göras bättre görs bättre. Där det här repot avviker är det medvetet, och skälet står utskrivet vid avsteget. Utan skälet läses avvikelsen som okunskap nästa gång någon jämför de två, och då blir reflexen att rätta tillbaka.
 
 ## Pedagogiskt läge
 
@@ -37,12 +39,13 @@ src/
     hooks/               modulens hookar
       queries/           useQuery-hookar
       mutations/         useMutation-hookar
-      <koncept>Keys.ts   query key-fabriken för modulen
+      <resurs>Keys.ts    query key-fabriken, en per resurs
     pages/               vyn som routern pekar på
   pages/                 appens egna sidor, t.ex. startsidan — hör inte till något koncept
   services/              infrastruktur för hela appen — HTTP, lagring, allt utanför React
     api/                 anropen mot API:et, och typerna för svaren
     axios/               konfigurerad Axios-instans
+    mocks/               MSW: handlers och worker
     storage/             enda vägen till localStorage, och nyckelkatalogen
   shared/
     components/          komponenter som används av flera moduler
@@ -68,6 +71,20 @@ Servicelagret ligger på rotnivå, inte i modulen. Så ser det ut i Apptechs pro
 services/ är infrastruktur, inte bara HTTP. Där hör allt hemma som hela appen delar, som inte är React och som ingen enskild modul äger — anropen mot ett API, den konfigurerade Axios-instansen, lagring som ska överleva en sidladdning. HTTP är det vanligaste exemplet, inte villkoret.
 
 Skapa varje del av services/ först när något faktiskt behöver den. Tomma mappar är ceremoni.
+
+### Anropen är funktioner, inte klasser
+
+Produktionsprojektet har en BaseAPI-klass som varje resurs ärver, och får Get, GetAll, Create, Update och Delete gratis. Det lönar sig över tjugosju resurser. Här blir det två eller tre mot en mockad backend, och då är arvet en inpackning som döljer vad anropet gör — tvärtemot regeln att demonstrationskod ska visa mekanismen.
+
+Axios behålls däremot, trots att vi inte har någon auth och därför ingen användning för interceptors. Skälet är pedagogiskt och inte tekniskt: det är axios du möter i produktionskoden, och en lärobok som lär ut fetch förbereder dig sämre på den kod du faktiskt ska läsa.
+
+### Typerna växer in i tre mappar, men skapas inte i förväg
+
+Förlagan delar api/ i response/, request/ och options/: vad API:et svarar, vad du skickar, vad du frågar med. Uppdelningen är bra, och namnen står här så att ingen hittar på egna när det blir dags.
+
+Men typerna ligger bredvid sitt anrop tills en resurs faktiskt har alla tre. Tre mappar med en fil i varje är precis den ceremoni regeln ovan förbjuder.
+
+Förlagans models/ och helpers/ härmas inte. Den första överlappar response/ på ett sätt som inte går att förklara ens efter att ha läst båda, den andra är paginering vi inte har.
 
 När data hämtas gäller ett envägsflöde:
 
@@ -129,7 +146,9 @@ export type DemoState = (typeof DEMO_STATES)[number];
 
 noUnusedLocals / noUnusedParameters — en oanvänd variabel eller parameter stoppar bygget. Städa bort experimentkod före commit.
 
-any är förbjudet (noImplicitAny). Saknas en typ:
+any är förbjudet (noImplicitAny), och null-kontrollerna är strikta. Båda följer av strict: true, som står utskriven i tsconfig.app.json trots att TypeScript 6 har den påslagen som standard. Raden ändrar ingenting i dag — poängen är att repots viktigaste kodregel ska stå i repot i stället för att ärvas tyst från en version som kan bytas.
+
+Saknas en typ:
 
 - Typ för ett API-svar → services/api/, bredvid anropet den hör till.
 - Typ som bara rör en modul — ett unions-läge för en demo, en props-typ → i modulen, nära det som använder den.
@@ -181,9 +200,17 @@ TanStack Query hanterar all serverdata. Hämta aldrig med useEffect + useState.
 
 Ett undantag, unikt för det här repot: en vy vars syfte är att visa vad useEffect-hämtning gör fel — dubbelanrop i StrictMode, kapplöpningar, saknad avbrytning — får använda mönstret. Sådan kod märks med en kommentar om att den är avsiktligt felaktig och vad den demonstrerar, så att den inte kopieras i god tro.
 
+### Backenden är MSW, och den körs även i bygget
+
+Mock Service Worker fångar riktiga HTTP-anrop i webbläsaren. Anropen syns i Network-fliken, och latens och felsvar går att styra — utan det går det inte att demonstrera att ett dedupererat anrop aldrig lämnar klienten.
+
+MSW:s egen dokumentation startar workern bara i utvecklingsläge, och den vägen ska inte följas här. Den publicerade sidan är läroboken; en modul som bara fungerar på utvecklarens maskin är inte byggd. Här är mocken inte en ställföreträdare för en riktig backend under utveckling — den är datakällan. Avvikelsen kommenteras där workern startas, eftersom varje guide säger motsatsen.
+
+Filerna ligger i services/mocks/, inte i src/mocks/ som MSW föreslår. En mockad backend är infrastruktur som hela appen delar och som ingen modul äger, och då gäller regeln ovan. Undantaget är mockServiceWorker.js, som verktyget genererar och som måste ligga i public/.
+
 ### Query-nycklar skrivs i en fabrik, inte på plats
 
-Varje modul som hämtar data får en <koncept>Keys.ts bredvid sina hookar:
+Varje resurs som hämtas får en <resurs>Keys.ts bredvid modulens hookar:
 
 ```ts
 export const cacheDemoKeys = {
@@ -204,11 +231,17 @@ Varför en fabrik i stället för ['cacheDemo', 'list', page] i hooken?
 
 queryKey ska fortfarande innehålla varje parameter som påverkar svaret — fabriken gör bara att du inte kan glömma det.
 
+Fabriken hör till resursen, inte till modulen, och heter därför <resurs>Keys.ts. En modul med två resurser får två fabriker. Oftast har en modul bara en, men regeln avgör vad som händer när den andra dyker upp — och alternativet, att klämma in båda i samma fabrik för att filnamnet säger modulens namn, ger nycklar som inte går att invalidera var för sig.
+
 ### Hookarna delas i queries/ och mutations/
 
 Läsning och skrivning skiljer sig åt: en useQuery cachar, en useMutation invaliderar. Uppdelningen gör det synligt vilken sorts hook du har framför dig.
 
 Skapa mutations/ först när den första mutationen finns.
+
+Queries heter useFetch<Resurs>, mutationer usePost, useUpdate eller useDelete<Resurs>. Hookfiler utan JSX är .ts, inte .tsx — där avviker vi från förlagan, som skriver .tsx genomgående trots att filerna inte innehåller JSX.
+
+Hooken anropar servicen direkt i queryFn. Behöver svaret bearbetas sker det i servicen. Förlagan lägger ofta en funktion i hook-filen mellan de två, men i de flesta fall vidarebefordrar den bara — och ett lager som inte gör något ser ut som arkitektur utan att vara det.
 
 ## Design och MUI
 
@@ -219,7 +252,7 @@ Skapa mutations/ först när den första mutationen finns.
 
 ## Miljövariabler
 
-Aktuellt först när en modul behöver ett API.
+Aktuellt först när något behöver en riktig nyckel — alltså inte i Query-modulerna. MSW fångar anropen i webbläsaren, så axiosClient har en hårdkodad relativ bas och det finns ingen adress att konfigurera. En variabel som aldrig varierar är samma sorts ceremoni som en tom mapp.
 
 - .env.local (git-ignorerad via *.local) håller nycklar och basadresser.
 - Vite exponerar bara variabler som börjar med VITE_ för webbläsarkoden. En variabel utan prefix blir tyst undefined i klienten.
