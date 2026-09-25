@@ -1,4 +1,5 @@
 import { setupWorker } from 'msw/browser';
+import { ensureMocking } from './ensureMocking';
 import { handlers } from './handlers';
 
 // Workern som fångar appens HTTP-anrop i webbläsaren.
@@ -31,12 +32,20 @@ export const worker = setupWorker(...handlers);
 // hämtas i samma ögonblick som man kommer tillbaka, eftersom Query hämtar om av
 // egen kraft när fönstret får fokus.
 //
-// MOCK_ACTIVATE är samma meddelande som worker.start() skickar när den kopplar
-// upp sig, och det lägger tillbaka fliken i workerns lista.
+// Återanslutningen sker i ensureMocking, som skickar MOCK_ACTIVATE och väntar
+// in workerns bekräftelse.
+//
+// Lyssnaren räcker ändå inte ensam, och det är avsiktligt.
+//
+// Query hämtar om av egen kraft när fönstret får fokus, och det anropet kan
+// hinna lämna klienten innan workern behandlat vårt meddelande. Kapplöpningen
+// fångas därför en gång till i axiosClient, som väcker mocken och gör om
+// anropet när ett svar inte är JSON. Den här lyssnaren gör att det i de flesta
+// fall aldrig behövs.
 export const keepWorkerAlive = () => {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      navigator.serviceWorker.controller?.postMessage('MOCK_ACTIVATE');
+      void ensureMocking();
     }
   });
 };

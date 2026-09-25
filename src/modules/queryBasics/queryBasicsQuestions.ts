@@ -79,4 +79,29 @@ export const queryBasicsQuestions: QuizQuestion[] = [
       },
     ],
   },
+  {
+    id: 'tillbaka-efter-staletime',
+    question: 'Du lämnar en vy och kommer tillbaka — efter att `staleTime` gått ut, men innan `gcTime` hunnit ta bort posten. Vad ser du?',
+    correct: 'b',
+    options: [
+      {
+        id: 'a',
+        text: 'Laddningsläget igen, eftersom datan hunnit bli inaktuell',
+        explanation:
+          'Inaktuell är inte samma sak som borta. Posten ligger kvar tills `gcTime` städat den, och så länge den finns visas den — ett tomt laddningsläge kommer först när posten faktiskt är borta.',
+      },
+      {
+        id: 'b',
+        text: 'Den gamla datan direkt, och ett nytt anrop som går i bakgrunden',
+        explanation:
+          'Rätt. Inaktuell data visas medan en ny hämtning körs, så du slipper stirra på en tom skärm. Det är därför både `status: success` och `fetchStatus: fetching` kan gälla samtidigt.',
+      },
+      {
+        id: 'c',
+        text: 'Den gamla datan, och inget anrop förrän `gcTime` gått ut',
+        explanation:
+          '`gcTime` styr inte när något hämtas om, bara när posten kastas bort. Det är `staleTime` som avgör om en ny hämtning startar — och den har redan gått ut här.',
+      },
+    ],
+  },
 ];

@@ -40,8 +40,24 @@ const readControls = (request: Request): RequestControls => {
 // felläget i demon inte är en specialkonstruktion.
 const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta användaren just nu.' }, { status: 500 });
 
+// Hur många anrop den mockade backenden faktiskt tagit emot.
+//
+// Räknaren finns för demon om cachens klockor, som påstår saker om när ett
+// anrop sker och när det uteblir. Ett sådant påstående måste gå att kontrollera
+// mot något annat än en renderräknare: StrictMode dubblerar renderingar lokalt
+// men inte i ett bygge, så ett mått som är ett förhållande mellan renderingar
+// och anrop ljuger på utvecklarens maskin. Absoluta tal gör det inte.
+//
+// Den räknas upp här och ingen annanstans, för att det som räknas ska vara
+// anrop som verkligen nådde backenden - inte hookar som kördes.
+let userRequestCount = 0;
+
+export const readUserRequestCount = () => userRequestCount;
+
 export const handlers = [
   http.get('/api/users/:id', async ({ request, params }) => {
+    userRequestCount += 1;
+
     const { delayMs, shouldFail } = readControls(request);
 
     // Fördröjningen ligger före allt annat: också ett fel ska ta tid att komma
