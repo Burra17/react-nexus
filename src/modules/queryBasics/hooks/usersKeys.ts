@@ -26,4 +26,15 @@ export const usersKeys = {
   all: ['queryBasics', 'users'] as const,
   details: () => [...usersKeys.all, 'detail'] as const,
   detail: (id: string | null, shouldFail: boolean) => [...usersKeys.details(), id, { shouldFail }] as const,
+
+  // Cacheklockornas demo har en egen gren, och det är inte kosmetika.
+  //
+  // Demon om lägena ligger kvar monterad på samma sida. Delade de två nyckel
+  // skulle den förstas observer hålla cacheposten aktiv hela tiden - och gcTime
+  // börjar först ticka när ingen längre tittar. Då vore det omöjligt att visa
+  // vad som händer när posten städas bort, utan att något förklarade varför.
+  //
+  // "En konsument, en nyckel" är alltså inte en stilregel här. Det är vad som
+  // gör att demon nedan går att framkalla.
+  clock: (id: string) => [...usersKeys.all, 'clock', id] as const,
 };
