@@ -28,3 +28,7 @@ export const ContextPage = lazy(() => import('./modules/context/pages/contextPag
 export const PerformancePage = lazy(() =>
   import('./modules/performance/pages/performancePage').then((imported) => ({ default: imported.PerformancePage })),
 );
+
+export const QueryBasicsPage = lazy(() =>
+  import('./modules/queryBasics/pages/queryBasicsPage').then((imported) => ({ default: imported.QueryBasicsPage })),
+);

@@ -47,6 +47,7 @@ src/
     axios/               konfigurerad Axios-instans
     mocks/               MSW: handlers och worker
     storage/             enda vägen till localStorage, och nyckelkatalogen
+    queryClient.ts       appens QueryClient, med bibliotekets standardvärden orörda
   shared/
     components/          komponenter som används av flera moduler
     forms/               formulärkomponenter (React Hook Form)
@@ -76,7 +77,9 @@ Skapa varje del av services/ först när något faktiskt behöver den. Tomma map
 
 Produktionsprojektet har en BaseAPI-klass som varje resurs ärver, och får Get, GetAll, Create, Update och Delete gratis. Det lönar sig över tjugosju resurser. Här blir det två eller tre mot en mockad backend, och då är arvet en inpackning som döljer vad anropet gör — tvärtemot regeln att demonstrationskod ska visa mekanismen.
 
-Axios behålls däremot, trots att vi inte har någon auth och därför ingen användning för interceptors. Skälet är pedagogiskt och inte tekniskt: det är axios du möter i produktionskoden, och en lärobok som lär ut fetch förbereder dig sämre på den kod du faktiskt ska läsa.
+Axios behålls däremot, trots att vi inte har någon auth och därför inte den vanligaste användningen för interceptors. Skälet är pedagogiskt och inte tekniskt: det är axios du möter i produktionskoden, och en lärobok som lär ut fetch förbereder dig sämre på den kod du faktiskt ska läsa.
+
+En interceptor finns ändå, och den hör till läromedlet snarare än till bekvämligheten. Appen är en ensidesapp, så allt som inte matchar en riktig fil besvaras med index.html — också ett anrop under /api som mocken inte fångar. Utan en kontroll ser axios en webbsida med status 200 som en lyckad hämtning, Query lägger HTML-strängen i cachen som data, och vyn renderar tomma fält utan att något säger till. Svaret kontrolleras därför mot content-type på ett enda ställe, i axiosClient. Ett fel som ser ut som ett lyckat svar är värre än ett fel, eftersom det inte upptäcks.
 
 ### Typerna växer in i tre mappar, men skapas inte i förväg
 
