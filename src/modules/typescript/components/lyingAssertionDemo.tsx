@@ -40,25 +40,25 @@ export const LyingAssertionDemo = () => {
   return (
     <Stack spacing={2}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-        <Button variant="contained" onClick={() => handleRead(HONEST_RESPONSE)}>
+        <Button variant='contained' onClick={() => handleRead(HONEST_RESPONSE)}>
           Läs svaret som har data
         </Button>
-        <Button variant="outlined" onClick={() => handleRead(LYING_RESPONSE)}>
+        <Button variant='outlined' onClick={() => handleRead(LYING_RESPONSE)}>
           Läs svaret som saknar data
         </Button>
         <Button onClick={() => setOutcome(null)}>Nollställ</Button>
       </Stack>
 
       {outcome !== null && (
-        <Paper variant="outlined" sx={{ p: 2, borderColor: outcome.kind === 'crash' ? 'error.main' : undefined }}>
-          <Typography variant="body2" color="textSecondary">
+        <Paper variant='outlined' sx={{ p: 2, borderColor: outcome.kind === 'crash' ? 'error.main' : undefined }}>
+          <Typography variant='body2' color='textSecondary'>
             {outcome.kind === 'crash' ? 'Fel vid körning' : 'Läsningen gick igenom'}
           </Typography>
           <Typography sx={{ fontFamily: 'monospace', mt: 1 }}>{outcome.text}</Typography>
         </Paper>
       )}
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Båda knapparna kör exakt samma rader: samma <code>as Result</code>, samma kontroll av <code>status</code>, samma{' '}
         <code>result.data.length</code>. Bygget är grönt för båda, eftersom <code>as</code> inte kontrollerar någonting — det talar bara om för
         TypeScript vad du påstår att värdet är. Den högra knappen visar vad påståendet var värt.

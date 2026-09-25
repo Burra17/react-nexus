@@ -22,12 +22,12 @@ export const SnapshotDemo = () => {
         Räknaren står på <strong>{count}</strong>.
       </Typography>
 
-      <Button variant="contained" onClick={handleClick} sx={{ alignSelf: 'flex-start' }}>
+      <Button variant='contained' onClick={handleClick} sx={{ alignSelf: 'flex-start' }}>
         Öka med ett och läs av direkt efteråt
       </Button>
 
       {readBack !== null && (
-        <Typography color="textSecondary">
+        <Typography color='textSecondary'>
           Direkt efter anropet till setCount var count fortfarande <strong>{readBack}</strong> — inte {readBack + 1}.
         </Typography>
       )}

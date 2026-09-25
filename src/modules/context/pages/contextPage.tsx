@@ -71,7 +71,7 @@ const Theory = () => (
 
 export const ContextPage = () => (
   <ConceptTemplate
-    title="Context"
+    title='Context'
     theory={<Theory />}
     demo={<ContextRenderDemo />}
     sources={[

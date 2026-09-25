@@ -32,7 +32,7 @@ const ChannelConnection = ({ channel, onLog }: ChannelConnectionProps) => {
   }, [channel, onLog]);
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
+    <Paper variant='outlined' sx={{ p: 2 }}>
       <Typography>
         Ansluten till <strong>{channel}</strong>.
       </Typography>
@@ -65,7 +65,7 @@ export const EffectLifecycleDemo = () => {
   return (
     <Stack spacing={2}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'center' } }}>
-        <Button variant="contained" onClick={() => setIsMounted(!isMounted)} sx={{ alignSelf: { xs: 'flex-start', sm: 'auto' } }}>
+        <Button variant='contained' onClick={() => setIsMounted(!isMounted)} sx={{ alignSelf: { xs: 'flex-start', sm: 'auto' } }}>
           {isMounted ? 'Avmontera anslutningen' : 'Montera anslutningen'}
         </Button>
 
@@ -74,10 +74,10 @@ export const EffectLifecycleDemo = () => {
             inte gör något läses som trasig. */}
         <ToggleButtonGroup
           exclusive
-          size="small"
+          size='small'
           value={channel}
           disabled={!isMounted}
-          aria-label="Kanal"
+          aria-label='Kanal'
           onChange={(_event, nextChannel: Channel | null) => {
             // null kommer när man klickar på den kanal som redan är vald.
             // Då ska ingenting hända - annars hade valet kunnat tömmas.
@@ -97,7 +97,7 @@ export const EffectLifecycleDemo = () => {
       {isMounted ? (
         <ChannelConnection channel={channel} onLog={addEntry} />
       ) : (
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant='body2' color='textSecondary'>
           Ingenting är monterat. Komponenten med effekten finns inte i trädet just nu.
         </Typography>
       )}
@@ -115,7 +115,7 @@ export const EffectLifecycleDemo = () => {
 
           Paret städning och uppsättning går ändå att se: knapparna ovan gör
           samma sak för hand, i båda lägena. */}
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
             Monteringen ger tre rader, inte en. StrictMode monterar om komponenten en gång i utvecklingsläge, så uppsättningen körs, städas och körs

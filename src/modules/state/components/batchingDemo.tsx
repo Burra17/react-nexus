@@ -26,21 +26,21 @@ export const BatchingDemo = () => {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h3" component="p">
+      <Typography variant='h3' component='p'>
         {count}
       </Typography>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-        <Button variant="contained" onClick={handleDirect}>
+        <Button variant='contained' onClick={handleDirect}>
           setCount(count + 1) — tre gånger
         </Button>
-        <Button variant="outlined" onClick={handleFunctional}>
+        <Button variant='outlined' onClick={handleFunctional}>
           setCount(c =&gt; c + 1) — tre gånger
         </Button>
         <Button onClick={() => setCount(0)}>Nollställ</Button>
       </Stack>
 
-      <Typography color="textSecondary">
+      <Typography color='textSecondary'>
         Båda knapparna anropar setCount tre gånger. Den vänstra ökar med ett, den högra med tre — och båda ritar om vyn bara en gång.
       </Typography>
 

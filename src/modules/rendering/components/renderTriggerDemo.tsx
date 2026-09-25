@@ -25,7 +25,7 @@ const stableSettings = { label: 'samma objekt varje gång' };
 // det ut i varje kort skulle två identiska rader se ut som två uppgifter, och
 // dra uppmärksamhet från det enda som faktiskt skiljer korten - räknaren.
 const Child = ({ title }: ChildProps) => (
-  <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
+  <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
     <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
     <RenderCounter />
   </Paper>
@@ -46,11 +46,11 @@ export const RenderTriggerDemo = () => {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h3" component="p">
+      <Typography variant='h3' component='p'>
         Förälderns state: {count}
       </Typography>
 
-      <Button variant="contained" onClick={() => setCount(count + 1)} sx={{ alignSelf: 'flex-start' }}>
+      <Button variant='contained' onClick={() => setCount(count + 1)} sx={{ alignSelf: 'flex-start' }}>
         Ändra förälderns state
       </Button>
 
@@ -60,18 +60,18 @@ export const RenderTriggerDemo = () => {
 
       <FormControlLabel
         control={<Switch checked={newObjectEachRender} onChange={(event) => setNewObjectEachRender(event.target.checked)} />}
-        label="Skicka ett nyskapat objekt som prop"
+        label='Skicka ett nyskapat objekt som prop'
       />
 
       {/* Propen står här, en gång, eftersom det är samma objekt som går till
           båda barnen. Det är hela uppställningen: identisk prop, olika utfall. */}
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Båda barnen får <strong>{settings.label}</strong>.
       </Typography>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Child title="Vanligt barn" settings={settings} />
-        <MemoChild title="Barn i React.memo" settings={settings} />
+        <Child title='Vanligt barn' settings={settings} />
+        <MemoChild title='Barn i React.memo' settings={settings} />
       </Stack>
     </Stack>
   );

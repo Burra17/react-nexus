@@ -20,14 +20,14 @@ const ModuleCardContent = ({ module }: { module: AppModule }) => {
     <CardContent>
       {/* alignItems ligger i sx: MUI v9 tog bort systemprops från Stack, så
           formen <Stack alignItems="center"> från v5 kompilerar inte längre. */}
-      <Stack direction="row" spacing={1.5} sx={{ mb: 1, alignItems: 'center' }}>
+      <Stack direction='row' spacing={1.5} sx={{ mb: 1, alignItems: 'center' }}>
         <Box sx={{ display: 'flex', color: built ? 'primary.main' : 'text.secondary' }}>{module.icon}</Box>
-        <Typography variant="h3" component="h2">
+        <Typography variant='h3' component='h2'>
           {module.label}
         </Typography>
       </Stack>
 
-      <Typography color="textSecondary" sx={{ mb: 2 }}>
+      <Typography color='textSecondary' sx={{ mb: 2 }}>
         {module.description}
       </Typography>
 
@@ -37,9 +37,9 @@ const ModuleCardContent = ({ module }: { module: AppModule }) => {
           ett ord. Kontrasten mellan korten kommer alltså av att de planerade
           tonas ned, inte av att de byggda förstärks med ännu en färg. */}
       {built ? (
-        <Chip size="small" label="Klar" color="primary" />
+        <Chip size='small' label='Klar' color='primary' />
       ) : (
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant='body2' color='textSecondary'>
           Planerad
         </Typography>
       )}
@@ -58,11 +58,11 @@ export const StartPage = () => {
   return (
     <Stack spacing={3}>
       <Box>
-        <Typography variant="h1" gutterBottom>
+        <Typography variant='h1' gutterBottom>
           React Nexus
         </Typography>
         <ReadableColumn>
-          <Typography color="textSecondary">
+          <Typography color='textSecondary'>
             En levande lärobok om React, TypeScript och TanStack Query. Varje koncept får fyra delar: teorin bakom det, en demo att klicka på, koden
             som driver demon, och några frågor som kontrollerar att det fastnade. De planerade korten går ännu inte att öppna.
           </Typography>
@@ -73,7 +73,7 @@ export const StartPage = () => {
         {appModules.map((module) => (
           <Grid key={module.path} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card
-              variant="outlined"
+              variant='outlined'
               sx={(theme) => ({
                 height: '100%',
                 // Streckad kant på det som inte är byggt. En signal till som inte

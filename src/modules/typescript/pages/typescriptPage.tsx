@@ -72,19 +72,19 @@ const Theory = () => (
 
 export const TypescriptPage = () => (
   <ConceptTemplate
-    title="TypeScript"
+    title='TypeScript'
     theory={<Theory />}
     demo={
       <Stack spacing={4}>
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             Vad vet TypeScript i varje gren?
           </Typography>
           <NarrowingDemo />
         </Stack>
 
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             När löftet inte håller
           </Typography>
           <LyingAssertionDemo />

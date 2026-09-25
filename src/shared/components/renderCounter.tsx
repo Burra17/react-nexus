@@ -30,7 +30,7 @@ export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps
   /* eslint-enable react-hooks/refs */
 
   return (
-    <Typography variant="body2" color="textSecondary">
+    <Typography variant='body2' color='textSecondary'>
       Ritad om <strong>{renderCount}</strong> gånger.
       {/* Två versioner av samma not, och skillnaden är vilken mening som står
           först. StrictMode monterar bara om komponenter i utvecklingsläge, så

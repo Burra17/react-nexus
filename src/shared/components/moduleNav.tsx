@@ -23,11 +23,11 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
   const isPrevious = direction === 'previous';
 
   const content = (
-    <Stack direction="row" spacing={1.5} sx={{ p: 2, alignItems: 'center', justifyContent: isPrevious ? 'flex-start' : 'flex-end' }}>
-      {isPrevious && <ArrowBackOutlined fontSize="small" sx={{ color: built ? 'primary.main' : 'text.disabled' }} />}
+    <Stack direction='row' spacing={1.5} sx={{ p: 2, alignItems: 'center', justifyContent: isPrevious ? 'flex-start' : 'flex-end' }}>
+      {isPrevious && <ArrowBackOutlined fontSize='small' sx={{ color: built ? 'primary.main' : 'text.disabled' }} />}
 
       <Box sx={{ textAlign: isPrevious ? 'left' : 'right' }}>
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant='body2' color='textSecondary'>
           {isPrevious ? 'Förra' : 'Nästa'}
         </Typography>
 
@@ -36,13 +36,13 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
         {/* Statusen står som text, inte bara som nedtonad färg och streckad
             kant. Samma regel som startsidans kort följer. */}
         {!built && (
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant='body2' color='textSecondary'>
             Kommer snart
           </Typography>
         )}
       </Box>
 
-      {!isPrevious && <ArrowForwardOutlined fontSize="small" sx={{ color: built ? 'primary.main' : 'text.disabled' }} />}
+      {!isPrevious && <ArrowForwardOutlined fontSize='small' sx={{ color: built ? 'primary.main' : 'text.disabled' }} />}
     </Stack>
   );
 
@@ -50,7 +50,7 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
     // Inget Link, ingen tabIndex, ingen hover. Kortet ska inte kunna nås med
     // tangentbord heller - det finns ingenstans att ta vägen.
     return (
-      <Paper variant="outlined" sx={{ flex: 1, borderStyle: 'dashed' }}>
+      <Paper variant='outlined' sx={{ flex: 1, borderStyle: 'dashed' }}>
         {content}
       </Paper>
     );
@@ -58,7 +58,7 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
 
   return (
     <Paper
-      variant="outlined"
+      variant='outlined'
       component={Link}
       to={module.path}
       aria-label={`${isPrevious ? 'Förra' : 'Nästa'} koncept: ${module.label}`}
@@ -99,12 +99,12 @@ export const ModuleNav = () => {
   }
 
   return (
-    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} component="nav" aria-label="Föregående och nästa koncept">
+    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} component='nav' aria-label='Föregående och nästa koncept'>
       {/* Saknas en granne lämnas platsen tom i stället för att den andra
           sträcks ut. Då ligger "Nästa" kvar till höger på /state, där det
           inte finns någon föregående modul. */}
-      {previous ? <Neighbour module={previous} direction="previous" /> : <Box sx={{ flex: 1 }} />}
-      {next ? <Neighbour module={next} direction="next" /> : <Box sx={{ flex: 1 }} />}
+      {previous ? <Neighbour module={previous} direction='previous' /> : <Box sx={{ flex: 1 }} />}
+      {next ? <Neighbour module={next} direction='next' /> : <Box sx={{ flex: 1 }} />}
     </Stack>
   );
 };

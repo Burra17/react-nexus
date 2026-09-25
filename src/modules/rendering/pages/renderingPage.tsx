@@ -45,19 +45,19 @@ const Theory = () => (
 
 export const RenderingPage = () => (
   <ConceptTemplate
-    title="Rendering"
+    title='Rendering'
     theory={<Theory />}
     demo={
       <Stack spacing={4}>
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             Vem renderas om, och när slutar memo hjälpa?
           </Typography>
           <RenderTriggerDemo />
         </Stack>
 
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             En omrendering syns inte alltid
           </Typography>
           <DomUnchangedDemo />

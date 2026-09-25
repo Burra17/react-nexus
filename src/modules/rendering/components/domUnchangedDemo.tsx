@@ -15,14 +15,14 @@ export const DomUnchangedDemo = () => {
 
   return (
     <Stack spacing={2}>
-      <Typography color="textSecondary">
+      <Typography color='textSecondary'>
         Skriv något i fältet och ställ markören mitt i texten. Räkna sedan upp så många gånger du vill. Komponenten renderas om vid varje klick, men
         texten och markören står kvar.
       </Typography>
 
-      <TextField label="Skriv något här" size="small" sx={{ alignSelf: 'flex-start', minWidth: 280 }} />
+      <TextField label='Skriv något här' size='small' sx={{ alignSelf: 'flex-start', minWidth: 280 }} />
 
-      <Button variant="outlined" onClick={() => setCount(count + 1)} sx={{ alignSelf: 'flex-start' }}>
+      <Button variant='outlined' onClick={() => setCount(count + 1)} sx={{ alignSelf: 'flex-start' }}>
         Rendera om ({count})
       </Button>
 

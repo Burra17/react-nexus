@@ -85,20 +85,20 @@ export const PageTemplate = () => {
       <ScrollToTop />
 
       <AppBar
-        position="fixed"
-        color="default"
+        position='fixed'
+        color='default'
         elevation={0}
         sx={(theme) => ({ borderBottom: 1, borderColor: 'divider', zIndex: theme.zIndex.drawer + 1 })}
       >
         <Toolbar>
-          <IconButton edge="start" onClick={handleMenuClick} aria-label={menuLabel}>
+          <IconButton edge='start' onClick={handleMenuClick} aria-label={menuLabel}>
             <MenuOutlined />
           </IconButton>
 
           {/* Appnamnet är inte sidans rubrik utan ramens. Renderas det som h1
               får varje vy två toppnivårubriker, och rubrikstrukturen slutar
               berätta vad sidan handlar om. Varje vy sätter sin egen h1. */}
-          <Typography variant="h3" component="div" sx={{ flexGrow: 1, ml: 2 }}>
+          <Typography variant='h3' component='div' sx={{ flexGrow: 1, ml: 2 }}>
             React Nexus
           </Typography>
 
@@ -132,14 +132,14 @@ export const PageTemplate = () => {
         {/* Tom Toolbar som distans: AppBar ligger fixed och täcker annars översta raden. */}
         <Toolbar />
 
-        <List component="nav">
+        <List component='nav'>
           {navItems.map((item) => {
             const isActive = pathname === item.path;
 
             return (
               // Tooltipen är inte dekoration - hopfälld meny visar bara ikoner,
               // och då är den enda kvarvarande ledtråden till vad länken gör.
-              <Tooltip key={item.path} title={showLabels ? '' : item.label} placement="right">
+              <Tooltip key={item.path} title={showLabels ? '' : item.label} placement='right'>
                 <ListItemButton
                   component={Link}
                   to={item.path}
@@ -173,7 +173,7 @@ export const PageTemplate = () => {
           betyder att det vägrar bli smalare än sitt innehåll. Utan raden växer
           main förbi fönstret så fort en vy innehåller ett brett kodstycke, i
           stället för att låta kodstycket scrolla inuti sig självt. */}
-      <Box component="main" sx={{ flexGrow: 1, minWidth: 0, p: { xs: 2, md: 4 } }}>
+      <Box component='main' sx={{ flexGrow: 1, minWidth: 0, p: { xs: 2, md: 4 } }}>
         <Toolbar />
 
         {/* Sidans bredd bestäms här och ingen annanstans, så att innehållets

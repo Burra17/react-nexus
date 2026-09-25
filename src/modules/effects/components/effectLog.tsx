@@ -72,20 +72,20 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
   }, [entries.length]);
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
+    <Paper variant='outlined' sx={{ p: 2 }}>
       {/* justifyContent och alignItems går via sx. MUI v9 tog bort systemprops
           från Stack, så de fungerar inte längre som egna props. */}
-      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        <Typography variant="h3" component="h4">
+      <Stack direction='row' sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+        <Typography variant='h3' component='h4'>
           Logg
         </Typography>
-        <Button size="small" onClick={onClear} disabled={entries.length === 0}>
+        <Button size='small' onClick={onClear} disabled={entries.length === 0}>
           Rensa
         </Button>
       </Stack>
 
       {entries.length === 0 ? (
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant='body2' color='textSecondary'>
           Tom. Montera anslutningen nedan, så skrivs de första raderna här.
         </Typography>
       ) : (
@@ -93,16 +93,16 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
           {/* En ordnad lista, så att en skärmläsare säger hur många händelser
               som skett och i vilken ordning. Punkterna tas bort visuellt:
               raderna är redan numrerade med effektens eget löpnummer. */}
-          <Box component="ol" sx={{ m: 0, p: 0, listStyle: 'none', fontFamily: monoFontFamily, fontSize: '0.875rem' }}>
+          <Box component='ol' sx={{ m: 0, p: 0, listStyle: 'none', fontFamily: monoFontFamily, fontSize: '0.875rem' }}>
             {entries.map((entry) => (
-              <Box component="li" key={entry.id} sx={{ display: 'flex', gap: 1, py: 0.25 }}>
-                <Box component="span" sx={{ color: 'text.secondary', minWidth: '1.75rem', textAlign: 'right' }}>
+              <Box component='li' key={entry.id} sx={{ display: 'flex', gap: 1, py: 0.25 }}>
+                <Box component='span' sx={{ color: 'text.secondary', minWidth: '1.75rem', textAlign: 'right' }}>
                   {entry.id}.
                 </Box>
-                <Box component="span" sx={{ color: kindColor[entry.kind], fontWeight: 600, minWidth: '5.5rem' }}>
+                <Box component='span' sx={{ color: kindColor[entry.kind], fontWeight: 600, minWidth: '5.5rem' }}>
                   [{entry.kind}]
                 </Box>
-                <Box component="span">{entry.message}</Box>
+                <Box component='span'>{entry.message}</Box>
               </Box>
             ))}
           </Box>

@@ -96,7 +96,7 @@ const QuizItem = ({ question, index, answer, onAnswer }: QuizItemProps) => {
   const labelId = `fraga-${question.id}`;
 
   return (
-    <Paper variant="outlined" sx={{ p: 3 }}>
+    <Paper variant='outlined' sx={{ p: 3 }}>
       <FormControl sx={{ display: 'flex' }}>
         <FormLabel id={labelId} sx={{ mb: 1.5, color: 'text.primary', '&.Mui-focused': { color: 'text.primary' } }}>
           {index + 1}. {withInlineCode(question.question)}
@@ -159,7 +159,7 @@ const QuizItem = ({ question, index, answer, onAnswer }: QuizItemProps) => {
       {/* Regionen ligger i DOM:en från början, tom. En aria-live-region som
           monteras samtidigt som sitt innehåll annonseras ofta inte alls -
           skärmläsaren måste ha sett regionen innan den ändras. */}
-      <Box aria-live="polite" sx={{ mt: isAnswered ? 2 : 0 }}>
+      <Box aria-live='polite' sx={{ mt: isAnswered ? 2 : 0 }}>
         {isAnswered && (
           // Facit får en egen platta med kant, så att gränsen mot frågan och
           // alternativen syns. background.default är nedtonad mot kortets
@@ -168,8 +168,8 @@ const QuizItem = ({ question, index, answer, onAnswer }: QuizItemProps) => {
           // håll i de två lägena och därför känts som två olika ytor.
           <Box sx={{ bgcolor: 'background.default', border: 1, borderColor: 'divider', borderRadius: 1, p: 2 }}>
             <Stack spacing={1.5}>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                {isCorrect ? <CheckCircleOutlined color="success" fontSize="small" /> : <CancelOutlined color="error" fontSize="small" />}
+              <Stack direction='row' spacing={1} sx={{ alignItems: 'center' }}>
+                {isCorrect ? <CheckCircleOutlined color='success' fontSize='small' /> : <CancelOutlined color='error' fontSize='small' />}
 
                 {/* Ordet står bredvid ikonen. En status som bara syns på färg eller
                   form når inte den som inte uppfattar skillnaden. */}
@@ -177,11 +177,11 @@ const QuizItem = ({ question, index, answer, onAnswer }: QuizItemProps) => {
               </Stack>
 
               {question.options.map((option) => (
-                <Typography key={option.id} variant="body2" color="textSecondary">
+                <Typography key={option.id} variant='body2' color='textSecondary'>
                   {/* Rätt och fel skrivs ut av komponenten, inte av texten. Då kan
                     en ny fråga inte råka sakna markeringen, och förklaringen får
                     handla om varför i stället för om vilket. */}
-                  <Box component="span" sx={{ fontWeight: 600, color: option.id === question.correct ? 'success.main' : 'inherit' }}>
+                  <Box component='span' sx={{ fontWeight: 600, color: option.id === question.correct ? 'success.main' : 'inherit' }}>
                     {option.id.toUpperCase()}. {option.id === question.correct ? 'Rätt.' : 'Fel.'}
                   </Box>{' '}
                   {withInlineCode(option.explanation)}
@@ -223,18 +223,18 @@ export const Quiz = ({ questions }: QuizProps) => {
 
       {/* Samma skäl som ovan: regionen finns från början så att summeringen
           hinner annonseras när sista frågan besvarats. */}
-      <Box aria-live="polite">
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', minHeight: 36 }}>
+      <Box aria-live='polite'>
+        <Stack direction='row' spacing={2} sx={{ alignItems: 'center', minHeight: 36 }}>
           {/* Ingen poängsamling, inga streaks, inga märken. Syftet är att avslöja
               var förståelsen inte sitter, inte att belöna. */}
           {allAnswered && (
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant='body2' color='textSecondary'>
               {correctCount} av {questions.length} rätt.
             </Typography>
           )}
 
           {answeredCount > 0 && (
-            <Button variant="outlined" size="small" onClick={reset}>
+            <Button variant='outlined' size='small' onClick={reset}>
               Gör om quizen
             </Button>
           )}

@@ -28,5 +28,5 @@ export const DelayedProgress = () => {
     return null;
   }
 
-  return <LinearProgress aria-label="Hämtar vyn" />;
+  return <LinearProgress aria-label='Hämtar vyn' />;
 };

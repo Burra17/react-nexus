@@ -67,26 +67,26 @@ export const NarrowingDemo = () => {
         ))}
       </Stack>
 
-      <Paper variant="outlined" sx={{ p: 2 }}>
+      <Paper variant='outlined' sx={{ p: 2 }}>
         <Stack spacing={1}>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant='body2' color='textSecondary'>
             Gren som kördes
           </Typography>
           <Typography sx={{ fontFamily: 'monospace' }}>{inspection.branch}</Typography>
 
-          <Typography variant="body2" color="textSecondary" sx={{ pt: 1 }}>
+          <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
             Fält TypeScript tillät här
           </Typography>
           <Typography sx={{ fontFamily: 'monospace' }}>{inspection.available}</Typography>
 
-          <Typography variant="body2" color="textSecondary" sx={{ pt: 1 }}>
+          <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
             Resultat
           </Typography>
           <Typography>{inspection.text}</Typography>
         </Stack>
       </Paper>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Alla tre svaren har typen Result, men olika fält. Det är status som avgör vilken variant du håller i, och TypeScript följer med: i
         error-grenen går det att skriva .message, i done-grenen .data — och i loading-grenen ingetdera. Raden som ändå försöker läsa .message står
         kvar i koden nedan, märkt med @ts-expect-error.
