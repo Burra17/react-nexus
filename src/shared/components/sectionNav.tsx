@@ -48,8 +48,8 @@ export const SectionNav = () => {
 
   return (
     <Box
-      component="nav"
-      aria-label="Sidans avsnitt"
+      component='nav'
+      aria-label='Sidans avsnitt'
       sx={{
         position: 'sticky',
         top: APPBAR_HEIGHT,
@@ -64,14 +64,14 @@ export const SectionNav = () => {
         py: 1,
       }}
     >
-      <Stack direction="row" spacing={1} component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
+      <Stack direction='row' spacing={1} component='ul' sx={{ listStyle: 'none', p: 0, m: 0 }}>
         {conceptSections.map((section) => {
           const isActive = section.id === active;
 
           return (
-            <Box component="li" key={section.id}>
+            <Box component='li' key={section.id}>
               <Box
-                component="a"
+                component='a'
                 href={`#${section.id}`}
                 // aria-current är hur en skärmläsare får veta var man befinner
                 // sig. Färgen ensam säger ingenting till den som inte ser den.

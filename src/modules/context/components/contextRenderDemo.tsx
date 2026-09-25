@@ -47,7 +47,7 @@ const UserCard = ({ title }: CardProps) => {
   const { currentUser } = useContext(AuthContext);
 
   return (
-    <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
+    <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
       <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
       <Typography sx={{ mb: 1 }}>
         {currentUser.name}, {currentUser.role}
@@ -74,9 +74,9 @@ const LoginCardBase = ({ title }: CardProps) => {
   const { login } = useContext(AuthContext);
 
   return (
-    <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
+    <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
       <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
-      <Button size="small" variant="outlined" onClick={() => login('Gäst')} sx={{ mb: 1 }}>
+      <Button size='small' variant='outlined' onClick={() => login('Gäst')} sx={{ mb: 1 }}>
         Logga in som gäst
       </Button>
       <RenderCounter />
@@ -88,9 +88,9 @@ const MemoLoginCard = memo(LoginCardBase);
 
 // Roll 3: kontrollgrupp. Läser ingen context alls.
 const StaticCardBase = ({ title }: CardProps) => (
-  <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
+  <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
     <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
-    <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+    <Typography variant='body2' color='textSecondary' sx={{ mb: 1 }}>
       Läser ingenting ur contexten.
     </Typography>
     <RenderCounter />
@@ -140,10 +140,10 @@ export const ContextRenderDemo = () => {
   return (
     <Stack spacing={2}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-        <Button variant="contained" onClick={() => setUserIndex((current) => (current + 1) % USERS.length)}>
+        <Button variant='contained' onClick={() => setUserIndex((current) => (current + 1) % USERS.length)}>
           Byt användare
         </Button>
-        <Button variant="outlined" onClick={() => setUnrelated((current) => current + 1)}>
+        <Button variant='outlined' onClick={() => setUnrelated((current) => current + 1)}>
           Räkna upp något orelaterat ({unrelated})
         </Button>
         <Button onClick={() => setResetKey((current) => current + 1)}>Nollställ räknarna</Button>
@@ -151,7 +151,7 @@ export const ContextRenderDemo = () => {
 
       <FormControlLabel
         control={<Switch checked={memoized} onChange={(event) => setMemoized(event.target.checked)} />}
-        label="Memoisera value med useMemo och useCallback"
+        label='Memoisera value med useMemo och useCallback'
       />
 
       {/* Providerns egen räknare, och sidans enda not om StrictMode. Den behövs
@@ -164,27 +164,27 @@ export const ContextRenderDemo = () => {
           kräver att man kan köra om samma sekvens från noll. */}
       <AuthContext key={resetKey} value={value}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-          <UserCard title="1. Utan memo, läser currentUser" />
-          <MemoLoginCard title="2. I memo, läser bara login" />
-          <StaticCard title="3. I memo, läser ingen context" />
-          <MemoUserCard title="4. I memo, läser currentUser" />
+          <UserCard title='1. Utan memo, läser currentUser' />
+          <MemoLoginCard title='2. I memo, läser bara login' />
+          <StaticCard title='3. I memo, läser ingen context' />
+          <MemoUserCard title='4. I memo, läser currentUser' />
         </Stack>
       </AuthContext>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Tryck på <strong>Räkna upp något orelaterat</strong> med växeln av: kort 2 och 4 ritas om trots att ingen användare bytts, eftersom{' '}
         <code>value</code> är ett nytt objekt. Slå på växeln, nollställ och gör om — nu står de still. Tryck sedan på <strong>Byt användare</strong>:
         då ritas de om igen även med växeln på, eftersom värdet den här gången är nytt på riktigt.
       </Typography>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Kort 3 och 4 är paret att titta noga på. Båda ligger i <code>React.memo</code> och får samma props hela tiden. Det enda som skiljer dem är att
         kort 4 läser contexten — och det räcker. <code>memo</code> stoppar det som kommer uppifrån genom props, men en context når komponenten direkt
         och går rakt förbi. Kort 2 säger samma sak från andra hållet: den vill bara åt <code>login</code> och behöver inte veta vem som är inloggad,
         men ritas ändå om varje gång användaren byts.
       </Typography>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Kort 1 är det enda utan <code>memo</code>, och det tickar vid varenda klick. Det är inte contextens fel — ett barn ritas om när föräldern gör
         det. Kortet står där för att visa varför de andra tre behöver <code>memo</code> för att kunna mäta något alls.
       </Typography>

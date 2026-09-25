@@ -39,7 +39,7 @@ const Theory = () => (
       funktionsformen, för att slippa hålla reda på när det spelar roll.
     </Typography>
 
-    <Typography variant="body2" color="textSecondary">
+    <Typography variant='body2' color='textSecondary'>
       Bra att känna till i äldre kodbaser: före React 18 samlades bara beställningar som gjordes inuti en klickhanterare ihop. En uppdatering inne i
       ett <code>.then()</code> ritade om vyn för sig. Sedan React 18 samlas de ihop oavsett var de görs — men fortfarande bara inom samma händelse.
       Två separata klick slås aldrig ihop.
@@ -49,19 +49,19 @@ const Theory = () => (
 
 export const StatePage = () => (
   <ConceptTemplate
-    title="State"
+    title='State'
     theory={<Theory />}
     demo={
       <Stack spacing={4}>
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             Tre anrop, två sätt att skriva dem
           </Typography>
           <BatchingDemo />
         </Stack>
 
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             Vad står i count direkt efter setCount?
           </Typography>
           <SnapshotDemo />

@@ -70,7 +70,7 @@ const Theory = () => (
 
 export const PerformancePage = () => (
   <ConceptTemplate
-    title="Performance"
+    title='Performance'
     theory={<Theory />}
     demo={<ExpensiveFilterDemo />}
     sources={[

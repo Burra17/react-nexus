@@ -139,7 +139,7 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], startColla
   };
 
   return (
-    <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
+    <Paper variant='outlined' sx={{ overflow: 'hidden' }}>
       <Box
         sx={{
           display: 'flex',
@@ -153,13 +153,13 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], startColla
           bgcolor: 'background.default',
         }}
       >
-        <Typography variant="body2" sx={{ flexGrow: 1, fontFamily: monoFontFamily, color: 'text.secondary' }}>
+        <Typography variant='body2' sx={{ flexGrow: 1, fontFamily: monoFontFamily, color: 'text.secondary' }}>
           {fileName}
         </Typography>
 
         <Tooltip title={isCopied ? 'Kopierad' : 'Kopiera koden'}>
-          <IconButton size="small" onClick={handleCopy} aria-label={isCopied ? 'Koden är kopierad' : 'Kopiera koden'}>
-            {isCopied ? <CheckOutlined fontSize="small" color="primary" /> : <ContentCopyOutlined fontSize="small" />}
+          <IconButton size='small' onClick={handleCopy} aria-label={isCopied ? 'Koden är kopierad' : 'Kopiera koden'}>
+            {isCopied ? <CheckOutlined fontSize='small' color='primary' /> : <ContentCopyOutlined fontSize='small' />}
           </IconButton>
         </Tooltip>
       </Box>
@@ -215,7 +215,7 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], startColla
       {isCollapsible && (
         <Button
           fullWidth
-          size="small"
+          size='small'
           onClick={() => setIsExpanded(!isExpanded)}
           aria-expanded={isExpanded}
           sx={{ borderTop: showsNoCode ? 0 : 1, borderColor: 'divider', borderRadius: 0, py: 1 }}

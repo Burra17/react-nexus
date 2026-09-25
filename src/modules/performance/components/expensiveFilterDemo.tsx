@@ -125,18 +125,18 @@ export const ExpensiveFilterDemo = () => {
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
-        <Typography id="storlek-etikett" variant="body2" color="textSecondary">
+        <Typography id='storlek-etikett' variant='body2' color='textSecondary'>
           Antal poster i listan
         </Typography>
         <Slider
-          aria-labelledby="storlek-etikett"
+          aria-labelledby='storlek-etikett'
           value={size}
           onChange={(_event, next) => setSize(next as number)}
           min={SIZES[0]}
           max={SIZES[SIZES.length - 1]}
           step={null}
           marks={SIZES.map((value) => ({ value, label: value >= 1000 ? `${value / 1000}k` : String(value) }))}
-          valueLabelDisplay="auto"
+          valueLabelDisplay='auto'
         />
       </Stack>
 
@@ -144,13 +144,13 @@ export const ExpensiveFilterDemo = () => {
           ett responsivt objekt direkt på Stack. */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'center' } }}>
         <TextField
-          size="small"
-          label="Filtrera listan"
+          size='small'
+          label='Filtrera listan'
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          helperText="Ändrar ett beroende"
+          helperText='Ändrar ett beroende'
         />
-        <Button variant="outlined" onClick={() => setUnrelated((current) => current + 1)}>
+        <Button variant='outlined' onClick={() => setUnrelated((current) => current + 1)}>
           Räkna upp något orelaterat ({unrelated})
         </Button>
         <Button onClick={reset}>Nollställ mätningen</Button>
@@ -158,26 +158,26 @@ export const ExpensiveFilterDemo = () => {
 
       <FormControlLabel
         control={<Switch checked={memoized} onChange={(event) => setMemoized(event.target.checked)} />}
-        label="Memoisera filtreringen med useMemo"
+        label='Memoisera filtreringen med useMemo'
       />
 
-      <Paper variant="outlined" sx={{ p: 2 }}>
+      <Paper variant='outlined' sx={{ p: 2 }}>
         <Stack spacing={1}>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant='body2' color='textSecondary'>
             Snitt över de senaste {times.length} körningarna
           </Typography>
-          <Typography variant="h3" component="p">
+          <Typography variant='h3' component='p'>
             {average === null ? 'ingen körning än' : `${average.toFixed(2)} ms`}
           </Typography>
 
-          <Typography variant="body2" color="textSecondary" sx={{ pt: 1 }}>
+          <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
             Beräkningen har körts
           </Typography>
           <Typography sx={{ fontWeight: 600 }}>
             {runs} {runs === 1 ? 'gång' : 'gånger'} sedan nollställningen
           </Typography>
 
-          <Typography variant="body2" color="textSecondary" sx={{ pt: 1 }}>
+          <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
             Listan har {items.length.toLocaleString('sv-SE')} poster, {visible.length.toLocaleString('sv-SE')} matchar.
           </Typography>
         </Stack>
@@ -186,7 +186,7 @@ export const ExpensiveFilterDemo = () => {
       {/* Samma grepp som RenderCounter: säg vilket läge läsaren faktiskt är i.
           En modul om att mäta rätt får inte tiga om att den egna mätningen är
           missvisande lokalt. */}
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
             <strong>Du kör i utvecklingsläge, och siffran ovan är därför inte att lita på.</strong> StrictMode kör varje komponent en extra gång, och
@@ -203,12 +203,12 @@ export const ExpensiveFilterDemo = () => {
         )}
       </Typography>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Dra reglaget till 1k och skriv i fältet: tiden ligger runt en tiondels millisekund, och det spelar ingen roll om växeln är på eller av. Det är
         under react.dev:s riktmärke på ungefär en millisekund, och då finns ingenting att vinna. Dra till 100k och gör om — nu syns skillnaden.
       </Typography>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Det tydligaste beviset står på raden <strong>Beräkningen har körts</strong>. Nollställ, och tryck på{' '}
         <strong>Räkna upp något orelaterat</strong> fem gånger. Med växeln av klättrar talet vid varje tryck. Med växeln på står det helt stilla —
         beräkningen hoppades över varje gång, eftersom ingenting den beror på hade ändrats. Skriv sedan en bokstav i fältet: då rör det sig igen,

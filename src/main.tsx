@@ -14,7 +14,7 @@ import { theme } from './styles/theme';
 // användaren aktivt väljer något annat. Växlaren byggs i #3.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider theme={theme} defaultMode="system">
+    <ThemeProvider theme={theme} defaultMode='system'>
       <CssBaseline />
       <App />
     </ThemeProvider>

@@ -18,7 +18,7 @@ type NameCardProps = {
 // Kortet som båda varianterna visar sitt resultat i. Bara utseende, ingen logik
 // - det enda som skiljer varianterna åt ska vara hur fullName blir till.
 const NameCard = ({ title, fullName }: NameCardProps) => (
-  <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
+  <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
     <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
     <Typography sx={{ mb: 1 }}>{fullName}</Typography>
     <RenderCounter />
@@ -46,7 +46,7 @@ const BadForm = ({ firstName, lastName }: NameProps) => {
     setFullName(`${firstName} ${lastName}`);
   }, [firstName, lastName]);
 
-  return <NameCard title="Namnet ligger i state, satt av en effekt" fullName={fullName} />;
+  return <NameCard title='Namnet ligger i state, satt av en effekt' fullName={fullName} />;
 };
 
 // Samma sak utan effekt och utan state.
@@ -55,7 +55,7 @@ const GoodForm = ({ firstName, lastName }: NameProps) => {
   // propsen ändras, så det finns ingenting att hålla synkroniserat.
   const fullName = `${firstName} ${lastName}`;
 
-  return <NameCard title="Namnet räknas fram under renderingen" fullName={fullName} />;
+  return <NameCard title='Namnet räknas fram under renderingen' fullName={fullName} />;
 };
 
 export const UnnecessaryEffectDemo = () => {
@@ -69,8 +69,8 @@ export const UnnecessaryEffectDemo = () => {
           fält hade de kunnat skrivas olika mycket, och då hade jämförelsen
           mellan räknarna inte betytt någonting. */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <TextField size="small" label="Förnamn" value={firstName} onChange={(event) => setFirstName(event.target.value)} />
-        <TextField size="small" label="Efternamn" value={lastName} onChange={(event) => setLastName(event.target.value)} />
+        <TextField size='small' label='Förnamn' value={firstName} onChange={(event) => setFirstName(event.target.value)} />
+        <TextField size='small' label='Efternamn' value={lastName} onChange={(event) => setLastName(event.target.value)} />
       </Stack>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -78,7 +78,7 @@ export const UnnecessaryEffectDemo = () => {
         <GoodForm firstName={firstName} lastName={lastName} />
       </Stack>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Skriv en bokstav i något av fälten och jämför korten. Det vänstra ritas om dubbelt så många gånger som det högra: en gång för de nya propsen,
         en gång till för att effekten satte state. StrictMode ritar dessutom varje komponent en extra gång i utvecklingsläge, så båda siffrorna är
         dubbelt så höga som i ett byggt projekt. Det är förhållandet mellan dem som är poängen, inte talen i sig.

@@ -66,26 +66,26 @@ const Theory = () => (
 
 export const EffectsPage = () => (
   <ConceptTemplate
-    title="Effects"
+    title='Effects'
     theory={<Theory />}
     demo={
       <Stack spacing={4}>
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             1. Så fungerar en effekt
           </Typography>
           <EffectLifecycleDemo />
         </Stack>
 
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             2. Effekten som inte behövdes
           </Typography>
           <UnnecessaryEffectDemo />
         </Stack>
 
         <Stack spacing={1}>
-          <Typography variant="h3" component="h3">
+          <Typography variant='h3' component='h3'>
             3. När hämtningen springer om sig själv
           </Typography>
           <RaceConditionDemo />

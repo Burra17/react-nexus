@@ -71,16 +71,16 @@ const CardShell = ({ title, selected, shown }: CardShellProps) => {
   const isWrong = shown !== null && shown.id !== selected.id;
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
+    <Paper variant='outlined' sx={{ p: 2 }}>
       <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
 
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Vald: {selected.name}
       </Typography>
       <Typography sx={{ mb: 1 }}>Visas: {shown ? `${shown.name}, ${shown.role}` : 'hämtar ...'}</Typography>
 
       {isWrong && (
-        <Alert severity="error" variant="outlined">
+        <Alert severity='error' variant='outlined'>
           Det som visas hör till {shown.name}, inte till den valda användaren. Ett gammalt svar kom fram efter det nya och skrev över det.
         </Alert>
       )}
@@ -106,7 +106,7 @@ const BuggyUserCard = ({ userId, onLog }: UserCardProps) => {
     });
   }, [userId, onLog]);
 
-  return <CardShell title="Utan städning" selected={USERS[userId]} shown={shown} />;
+  return <CardShell title='Utan städning' selected={USERS[userId]} shown={shown} />;
 };
 
 // Samma komponent med städningen på plats.
@@ -138,7 +138,7 @@ const FixedUserCard = ({ userId, onLog }: UserCardProps) => {
     };
   }, [userId, onLog]);
 
-  return <CardShell title="Med städning" selected={USERS[userId]} shown={shown} />;
+  return <CardShell title='Med städning' selected={USERS[userId]} shown={shown} />;
 };
 
 export const RaceConditionDemo = () => {
@@ -167,12 +167,12 @@ export const RaceConditionDemo = () => {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         Klicka på Ada och sedan snabbt på Bo. Adas svar dröjer 1800 ms och Bos 300 ms, så Bos hinner fram först och Adas kommer efteråt.
       </Typography>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'center' } }}>
-        <Stack direction="row" spacing={1}>
+        <Stack direction='row' spacing={1}>
           <Button variant={userId === 'ada' ? 'contained' : 'outlined'} onClick={() => setUserId('ada')}>
             Ada (1800 ms)
           </Button>
@@ -183,7 +183,7 @@ export const RaceConditionDemo = () => {
 
         <FormControlLabel
           control={<Switch checked={isFixed} onChange={(event) => handleFixedChange(event.target.checked)} />}
-          label="Städa upp med ignore-flaggan"
+          label='Städa upp med ignore-flaggan'
         />
       </Stack>
 
@@ -198,7 +198,7 @@ export const RaceConditionDemo = () => {
           Lokalt startar monteringen två hämtningar, i ett byggt projekt en. Den
           som läser måste få veta vilket av fallen hon tittar på - annars
           beskriver noten en logg som inte står på skärmen. */}
-      <Typography variant="body2" color="textSecondary">
+      <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
             Loggen börjar med två hämtningar av samma person. Det är StrictMode som monterar om komponenten en gång i utvecklingsläge, precis som i
