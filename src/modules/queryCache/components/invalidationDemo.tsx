@@ -9,7 +9,7 @@ import { RequestCounterPanel } from '../../../shared/components/requestCounterPa
 import { useFetchUser } from '../hooks/queries/useFetchUser';
 import { useFetchUsers } from '../hooks/queries/useFetchUsers';
 import { usersKeys } from '../hooks/usersKeys';
-import { useRerenderOnCacheChange } from '../hooks/useRerenderOnCacheChange';
+import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { CacheInspector } from './cacheInspector';
 
 type DetailCardProps = {

@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { usersKeys } from '../hooks/usersKeys';
-import { useRerenderOnCacheChange } from '../hooks/useRerenderOnCacheChange';
+import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 
 // Modulens egen rot. Allt annat i cachen kommer från andra vyer.
 const MODULE_ROOT = usersKeys.all[0];
