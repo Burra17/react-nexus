@@ -38,3 +38,5 @@ export const QueryCachePage = lazy(() =>
 );
 
 export const MutationsPage = lazy(() => import('./modules/mutations/pages/mutationsPage').then((imported) => ({ default: imported.MutationsPage })));
+
+export const FormsPage = lazy(() => import('./modules/forms/pages/formsPage').then((imported) => ({ default: imported.FormsPage })));

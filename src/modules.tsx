@@ -13,6 +13,7 @@ import type { ReactNode } from 'react';
 import {
   ContextPage,
   EffectsPage,
+  FormsPage,
   MutationsPage,
   PerformancePage,
   QueryBasicsPage,
@@ -111,6 +112,7 @@ export const appModules: AppModule[] = [
     label: 'Forms',
     description: 'React Hook Form, kontrollerad mot okontrollerad och validering.',
     icon: <ListAltOutlined />,
+    element: <FormsPage />,
   },
   {
     path: '/architecture',
