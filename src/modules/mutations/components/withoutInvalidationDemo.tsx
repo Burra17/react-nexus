@@ -69,7 +69,7 @@ export const WithoutInvalidationDemo = () => {
     <Stack spacing={3}>
       <RoleList demo='utanInvalidering' ownedUserId={USER_ID} />
 
-      <Stack direction='row' spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
+      <Stack direction='row' sx={{ flexWrap: 'wrap', gap: 2 }}>
         <RoleButton role='Systemarkitekt' />
         <RoleButton role='Produktägare' />
       </Stack>

@@ -42,7 +42,7 @@ export const OptimisticDemo = () => {
     <Stack spacing={3}>
       <RoleList demo='optimistisk' ownedUserId={USER_ID} />
 
-      <Stack direction='row' spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
+      <Stack direction='row' sx={{ flexWrap: 'wrap', gap: 2 }}>
         <Button variant='contained' disabled={isPending} onClick={() => mutate({ id: USER_ID, role: nextRole, shouldFail: false })}>
           {`Gör ${USER_NAME} till ${nextRole}`}
         </Button>

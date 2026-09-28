@@ -27,7 +27,7 @@ export const WithInvalidationDemo = () => {
     <Stack spacing={3}>
       <RoleList demo='medInvalidering' ownedUserId={USER_ID} />
 
-      <Stack direction='row' spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
+      <Stack direction='row' sx={{ flexWrap: 'wrap', gap: 2 }}>
         {/* En mutation delas här, till skillnad från i del 1. Två knappar mot
             samma hook betyder att båda blir inaktiva medan någon av dem
             sparar - vilket är vad man oftast vill ha, och skälet till att
