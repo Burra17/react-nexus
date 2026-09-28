@@ -17,7 +17,7 @@ type ChannelConnectionProps = {
 
 // Komponenten som håller effekten.
 //
-// Den ansluter inte till något på riktigt - den skriver en rad i loggen i
+// Den ansluter inte till något på riktigt. Den skriver en rad i loggen i
 // stället. Poängen är när effekten körs och i vilken ordning, inte vad den gör.
 const ChannelConnection = ({ channel, onLog }: ChannelConnectionProps) => {
   useEffect(() => {
@@ -25,7 +25,7 @@ const ChannelConnection = ({ channel, onLog }: ChannelConnectionProps) => {
 
     // Städfunktionen. React kör den före varje ny körning av effekten, och en
     // sista gång när komponenten försvinner. Den stänger alltid ner den kanal
-    // som just den här körningen öppnade - inte den som är vald just nu.
+    // som just den här körningen öppnade, inte den som är vald just nu.
     return () => {
       onLog('CLEANUP', `Kopplar ner "${channel}"`);
     };
@@ -42,7 +42,7 @@ const ChannelConnection = ({ channel, onLog }: ChannelConnectionProps) => {
 
 export const EffectLifecycleDemo = () => {
   // Avmonterad från början, med flit. Monteringen är det som utlöser
-  // dubbelkörningen i StrictMode, och den ska ske framför läsaren - inte innan
+  // dubbelkörningen i StrictMode, och den ska ske framför läsaren, inte innan
   // hen hunnit titta på loggen.
   const [isMounted, setIsMounted] = useState(false);
   const [channel, setChannel] = useState<Channel>('allmänt');
@@ -53,7 +53,7 @@ export const EffectLifecycleDemo = () => {
   // Utan den skapas en ny funktion varje gång demon ritas om, och eftersom den
   // står i effektens beroendelista skulle effekten då köras om av varje rad den
   // själv skriver. Det är samma referensjämförelse som fick memo att tystna i
-  // Rendering-modulen - här hade den i stället gett en oändlig slinga.
+  // Rendering-modulen. Här hade den i stället gett en oändlig slinga.
   const addEntry = useCallback((kind: LogKind, message: string) => {
     setEntries((previous) => [...previous, { id: previous.length + 1, kind, message }]);
   }, []);
@@ -80,7 +80,7 @@ export const EffectLifecycleDemo = () => {
           aria-label='Kanal'
           onChange={(_event, nextChannel: Channel | null) => {
             // null kommer när man klickar på den kanal som redan är vald.
-            // Då ska ingenting hända - annars hade valet kunnat tömmas.
+            // Då ska ingenting hända, annars hade valet kunnat tömmas.
             if (nextChannel) {
               setChannel(nextChannel);
             }
@@ -119,13 +119,13 @@ export const EffectLifecycleDemo = () => {
         {import.meta.env.DEV ? (
           <>
             Monteringen ger tre rader, inte en. StrictMode monterar om komponenten en gång i utvecklingsläge, så uppsättningen körs, städas och körs
-            igen — ett test av att effekten tål att köras om.
+            igen. Det är ett test av att effekten tål att köras om.
           </>
         ) : (
           <>
             Monteringen ger en enda rad här. Kör du appen lokalt ger den tre: StrictMode monterar då om komponenten en gång, så att uppsättningen
             körs, städas och körs igen. Det är ett utvecklingsverktyg och finns inte i ett byggt projekt. Klicka avmontera och sedan montera igen, så
-            får du exakt samma tre rader — det enda som skiljer är att du gör om monteringen för hand i stället för att React gör den åt dig.
+            får du exakt samma tre rader. Det enda som skiljer är att du gör om monteringen för hand i stället för att React gör den åt dig.
           </>
         )}
       </Typography>

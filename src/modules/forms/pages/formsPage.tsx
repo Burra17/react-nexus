@@ -16,7 +16,7 @@ const Theory = () => (
     <Typography>
       Ett formulär ställer en fråga som inget annat i React ställer lika skarpt: <strong>vem äger värdet du skriver?</strong> Antingen React, som då
       måste få veta om varje tangenttryck och rita om, eller DOM-elementet, som håller värdet själv och låter React vara ovetande tills någon frågar.
-      Det finns ingen tredje väg, och nästan allt som är förvirrande med formulär i React går tillbaka på vilken av de två man valt — ofta utan att ha
+      Det finns ingen tredje väg, och nästan allt som är förvirrande med formulär i React går tillbaka på vilken av de två man valt, ofta utan att ha
       märkt att man valde.
     </Typography>
 
@@ -25,38 +25,38 @@ const Theory = () => (
       <strong>
         Skickar du in <code>value</code> är fältet kontrollerat
       </strong>
-      , och React tvingar det att alltid visa det du skickade. Skickar du bara <code>defaultValue</code> anger du ett startvärde och inget mer — JSX
+      , och React tvingar det att alltid visa det du skickade. Skickar du bara <code>defaultValue</code> anger du ett startvärde och inget mer. JSX
       säger inte vad värdet ska vara just nu. Att värdet råkar ligga i ett <code>useState</code> spelar ingen roll om det aldrig når fältets{' '}
       <code>value</code>; då är det en kopia bredvid, inte en styrning. Och har du väl satt <code>value</code> är <code>onChange</code> obligatoriskt:
       utan den står fältet stilla vid det du skickade in, och det går bokstavligen inte att skriva i det. Reacts dokumentation är dessutom kategorisk
-      om att en input varken kan vara båda samtidigt eller byta sida under sin livstid — byter den får du en varning i konsolen och ett fält som beter
+      om att en input varken kan vara båda samtidigt eller byta sida under sin livstid. Byter den får du en varning i konsolen och ett fält som beter
       sig oförutsägbart.
     </Typography>
 
     <Typography>
-      Kontrollerat kostar en omrendering per tangenttryck, och det är sällan ett problem — men det är inte gratis, och det är värt att veta vad man
+      Kontrollerat kostar en omrendering per tangenttryck, och det är sällan ett problem. Men det är inte gratis, och det är värt att veta vad man
       betalar för. Man betalar för att <em>kunna läsa värdet när som helst</em>: visa en teckenräknare, aktivera en knapp först när fältet är ifyllt,
       spegla vad någon skriver någon annanstans på sidan. Behöver du inget av det är kontrollerat arbete utan motprestation. Att hämta värdet ur en{' '}
-      <code>ref</code> vid inskickning räcker då — men med tio fält blir det tio refar att hålla reda på, och ingen hjälp alls med validering.
+      <code>ref</code> vid inskickning räcker då, men med tio fält blir det tio refar att hålla reda på, och ingen hjälp alls med validering.
     </Typography>
 
     <Typography>
       Det är luckan <strong>React Hook Form</strong> fyller. Biblioteket registrerar fälten åt dig, och <code>register()</code> returnerar exakt{' '}
-      <code>onChange</code>, <code>onBlur</code>, <code>ref</code> och <code>name</code> — <em>inget</em> <code>value</code>. Fälten är alltså
+      <code>onChange</code>, <code>onBlur</code>, <code>ref</code> och <code>name</code>, men <em>inget</em> <code>value</code>. Fälten är alltså
       okontrollerade i Reacts mening, och att komponenten slutar rita om vid varje tangenttryck är en följd av det och inte en optimering ovanpå. Det
       du faktiskt får är slippa refarna, en <code>formState</code> med femton fält som <code>errors</code>, <code>isDirty</code> och{' '}
-      <code>isSubmitting</code>, och ett ställe för valideringen att bo. Undantaget är komponenter som inte kan vara okontrollerade — en{' '}
+      <code>isSubmitting</code>, och ett ställe för valideringen att bo. Undantaget är komponenter som inte kan vara okontrollerade: en{' '}
       <code>Select</code> har inget textfält att läsa ett värde ur. För dem finns <code>Controller</code>, som styr just det fältet och lämnar resten
       av formuläret i fred.
     </Typography>
 
     <Typography>
       Valideringen har en egen fråga som är mer UX än teknik: <strong>när ska felet dyka upp?</strong> Standarden är <code>onSubmit</code>, och den
-      har en andra halva som sällan står utskriven — när ett fält väl har fallerat omvärderas det vid varje ändring, så meddelandet försvinner medan
-      du rättar. <code>onBlur</code> väntar tills du lämnar fältet, <code>onChange</code> rättar dig medan du skriver. Skillnaden går inte att läsa
-      sig till, bara att känna: ett namnfält i <code>onChange</code> säger att namnet är för kort efter första bokstaven. Reglerna i sig ligger som
-      ett andra argument till <code>register</code> — <code>required</code>, <code>minLength</code>, <code>pattern</code> — och för större projekt
-      finns schemabibliotek som beskriver datamodellen en gång och återanvänder den, vilket är ett annat problem än det här.
+      har en andra halva som sällan står utskriven: när ett fält väl har fallerat omvärderas det vid varje ändring, så meddelandet försvinner medan du
+      rättar. <code>onBlur</code> väntar tills du lämnar fältet, <code>onChange</code> rättar dig medan du skriver. Skillnaden går inte att läsa sig
+      till, bara att känna: ett namnfält i <code>onChange</code> säger att namnet är för kort efter första bokstaven. Reglerna i sig ligger som ett
+      andra argument till <code>register</code> (<code>required</code>, <code>minLength</code>, <code>pattern</code>), och för större projekt finns
+      schemabibliotek som beskriver datamodellen en gång och återanvänder den, vilket är ett annat problem än det här.
     </Typography>
   </>
 );
@@ -82,7 +82,7 @@ export const FormsPage = () => (
             2. Samma formulär med React Hook Form
           </Typography>
           <Typography color='textSecondary'>
-            Samma fält som ovan, plus en roll. Ingen validering än — den delen kommer härnäst, så att räknaren får visa en sak i taget.
+            Samma fält som ovan, plus en roll. Ingen validering än. Den delen kommer härnäst, så att räknaren får visa en sak i taget.
           </Typography>
           <HookFormDemo />
         </Stack>
@@ -102,7 +102,7 @@ export const FormsPage = () => (
         fileName: 'src/modules/forms/components/controlledForm.tsx',
         code: controlledFormSource,
         language: 'tsx',
-        // value in, onChange ut - och all state i formulärkomponenten, vilket
+        // value in, onChange ut, och all state i formulärkomponenten, vilket
         // är det som gör att båda fälten ritas om.
         highlight: ['const [name, setName] = useState', 'value={name} onChange='],
       },

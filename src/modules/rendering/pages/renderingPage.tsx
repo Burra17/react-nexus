@@ -11,7 +11,7 @@ const Theory = () => (
   <>
     <Typography>
       En omrendering betyder att React kör din komponentfunktion en gång till och får en ny beskrivning av hur vyn ska se ut. Första gången sker det
-      när appen startar. Därefter sker det när state ändras — komponentens eget, eller en förälders längre upp i trädet. En context som komponenten
+      när appen startar. Därefter sker det när state ändras: komponentens eget, eller en förälders längre upp i trädet. En context som komponenten
       läser räknas också. Att props ändrades står däremot inte i listan: ett barn ritas om för att föräldern gjorde det, även när barnet får exakt
       samma props som förut.
     </Typography>
@@ -19,14 +19,14 @@ const Theory = () => (
     <Typography>
       Beskrivningen är inte skärmen. React jämför den nya beskrivningen med den förra och rör bara det som faktiskt skiljer. Renderas en komponent om
       utan att något ändrats händer ingenting i webbläsaren: texten står kvar, markören står kvar, rullningen står kvar. Svaret på en omrendering är
-      därför sällan att genast försöka hindra den. Det kostar när komponenten som uppdateras sitter högt i trädet och drar med sig allt under sig —
-      men vet du inte att det är fallet har du inte mätt, och då är optimeringen en gissning.
+      därför sällan att genast försöka hindra den. Det kostar när komponenten som uppdateras sitter högt i trädet och drar med sig allt under sig. Men
+      vet du inte att det är fallet har du inte mätt, och då är optimeringen en gissning.
     </Typography>
 
     <Typography>
       Vill man ändå hindra en omrendering finns <code>React.memo</code>. Den säger: hoppa över det här barnet så länge alla props är lika som förra
-      gången. Två förbehåll. Det är en <strong>optimering och inte en garanti</strong> — React får rendera om barnet ändå om den vill. Och haken
-      sitter i ordet lika: React jämför <strong>referenser</strong>, inte innehåll, och två objekt som ser likadana ut är inte samma objekt.{' '}
+      gången. Två förbehåll. Det är en <strong>optimering och inte en garanti</strong>: React får rendera om barnet ändå om den vill. Och haken sitter
+      i ordet lika: React jämför <strong>referenser</strong>, inte innehåll, och två objekt som ser likadana ut är inte samma objekt.{' '}
       <code>{'{} === {}'}</code> är falskt.
     </Typography>
 
@@ -37,7 +37,7 @@ const Theory = () => (
     </Typography>
 
     <Typography>
-      <strong>Regeln att ta med sig:</strong> memo är inget man strör över appen. Den hjälper bara när props faktiskt är stabila — och att göra dem
+      <strong>Regeln att ta med sig:</strong> memo är inget man strör över appen. Den hjälper bara när props faktiskt är stabila, och att göra dem
       stabila är oftast det riktiga arbetet, inte att lägga till memo.
     </Typography>
   </>

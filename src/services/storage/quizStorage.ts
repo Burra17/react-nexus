@@ -9,8 +9,8 @@ import { storageKeys } from './storageKeys';
 // Lagrat "rätt: true" ljuger den dag ett facit rättas, och ingen märker det.
 //
 // besvaradAt ser överflödig ut i dag och är det enda fältet jag ändå tar med.
-// Utan en tidpunkt går det inte att bygga repetition - "de här svarade du fel
-// på för två veckor sedan" - utan att först migrera lagrad data.
+// Utan en tidpunkt går det inte att bygga repetition, som "de här svarade du
+// fel på för två veckor sedan", utan att först migrera lagrad data.
 export type AnswerChoice = 'a' | 'b' | 'c';
 
 export type QuizAnswer = {
@@ -34,7 +34,7 @@ const readAll = (): QuizStorage => readStored<QuizStorage>(storageKeys.quiz, {})
 // Alla svar för en modul. Tom om inget är besvarat.
 //
 // Returnerar bara svaren, aldrig hur många som var rätt. Den här filen känner
-// inte till frågorna och kan därför inte rätta dem - beräkningen hör hemma där
+// inte till frågorna och kan därför inte rätta dem. Beräkningen hör hemma där
 // frågedefinitionerna finns. Det är också vad som gör funktionen användbar för
 // en framtida dashboard: den läser samma svar och rättar dem själv.
 export const readModuleAnswers = (modulePath: string): ModuleAnswers => readAll()[modulePath] ?? {};
@@ -62,7 +62,7 @@ export const resetModule = (modulePath: string) => {
 
   // Modulen plockas bort ur objektet i stället för att sättas till {}. En tom
   // post och en saknad post betyder samma sak för läsningen, och då ska bara
-  // den ena finnas - annars växer lagringen med poster som inte säger något.
+  // den ena finnas. Annars växer lagringen med poster som inte säger något.
   const remaining = { ...all };
   delete remaining[modulePath];
 

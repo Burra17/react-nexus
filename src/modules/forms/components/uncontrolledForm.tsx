@@ -13,7 +13,7 @@ import { RenderCounter } from '../../../shared/components/renderCounter';
 // startvärdet och inte styr vad värdet ska vara just nu.
 //
 // Utan value finns inget att hålla synkroniserat, alltså behövs inget
-// onChange, alltså inget setState per tangenttryck - och därmed ingen
+// onChange, alltså inget setState per tangenttryck, och därmed ingen
 // omrendering. Räknaren nedan står still medan du skriver.
 //
 // Priset står i texten under fälten: React vet ingenting om vad som står i
@@ -41,7 +41,7 @@ export const UncontrolledForm = () => {
           // Först här läses värdena, direkt ur DOM-elementen. Det är också
           // först här komponenten ritas om, eftersom setSubmitted är den enda
           // state-ändringen i hela formuläret.
-          setSubmitted(`${nameRef.current?.value ?? ''} — ${emailRef.current?.value ?? ''}`);
+          setSubmitted(`${nameRef.current?.value ?? ''}, ${emailRef.current?.value ?? ''}`);
         }}
       >
         <Typography variant='body2' sx={{ fontWeight: 600 }}>
@@ -59,7 +59,7 @@ export const UncontrolledForm = () => {
         </Button>
 
         <Typography variant='caption' color='textSecondary'>
-          React vet just nu: ingenting — värdet finns bara i DOM:en
+          React vet just nu: ingenting, värdet finns bara i DOM:en
         </Typography>
 
         {submitted && <Typography variant='body2'>Skickade: {submitted}</Typography>}

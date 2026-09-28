@@ -30,7 +30,7 @@ export const effectsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Städningen för "allmänt" körs först, sedan körs effekten med "teknik"',
         explanation:
-          'React städar efter den gamla körningen innan den startar den nya. Städfunktionen ser värdena från sin egen körning, alltså "allmänt" - inte kanalen som just valts.',
+          'React städar efter den gamla körningen innan den startar den nya. Städfunktionen ser värdena från sin egen körning, alltså "allmänt", inte kanalen som just valts.',
       },
     ],
   },
@@ -48,7 +48,7 @@ export const effectsQuestions: QuizQuestion[] = [
       },
       {
         id: 'b',
-        text: 'Ingenting - React slår ihop den uppdateringen med den som kom från propsen',
+        text: 'Ingenting, eftersom React slår ihop den uppdateringen med den som kom från propsen',
         explanation:
           'Batchning slår ihop uppdateringar som sker under samma händelse. Effekten körs först efter att renderingen är klar och skärmen uppdaterad, så det finns ingenting kvar att slå ihop den med.',
       },
@@ -70,7 +70,7 @@ export const effectsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Den avbryter den första hämtningen, så att svaret aldrig kommer',
         explanation:
-          'Ett anrop som redan lämnat klienten går inte att ta tillbaka med en variabel. Svaret kommer fram precis som vanligt - flaggan avgör bara vad som händer sedan. Vill man verkligen avbryta krävs `AbortController`.',
+          'Ett anrop som redan lämnat klienten går inte att ta tillbaka med en variabel. Svaret kommer fram precis som vanligt. Flaggan avgör bara vad som händer sedan. Vill man verkligen avbryta krävs `AbortController`.',
       },
       {
         id: 'b',
@@ -80,7 +80,7 @@ export const effectsQuestions: QuizQuestion[] = [
       },
       {
         id: 'c',
-        text: 'Ingenting - React håller själv ordning på vilket svar som är det senaste',
+        text: 'Ingenting, eftersom React själv håller ordning på vilket svar som är det senaste',
         explanation:
           'React vet ingenting om dina löften. Utan flaggan skriver varje svar till state i den ordning det råkar komma fram, och ett långsamt svar vinner över ett snabbt bara för att det kom sist.',
       },

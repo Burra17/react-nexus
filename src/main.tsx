@@ -31,14 +31,14 @@ const renderApp = () =>
 // MSW:s egen dokumentation startar workern bara när NODE_ENV är 'development'.
 // Den vägen går inte här, och avsteget står utskrivet eftersom varje guide säger
 // motsatsen: i det här repot är mocken inte en ställföreträdare för en riktig
-// backend under utveckling - den ÄR datakällan. Den publicerade sidan är
+// backend under utveckling. Den ÄR datakällan. Den publicerade sidan är
 // läroboken, och en modul som bara fungerar på utvecklarens maskin är inte byggd.
 //
 // Renderingen väntar in registreringen. Att registrera en service worker är en
 // asynkron operation, och startas appen innan den är klar hinner det första
-// anropet lämna klienten innan workern lyssnar. Då får läsaren ett riktigt 404 -
-// sporadiskt, vilket är den värsta sorten. MSW rekommenderar själva att skjuta
-// upp renderingen tills löftet har löst ut.
+// anropet lämna klienten innan workern lyssnar. Då får läsaren ett riktigt 404.
+// Felet är sporadiskt, vilket är den värsta sorten. MSW rekommenderar själva
+// att skjuta upp renderingen tills löftet har löst ut.
 //
 // onUnhandledRequest: 'bypass' släpper igenom allt vi inte mockar utan att säga
 // något. Standarden varnar i konsolen för varje sådan förfrågan, och läsaren som
@@ -50,7 +50,7 @@ const renderApp = () =>
 // från 87.91 till 254.13 kB gzip, medan react-query och axios tillsammans bara
 // står för 7 av de 166 kilobyten. Med import() här hamnar MSW i en egen fil.
 //
-// Användaren laddar ner exakt lika mycket - renderingen väntar ju in workern
+// Användaren laddar ner exakt lika mycket. Renderingen väntar ju in workern
 // oavsett. Vinsten är att mockens vikt inte längre ligger i samma fil som
 // appkoden: MSW byts ut sällan och appkoden ofta, så den egna filen ligger kvar
 // i webbläsarens cache mellan publiceringar.
@@ -67,8 +67,8 @@ import('./services/mocks/browser')
   //
   // Utan den här grenen hoppas renderApp över, och läsaren möts av en vit sida
   // utan ett ord om varför. Renderas appen ändå fungerar teorin, koden och
-  // quizen som vanligt, och demon visar felrutan från axiosClient i stället -
-  // ett begripligt fel slår en tom skärm, precis som interceptorn resonerar.
+  // quizen som vanligt, och demon visar felrutan från axiosClient i stället.
+  // Ett begripligt fel slår en tom skärm, precis som interceptorn resonerar.
   .catch((error: unknown) => {
     console.error('Mockservern kunde inte startas. Appen visas ändå, men alla anrop mot /api kommer att misslyckas.', error);
   })

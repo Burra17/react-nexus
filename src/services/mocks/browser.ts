@@ -16,7 +16,7 @@ export const worker = setupWorker(...handlers);
 // Problemet: webbläsaren stoppar en service worker som varit inaktiv i ungefär
 // trettio sekunder. MSW håller listan över anslutna flikar i workerns MINNE, så
 // den töms när det händer. Nästa anrop väcker visserligen workern, men med tom
-// lista - och då träffar den sin egen regel om att släppa igenom allt när ingen
+// lista, och då träffar den sin egen regel om att släppa igenom allt när ingen
 // klient är ansluten. Anropet går till servern, som svarar med appens
 // index.html, och mockningen är tyst ur funktion tills sidan laddas om. Det är
 // ett känt och fortfarande öppet problem i MSW (mswjs/msw#367).
@@ -26,8 +26,8 @@ export const worker = setupWorker(...handlers);
 // eget intervall behövs alltså inte, och ett sådant skulle bara dubblera
 // något som redan görs oftare.
 //
-// Men den timern stryps när fliken ligger i bakgrunden - webbläsare kör ofta
-// bara en gång i minuten då - och det räcker för att workern ska hinna dö
+// Men den timern stryps när fliken ligger i bakgrunden, där webbläsare ofta
+// kör den bara en gång i minuten. Det räcker för att workern ska hinna dö
 // medan man är i ett annat fönster. Just då är risken som störst att något
 // hämtas i samma ögonblick som man kommer tillbaka, eftersom Query hämtar om av
 // egen kraft när fönstret får fokus.

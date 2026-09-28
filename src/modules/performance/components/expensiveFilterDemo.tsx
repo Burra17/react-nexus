@@ -27,7 +27,7 @@ const makeItems = (count: number): Person[] =>
     role: ROLES[index % ROLES.length],
   }));
 
-// Beräkningen som tidtas. Ingenting märkvärdigt - den är bara stor nog att synas.
+// Beräkningen som tidtas. Ingenting märkvärdigt: den är bara stor nog att synas.
 const filterItems = (items: Person[], query: string): Person[] => {
   const needle = query.toLowerCase();
 
@@ -65,7 +65,7 @@ export const ExpensiveFilterDemo = () => {
   //
   // react-hooks/refs stoppar normalt att en ref läses och skrivs under render.
   // react-hooks/purity stoppar anrop som performance.now(), som ger olika svar
-  // varje gång. I vanlig kod är båda rätt - en render ska gå att köra om utan
+  // varje gång. I vanlig kod är båda rätt: en render ska gå att köra om utan
   // att något förändras. Här är mätningen hela demonstrationen, så undantaget
   // görs medvetet. Skriv inte så här i kod som ska göra något på riktigt.
   //
@@ -78,7 +78,7 @@ export const ExpensiveFilterDemo = () => {
   //
   // Att skapa 200 000 objekt tar tid. Låg den i samma mätning som filtreringen
   // hade siffran mätt fel sak helt. Demon använder alltså useMemo för att kunna
-  // mäta useMemo rättvist - ironin är avsiktlig och värd att lägga märke till.
+  // mäta useMemo rättvist. Ironin är avsiktlig och värd att lägga märke till.
   const items = useMemo(() => makeItems(size), [size]);
 
   // Växeln, och den fungerar inte som man först gissar.
@@ -88,7 +88,7 @@ export const ExpensiveFilterDemo = () => {
   // render i beroendelistan när växeln är av. Effekten blir densamma som ingen
   // memoisering alls: beräkningen körs om varenda gång.
   //
-  // Det är dessutom exakt det react.dev varnar för - ett enda "alltid nytt"
+  // Det är dessutom exakt det react.dev varnar för: ett enda "alltid nytt"
   // värde räcker för att slå ut memoiseringen för en hel komponent.
   const alwaysNew = memoized ? null : {};
 
@@ -115,7 +115,7 @@ export const ExpensiveFilterDemo = () => {
   //
   // Tömdes fältet skulle beroendet ändras, beräkningen köras, och räknaren stå på
   // ett direkt efter en knapp som heter Nollställ. Nu börjar den på noll med
-  // memoiseringen på - och på ett utan, vilket är sant: då kördes den faktiskt.
+  // memoiseringen på och på ett utan, vilket är sant: då kördes den faktiskt.
   const reset = () => {
     statsRef.current = { times: [], runs: 0 };
     setUnrelated(0);
@@ -198,19 +198,19 @@ export const ExpensiveFilterDemo = () => {
           <>
             <strong>Det här är ett produktionsbygge, så siffran är rimlig att lita på.</strong> Kör du samma demo lokalt med utvecklingsservern får du
             högre tal: StrictMode kör då varje komponent en extra gång och koden är inte optimerad. Det är därför react.dev säger att prestanda ska
-            mätas i ett bygge — och på en maskin som liknar användarens, inte på en utvecklardator.
+            mätas i ett bygge, och på en maskin som liknar användarens, inte på en utvecklardator.
           </>
         )}
       </Typography>
 
       <Typography variant='body2' color='textSecondary'>
         Dra reglaget till 1k och skriv i fältet: tiden ligger runt en tiondels millisekund, och det spelar ingen roll om växeln är på eller av. Det är
-        under react.dev:s riktmärke på ungefär en millisekund, och då finns ingenting att vinna. Dra till 100k och gör om — nu syns skillnaden.
+        under react.dev:s riktmärke på ungefär en millisekund, och då finns ingenting att vinna. Dra till 100k och gör om. Nu syns skillnaden.
       </Typography>
 
       <Typography variant='body2' color='textSecondary'>
         Det tydligaste beviset står på raden <strong>Beräkningen har körts</strong>. Nollställ, och tryck på{' '}
-        <strong>Räkna upp något orelaterat</strong> fem gånger. Med växeln av klättrar talet vid varje tryck. Med växeln på står det helt stilla —
+        <strong>Räkna upp något orelaterat</strong> fem gånger. Med växeln av klättrar talet vid varje tryck. Med växeln på står det helt stilla:
         beräkningen hoppades över varje gång, eftersom ingenting den beror på hade ändrats. Skriv sedan en bokstav i fältet: då rör det sig igen,
         eftersom söksträngen är ett beroende. Det är hela mekanismen i ett enda tal.
       </Typography>

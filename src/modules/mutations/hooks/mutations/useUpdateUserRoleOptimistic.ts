@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { UpdateUserRolePayload } from '../../../../services/api/mutationUsers';
 import { updateMutationUserRole } from '../../../../services/api/mutationUsers';
-// User bor i users.ts och delas av båda resurserna - se kommentaren i
+// User bor i users.ts och delas av båda resurserna. Se kommentaren i
 // mutationUsers.ts om varför typen inte kopierades.
 import type { User } from '../../../../services/api/users';
 import { mutationUsersKeys } from '../mutationUsersKeys';
@@ -22,7 +22,7 @@ export type OptimisticRoleVariables = UpdateUserRolePayload & {
 // den returnerar skickas vidare till onError och onSettled.
 //
 // onError rullar tillbaka till det sparade. Utan ögonblicksbilden finns inget
-// att rulla tillbaka TILL - det är hela skälet till att onMutate returnerar
+// att rulla tillbaka TILL. Det är hela skälet till att onMutate returnerar
 // något.
 //
 // onSettled kör oavsett hur det gick, och hämtar sanningen från servern.
@@ -54,7 +54,7 @@ export const useUpdateUserRoleOptimistic = () => {
     // numera onMutateResult; äldre material och v4-kod kallar samma värde för
     // context. Det är inte bara ett namnbyte att hålla reda på: i v5 finns nu
     // ETT FJÄRDE argument som faktiskt heter context, och det är något helt
-    // annat - { client, meta, mutationKey }. Läser man ett gammalt exempel och
+    // annat: { client, meta, mutationKey }. Läser man ett gammalt exempel och
     // tar fjärde platsen i tron att det är ögonblicksbilden får man tyst fel
     // värde.
     onError: (_error, _variables, onMutateResult) => {
@@ -66,7 +66,7 @@ export const useUpdateUserRoleOptimistic = () => {
     },
 
     // Här, och inte i onSuccess. Efter ett misslyckat försök står cachen på
-    // något klienten själv skrivit och sedan rullat tillbaka - ett värde som
+    // något klienten själv skrivit och sedan rullat tillbaka, ett värde som
     // aldrig kontrollerats mot servern. onSuccess hade hoppat över just det
     // fallet, alltså det enda fall där cachen faktiskt behöver kontrolleras.
     onSettled: () => queryClient.invalidateQueries({ queryKey }),

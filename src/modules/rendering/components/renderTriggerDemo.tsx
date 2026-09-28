@@ -18,12 +18,12 @@ type ChildProps = {
 // gång när filen laddas, inte om vid varje render.
 const stableSettings = { label: 'samma objekt varje gång' };
 
-// Ett barn. De två nedan är samma komponent - det enda som skiljer är memo.
+// Ett barn. De två nedan är samma komponent. Det enda som skiljer är memo.
 //
 // settings läses aldrig här. Den finns för att vara en prop att jämföra, och
 // vad den innehåller står hos föräldern: båda barnen får samma objekt. Skrevs
 // det ut i varje kort skulle två identiska rader se ut som två uppgifter, och
-// dra uppmärksamhet från det enda som faktiskt skiljer korten - räknaren.
+// dra uppmärksamhet från det enda som faktiskt skiljer korten: räknaren.
 const Child = ({ title }: ChildProps) => (
   <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
     <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
@@ -40,7 +40,7 @@ export const RenderTriggerDemo = () => {
   const [newObjectEachRender, setNewObjectEachRender] = useState(false);
 
   // Med reglaget på skapas ett nytt objekt varje gång komponenten körs.
-  // Innehållet är identiskt, men referensen är ny - och det är referensen
+  // Innehållet är identiskt, men referensen är ny, och det är referensen
   // memo tittar på.
   const settings = newObjectEachRender ? { label: 'nytt objekt varje gång' } : stableSettings;
 

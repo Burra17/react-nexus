@@ -66,7 +66,7 @@ export const InvalidationDemo = () => {
 
       <Stack direction='row' spacing={2} sx={{ flexWrap: 'wrap', gap: 1 }}>
         {/* Prefixet avgör vad som träffas. usersKeys.all ligger överst i
-            fabriken, så det matchar både listan och detaljerna - tre poster,
+            fabriken, så det matchar både listan och detaljerna: tre poster,
             tre anrop. */}
         <Button variant='contained' onClick={() => queryClient.invalidateQueries({ queryKey: usersKeys.all })}>
           Invalidera allt under resursen

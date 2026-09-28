@@ -16,8 +16,8 @@ const Theory = () => (
     </Typography>
 
     <Typography>
-      Det absolut viktigaste att förstå med state är att det fungerar som en ögonblicksbild — ett foto. När React ritar upp din vy låser den värdet
-      för just den ritningen. Om <code>count</code> är 0, är den 0 under exakt hela det rendret.
+      Det absolut viktigaste att förstå med state är att det fungerar som en ögonblicksbild, ett foto. När React ritar upp din vy låser den värdet för
+      just den ritningen. Om <code>count</code> är 0, är den 0 under exakt hela det rendret.
     </Typography>
 
     <Typography>
@@ -32,17 +32,17 @@ const Theory = () => (
     </Typography>
 
     <Typography>
-      <strong>Regeln att ta med sig:</strong> om ditt nya värde beror på det gamla — som när du plussar på en räknare — skicka in en funktion i
-      stället: <code>setCount(c =&gt; c + 1)</code>. Den kallas en <em>updater function</em>, och med den utgår React från det senaste värdet i kön i
-      stället för från värdet i den frysta ögonblicksbilden. Det spelar roll när du gör <strong>flera uppdateringar i samma händelse</strong> — för
-      ett enstaka klick gör det ingen skillnad, eftersom React ser till att värdet hunnit uppdateras innan nästa klick. Många skriver ändå alltid
-      funktionsformen, för att slippa hålla reda på när det spelar roll.
+      <strong>Regeln att ta med sig:</strong> om ditt nya värde beror på det gamla, som när du plussar på en räknare, skicka in en funktion i stället:{' '}
+      <code>setCount(c =&gt; c + 1)</code>. Den kallas en <em>updater function</em>, och med den utgår React från det senaste värdet i kön i stället
+      för från värdet i den frysta ögonblicksbilden. Det spelar roll när du gör <strong>flera uppdateringar i samma händelse</strong>. För ett enstaka
+      klick gör det ingen skillnad, eftersom React ser till att värdet hunnit uppdateras innan nästa klick. Många skriver ändå alltid funktionsformen,
+      för att slippa hålla reda på när det spelar roll.
     </Typography>
 
     <Typography variant='body2' color='textSecondary'>
       Bra att känna till i äldre kodbaser: före React 18 samlades bara beställningar som gjordes inuti en klickhanterare ihop. En uppdatering inne i
-      ett <code>.then()</code> ritade om vyn för sig. Sedan React 18 samlas de ihop oavsett var de görs — men fortfarande bara inom samma händelse.
-      Två separata klick slås aldrig ihop.
+      ett <code>.then()</code> ritade om vyn för sig. Sedan React 18 samlas de ihop oavsett var de görs, men fortfarande bara inom samma händelse. Två
+      separata klick slås aldrig ihop.
     </Typography>
   </>
 );

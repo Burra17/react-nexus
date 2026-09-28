@@ -28,10 +28,10 @@ type ConceptTemplateProps = {
   quiz: QuizQuestion[];
 };
 
-// Sidmallen för en konceptvy: Teori, Demo, Kod, Quiz - i den ordningen, varje gång.
+// Sidmallen för en konceptvy: Teori, Demo, Kod, Quiz. I den ordningen, varje gång.
 //
 // Quizen står sist och inte före Kod. I det här repot är källkoden en del av
-// läromedlet och inte ett uppslagsverk vid sidan om - testar man före den
+// läromedlet och inte ett uppslagsverk vid sidan om. Testar man före den
 // testar man på halva materialet.
 //
 // Ordningen ligger här och inte i modulerna. Bestämdes den per modul skulle den
@@ -50,7 +50,7 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
       <Typography variant='h1'>{title}</Typography>
 
       {/* Sektionsraden ligger direkt under rubriken och fäster där när man
-        scrollar förbi. Quizen börjar 3672 px ner på /state - utan den här
+        scrollar förbi. Quizen börjar 3672 px ner på /state. Utan den här
         raden nås den bara genom att scrolla förbi hela Kod-delen. */}
       <SectionNav />
 
@@ -67,8 +67,8 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
           Stacken inuti ger avstånd mellan teorins stycken. Utan den blir de en
           textmassa: ReadableColumn är ett enda barn till sektionen, så
           sektionens avstånd hamnar runt hela spalten i stället för mellan
-          styckena. Rytmen tillhör mallen, av samma skäl som ordningen gör det -
-          bestäms den per modul ser den elfte vyn inte ut som den första. */}
+          styckena. Rytmen tillhör mallen, av samma skäl som ordningen gör det.
+          Bestäms den per modul ser den elfte vyn inte ut som den första. */}
         <ReadableColumn>
           <Stack spacing={2}>{theory}</Stack>
         </ReadableColumn>
@@ -89,7 +89,7 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
           Kod
         </Typography>
         {/* Flera filer, eftersom en demo ofta är en komponent plus en hook.
-          Källkoden läses med ?raw ur de riktiga filerna - se CLAUDE.md.
+          Källkoden läses med ?raw ur de riktiga filerna, se CLAUDE.md.
 
           Ordningen i sources är en prioritering: första filen är huvudfilen och
           visar sin kod, resten fälls ihop till en rad med filnamnet. Utan det är
@@ -97,7 +97,7 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
           förbi varenda fil för att komma dit.
 
           Hopfällt och inte flikar, eftersom poängen ofta är att jämföra två
-          filer - batchingDemo mot snapshotDemo. Flikar visar en i taget och
+          filer: batchingDemo mot snapshotDemo. Flikar visar en i taget och
           tvingar läsaren att hålla den förra koden i huvudet. */}
         {sources.map((source, index) => (
           <CodeBlock

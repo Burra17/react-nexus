@@ -18,11 +18,11 @@ export const ControlledVsUncontrolledDemo = () => (
 
     {/* Den här noten står här och inte bara i teorin, och det är avsiktligt.
         Utan den lär demon ut att kontrollerade fält är dyra, och det är inte
-        sant - jämförelsen är mot den vanligaste koden, inte mot den bästa. */}
+        sant. Jämförelsen är mot den vanligaste koden, inte mot den bästa. */}
     <Alert severity='info'>
       <strong>Jämförelsen är mot den kod man oftast skriver, inte mot den bästa möjliga.</strong> Det kontrollerade formuläret har all sin state i
       formulärkomponenten, så ett tangenttryck i ett fält ritar om båda. Flyttar man ner varje fälts state i en egen komponent ritas bara det fält man
-      skriver i om, och skillnaden krymper betydligt. Till noll kommer den aldrig — och det, inte antalet, är den verkliga skillnaden mot
+      skriver i om, och skillnaden krymper betydligt. Till noll kommer den aldrig, och det är det, inte antalet, som är den verkliga skillnaden mot
       okontrollerat.
     </Alert>
   </Stack>

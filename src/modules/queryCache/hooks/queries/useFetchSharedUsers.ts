@@ -18,7 +18,7 @@ import { RESPONSE_DELAY_MS } from './responseDelay';
 //
 // Det är inte kosmetika utan en förutsättning för det demon påstår. Med
 // staleTime 0 räknas posten som inaktuell direkt, och då utlöser varje ny
-// konsument som monteras en hämtning i bakgrunden - det femte kortet hade gett
+// konsument som monteras en hämtning i bakgrunden. Det femte kortet hade gett
 // ett anrop i stället för noll. Uppmätt, inte antaget.
 //
 // Att sätta den här är också det normala i en riktig app, och det knyter an

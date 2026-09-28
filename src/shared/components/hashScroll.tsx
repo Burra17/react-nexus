@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 //
 // Problemet den löser: konceptvyerna laddas lazy, en chunk per vy. Öppnar man
 // /rendering#rubrik-kod från ett bokmärke eller en delad länk försöker
-// webbläsaren utföra hopptillfället direkt vid sidladdningen - men då finns
+// webbläsaren utföra hopptillfället direkt vid sidladdningen, men då finns
 // elementet med det id:t ännu inte i DOM:en, eftersom vyn fortfarande hämtas.
 // När den sedan renderas är tillfället passerat, och ingen scrollar. Uppmätt
 // på /rendering#rubrik-kod: scrollY 0 med rubriken 11 359 px ner. Se #74.
@@ -20,7 +20,7 @@ import { useLocation } from 'react-router-dom';
 // Därför behövs ingen MutationObserver som väntar på att elementet ska dyka
 // upp. React vet redan när vyn är klar, och Suspense är det beskedet.
 //
-// Att vyn finns räcker dock inte - typsnitten måste också vara på plats.
+// Att vyn finns räcker dock inte. Typsnitten måste också vara på plats.
 //
 // Inter och JetBrains Mono hämtas som filer och byts in när de är klara. Fram
 // till dess ritas texten med ett reservtypsnitt av annan höjd, och sidan växer
@@ -33,8 +33,8 @@ import { useLocation } from 'react-router-dom';
 //
 // scrollIntoView utan argument respekterar scroll-margin-top, som mallen sätter
 // på varje sektionsrubrik. Rubriken hamnar alltså under den klibbiga
-// sektionsraden från #67 och inte bakom den - samma mått som ett klick inifrån
-// appen använder.
+// sektionsraden från #67 och inte bakom den, med samma mått som ett klick
+// inifrån appen använder.
 //
 // Krockar inte med ScrollToTop: den avstår så fort adressen har en hash.
 export const HashScroll = () => {
@@ -58,8 +58,8 @@ export const HashScroll = () => {
       // Ett varv till i händelsekön innan vi scrollar. fonts.ready säger att
       // filerna är hämtade, inte att sidan ritats om med dem. Scrollar vi
       // direkt på löftet mäter vi den gamla layouten: uppmätt landade rubriken
-      // på 178 px i stället för 128, alltså 50 px fel - exakt så mycket som
-      // sidan växte när typsnitten byttes in.
+      // på 178 px i stället för 128, alltså 50 px fel. Exakt så mycket växte
+      // sidan när typsnitten byttes in.
       //
       // setTimeout och inte requestAnimationFrame. rAF körs inte alls i en flik
       // som ligger i bakgrunden, och då uteblir hoppet helt för den som öppnar

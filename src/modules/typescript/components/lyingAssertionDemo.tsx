@@ -7,15 +7,15 @@ import type { Result } from '../types/result';
 
 // Två svar som båda påstår sig vara klara. Det andra saknar data.
 //
-// De är typade som unknown med flit: så ser data ut när den kommer utifrån - ur
-// ett API, ur localStorage - innan någon har lovat något om formen.
+// De är typade som unknown med flit: så ser data ut när den kommer utifrån, ur
+// ett API eller ur localStorage, innan någon har lovat något om formen.
 const HONEST_RESPONSE: unknown = { status: 'done', data: ['Ada', 'Grace', 'Katherine'] };
 const LYING_RESPONSE: unknown = { status: 'done' };
 
 // Utfallet av ett försök att läsa svaret.
 type Outcome = { kind: 'ok'; text: string } | { kind: 'crash'; text: string };
 
-// Samma typ, samma kod, två svar. TypeScript skiljer dem inte åt - det gör bara
+// Samma typ, samma kod, två svar. TypeScript skiljer dem inte åt. Det gör bara
 // webbläsaren, och först när koden redan kör.
 export const LyingAssertionDemo = () => {
   const [outcome, setOutcome] = useState<Outcome | null>(null);
@@ -60,7 +60,7 @@ export const LyingAssertionDemo = () => {
 
       <Typography variant='body2' color='textSecondary'>
         Båda knapparna kör exakt samma rader: samma <code>as Result</code>, samma kontroll av <code>status</code>, samma{' '}
-        <code>result.data.length</code>. Bygget är grönt för båda, eftersom <code>as</code> inte kontrollerar någonting — det talar bara om för
+        <code>result.data.length</code>. Bygget är grönt för båda, eftersom <code>as</code> inte kontrollerar någonting. Det talar bara om för
         TypeScript vad du påstår att värdet är. Den högra knappen visar vad påståendet var värt.
       </Typography>
     </Stack>

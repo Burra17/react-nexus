@@ -30,7 +30,7 @@ export type UpdateUserRolePayload = {
 
 // Byter roll på en användare.
 //
-// shouldFail hör egentligen inte hemma i ett riktigt API - den finns för att
+// shouldFail hör egentligen inte hemma i ett riktigt API. Den finns för att
 // demon om optimistisk uppdatering ska kunna beställa ett fel i stället för att
 // vänta på otur. Samma undantag som för hämtningarna i users.ts.
 export const updateMutationUserRole = async ({ id, role }: UpdateUserRolePayload, options: UserRequestOptions = {}): Promise<User> => {

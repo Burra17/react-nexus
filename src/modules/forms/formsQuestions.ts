@@ -18,13 +18,13 @@ export const formsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Att den har en `onChange`',
         explanation:
-          'Nej. En okontrollerad input kan mycket väl ha en `onChange` — du kan lyssna på vad någon skriver utan att styra vad som står där. Det omvända gäller däremot: har du satt `value` MÅSTE du ha `onChange`, annars går det inte att skriva i fältet.',
+          'Nej. En okontrollerad input kan mycket väl ha en `onChange`. Du kan lyssna på vad någon skriver utan att styra vad som står där. Det omvända gäller däremot: har du satt `value` MÅSTE du ha `onChange`, annars går det inte att skriva i fältet.',
       },
       {
         id: 'b',
         text: 'Att värdet ligger i ett `useState`',
         explanation:
-          'Nej, och det här är den vanligaste förväxlingen. Ett `useState` som aldrig når inputens `value` styr ingenting — fältet är fortfarande okontrollerat, och state är bara en kopia som råkar ligga bredvid.',
+          'Nej, och det här är den vanligaste förväxlingen. Ett `useState` som aldrig når inputens `value` styr ingenting. Fältet är fortfarande okontrollerat, och state är bara en kopia som råkar ligga bredvid.',
       },
       {
         id: 'c',
@@ -43,13 +43,13 @@ export const formsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Biblioteket memoiserar formuläret',
         explanation:
-          'Nej. Det finns ingen memoisering inblandad, och en `memo` hade inte hjälpt ändå — den hindrar omritning när propsen är oförändrade, inte när komponentens eget state ändras.',
+          'Nej. Det finns ingen memoisering inblandad, och en `memo` hade inte hjälpt ändå: den hindrar omritning när propsen är oförändrade, inte när komponentens eget state ändras.',
       },
       {
         id: 'b',
         text: '`register` ger fältet en `ref` men inget `value`, så värdet bor i DOM-elementet',
         explanation:
-          'Rätt. `register` returnerar `onChange`, `onBlur`, `ref` och `name` — men aldrig `value`. Fältet är därmed okontrollerat i Reacts mening, och det finns ingen state att uppdatera vid varje tangenttryck. Omrenderingarna uteblir som en följd av hur värdet läses, inte som en optimering ovanpå.',
+          'Rätt. `register` returnerar `onChange`, `onBlur`, `ref` och `name`, men aldrig `value`. Fältet är därmed okontrollerat i Reacts mening, och det finns ingen state att uppdatera vid varje tangenttryck. Omrenderingarna uteblir som en följd av hur värdet läses, inte som en optimering ovanpå.',
       },
       {
         id: 'c',
@@ -66,7 +66,7 @@ export const formsQuestions: QuizQuestion[] = [
     options: [
       {
         id: 'a',
-        text: 'Vid inskickning — och därefter vid varje ändring av det fält som fallerade',
+        text: 'Vid inskickning, och därefter vid varje ändring av det fält som fallerade',
         explanation:
           'Rätt. Standardläget heter `onSubmit`, men andra halvan av meningen är den som brukar saknas: när ett fält väl har fallerat omvärderas det vid varje ändring. Det är därför felmeddelandet försvinner medan du rättar, trots att läget heter onSubmit.',
       },
@@ -74,12 +74,12 @@ export const formsQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'Vid varje tangenttryck, från början',
         explanation:
-          'Det är läget `onChange`, och det är inte standard. Det rättar dig medan du skriver — ett namn hinner vara ogiltigt efter första bokstaven, och felet står där tills du skrivit klart.',
+          'Det är läget `onChange`, och det är inte standard. Det rättar dig medan du skriver: ett namn hinner vara ogiltigt efter första bokstaven, och felet står där tills du skrivit klart.',
       },
       {
         id: 'c',
         text: 'När fältet tappar fokus',
-        explanation: 'Det är läget `onBlur`. Det är ofta en rimlig kompromiss, men du måste välja det — det sker inte av sig självt.',
+        explanation: 'Det är läget `onBlur`. Det är ofta en rimlig kompromiss, men du måste välja det. Det sker inte av sig självt.',
       },
     ],
   },

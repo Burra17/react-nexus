@@ -32,11 +32,11 @@ type EffectLogProps = {
 };
 
 // Prefixet bär informationen, färgen förstärker den bara. Den som inte skiljer
-// grönt från orange läser fortfarande [SETUP] och [CLEANUP] - status ska aldrig
+// grönt från orange läser fortfarande [SETUP] och [CLEANUP]. Status ska aldrig
 // sitta enbart i en färg.
 //
 // IGNORED är dämpad och inte röd. Ett bortkastat svar är resultatet av att
-// städningen gjorde sitt jobb, alltså goda nyheter - en felfärg hade läst som
+// städningen gjorde sitt jobb, alltså goda nyheter. En felfärg hade läst som
 // att något gick sönder.
 const kindColor: Record<LogKind, string> = {
   SETUP: 'success.main',
@@ -52,7 +52,7 @@ const kindColor: Record<LogKind, string> = {
 // som står på 3 kan inte visa det.
 //
 // Panelen äger ingen logg. Raderna kommer utifrån, eftersom komponenten som
-// skriver dem monteras och avmonteras - hade listan legat här hade den
+// skriver dem monteras och avmonteras. Hade listan legat här hade den
 // försvunnit tillsammans med den.
 export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -60,7 +60,7 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
   // Rullar till botten när en rad tillkommit.
   //
   // Det här är en effekt av rätt sort: den synkroniserar med något utanför
-  // React - webbläsarens rullningsläge - och det går inte att göra under
+  // React, nämligen webbläsarens rullningsläge, och det går inte att göra under
   // renderingen, eftersom listan inte har sin nya höjd förrän den ritats.
   useEffect(() => {
     const container = scrollRef.current;

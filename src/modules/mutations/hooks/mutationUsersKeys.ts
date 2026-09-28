@@ -2,7 +2,7 @@
 //
 // AVSTEG FRÅN CLAUDE.md, ett arv från modul 7 och 8: roten bär modulens namn
 // och inte bara resursens. Servicen som hämtar användarna delas mellan
-// modulerna, men nycklarna gör det inte - med en delad rot skulle den här
+// modulerna, men nycklarna gör det inte. Med en delad rot skulle den här
 // modulens demo hitta data en tidigare modul lagt in, och sidan skulle bete sig
 // olika beroende på i vilken ordning kapitlen lästs.
 
@@ -16,7 +16,7 @@ export type MutationDemo = 'utanInvalidering' | 'medInvalidering' | 'optimistisk
 // att det inte påverkar svaret.
 //
 // CLAUDE.md säger att queryKey ska innehålla varje parameter som påverkar
-// svaret. Här står något i nyckeln som INTE gör det - alla tre demonstrationer
+// svaret. Här står något i nyckeln som INTE gör det: alla tre demonstrationer
 // hämtar samma lista från samma sökväg.
 //
 // Skälet är att de annars skulle dela cachepost, och då faller sidans första

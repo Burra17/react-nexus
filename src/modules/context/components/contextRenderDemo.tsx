@@ -31,7 +31,7 @@ const USERS: AuthUser[] = [
 // Mekaniken hänger ihop: provider och konsumenter är grannar i den här filen, så
 // läsaren ser hela kedjan utan att byta fil. Dessutom klagar
 // react-refresh/only-export-components på en fil som exporterar både en komponent
-// och något annat - en lokal const triggar ingen regel.
+// och något annat. En lokal const triggar ingen regel.
 //
 // Startvärdet används bara av en konsument utan provider ovanför sig. Här finns
 // alltid en, så det är en formalitet som gör typen enklare än null.
@@ -40,7 +40,7 @@ const AuthContext = createContext<AuthValue>({ currentUser: USERS[0], login: () 
 // Roll 1: läser currentUser, och är den enda konsumenten utan memo.
 //
 // Den finns för att visa varför de andra tre är memoiserade. Ett barn ritas om när
-// föräldern gör det, oavsett context - det lär Rendering-modulen ut. Utan memo hade
+// föräldern gör det, oavsett context. Det lär Rendering-modulen ut. Utan memo hade
 // alla kort tickat vid varje klick, och då hade demon mätt föräldern i stället för
 // contexten.
 const UserCard = ({ title }: CardProps) => {
@@ -99,13 +99,13 @@ const StaticCardBase = ({ title }: CardProps) => (
 
 // Kontrollgruppen måste vara memoiserad för att duga som kontrollgrupp.
 //
-// Utan memo ritas den om ändå - inte för contextens skull, utan för att den är
+// Utan memo ritas den om ändå, inte för contextens skull, utan för att den är
 // barn till en förälder som renderar om. Det är precis vad Rendering-modulen lär
 // ut, och här hade det gjort räknaren oläsbar: den hade tickat av fel skäl.
 //
 // Med memo blir det här kortet och kort 4 ett par som skiljer sig på en enda sak.
 // Båda är memoiserade, båda får samma props. Det ena läser contexten, det andra
-// inte - och bara det ena ritas om.
+// inte. Bara det ena ritas om.
 const StaticCard = memo(StaticCardBase);
 
 // Fyra konsumenter under en provider, och en växel som byter mellan ett
@@ -132,7 +132,7 @@ export const ContextRenderDemo = () => {
 
   // Den ometiserade varianten. Både objektet och funktionen skapas på nytt vid
   // varje render, precis som i react.dev:s exempel före optimeringen. Innehållet
-  // kan vara identiskt - referensen är ny, och jämförelsen sker med Object.is.
+  // kan vara identiskt, men referensen är ny, och jämförelsen sker med Object.is.
   const freshValue: AuthValue = { currentUser, login: (name: string) => setUserByName(name) };
 
   const value = memoized ? stableValue : freshValue;
@@ -173,19 +173,19 @@ export const ContextRenderDemo = () => {
 
       <Typography variant='body2' color='textSecondary'>
         Tryck på <strong>Räkna upp något orelaterat</strong> med växeln av: kort 2 och 4 ritas om trots att ingen användare bytts, eftersom{' '}
-        <code>value</code> är ett nytt objekt. Slå på växeln, nollställ och gör om — nu står de still. Tryck sedan på <strong>Byt användare</strong>:
+        <code>value</code> är ett nytt objekt. Slå på växeln, nollställ och gör om. Nu står de still. Tryck sedan på <strong>Byt användare</strong>:
         då ritas de om igen även med växeln på, eftersom värdet den här gången är nytt på riktigt.
       </Typography>
 
       <Typography variant='body2' color='textSecondary'>
         Kort 3 och 4 är paret att titta noga på. Båda ligger i <code>React.memo</code> och får samma props hela tiden. Det enda som skiljer dem är att
-        kort 4 läser contexten — och det räcker. <code>memo</code> stoppar det som kommer uppifrån genom props, men en context når komponenten direkt
+        kort 4 läser contexten, och det räcker. <code>memo</code> stoppar det som kommer uppifrån genom props, men en context når komponenten direkt
         och går rakt förbi. Kort 2 säger samma sak från andra hållet: den vill bara åt <code>login</code> och behöver inte veta vem som är inloggad,
         men ritas ändå om varje gång användaren byts.
       </Typography>
 
       <Typography variant='body2' color='textSecondary'>
-        Kort 1 är det enda utan <code>memo</code>, och det tickar vid varenda klick. Det är inte contextens fel — ett barn ritas om när föräldern gör
+        Kort 1 är det enda utan <code>memo</code>, och det tickar vid varenda klick. Det är inte contextens fel: ett barn ritas om när föräldern gör
         det. Kortet står där för att visa varför de andra tre behöver <code>memo</code> för att kunna mäta något alls.
       </Typography>
     </Stack>

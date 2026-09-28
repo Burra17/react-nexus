@@ -20,7 +20,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
       },
       {
         id: 'b',
-        text: 'Fyra — varje komponent har sin egen query',
+        text: 'Fyra, eftersom varje komponent har sin egen query',
         explanation:
           'Det vore fallet om varje komponent skötte sin hämtning själv, till exempel med `useState` och en effekt. Poängen med en delad cache är just att komponenten inte äger datan.',
       },
@@ -41,7 +41,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Den raderas ur cachen',
         explanation:
-          'Nej — det är `gcTime` som styr när en post kastas bort, och det sker först när ingen tittar på den. En invaliderad post ligger kvar och visas medan den hämtas om.',
+          'Nej. Det är `gcTime` som styr när en post kastas bort, och det sker först när ingen tittar på den. En invaliderad post ligger kvar och visas medan den hämtas om.',
       },
       {
         id: 'b',
@@ -71,7 +71,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
       },
       {
         id: 'b',
-        text: 'Allt vars nyckel börjar med `["queryCache", "users"]` — både listorna och detaljerna',
+        text: 'Allt vars nyckel börjar med `["queryCache", "users"]`: både listorna och detaljerna',
         explanation:
           'Rätt. Ju kortare prefix, desto bredare träff. Det är därför fabriken lägger `all` överst: en rad invaliderar allt som hör till resursen, utan att du behöver minnas vilka nycklar som finns.',
       },
@@ -79,7 +79,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Ingenting, eftersom ingen query använder just den nyckeln',
         explanation:
-          '`usersKeys.all` används sällan som nyckel för en hämtning. Den finns för att vara ett prefix — ett handtag att invalidera med, inte en adress att hämta från.',
+          '`usersKeys.all` används sällan som nyckel för en hämtning. Den finns för att vara ett prefix: ett handtag att invalidera med, inte en adress att hämta från.',
       },
     ],
   },

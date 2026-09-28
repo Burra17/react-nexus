@@ -20,15 +20,15 @@ import { queryCacheQuestions } from '../queryCacheQuestions';
 const Theory = () => (
   <>
     <Typography>
-      Förra modulen byggde på en regel: en konsument, en nyckel. Den var inte hela sanningen utan en avgränsning — ett sätt att visa lägena och
-      nyckeln utan att allt annat hände samtidigt. Nu tas den bort, och det som återstår är det som gör en cache till något annat än ett kortare sätt
-      att skriva en hämtning. Du lärde dig att nyckeln identifierar datan och inte komponenten som råkade hämta den. Här får du se vad det faktiskt
+      Förra modulen byggde på en regel: en konsument, en nyckel. Den var inte hela sanningen utan en avgränsning, ett sätt att visa lägena och nyckeln
+      utan att allt annat hände samtidigt. Nu tas den bort, och det som återstår är det som gör en cache till något annat än ett kortare sätt att
+      skriva en hämtning. Du lärde dig att nyckeln identifierar datan och inte komponenten som råkade hämta den. Här får du se vad det faktiskt
       innebär.
     </Typography>
 
     <Typography>
       Det innebär att <strong>datan är delad</strong>. Nyckeln är en adress i appens cache, inte i din komponent, och alla som frågar efter samma
-      adress får samma post. Monterar du fyra komponenter som alla vill visa listan går det iväg <em>ett</em> anrop — de tre andra hittar en hämtning
+      adress får samma post. Monterar du fyra komponenter som alla vill visa listan går det iväg <em>ett</em> anrop. De tre andra hittar en hämtning
       som redan pågår och hakar på den. När svaret kommer ritas alla fyra om samtidigt, eftersom de tittar på samma sak. Lägger du till en femte
       komponent efteråt sker ingen hämtning alls: posten finns redan, och den fylls direkt. Det kallas dedupering, och det är skillnaden mellan en
       lista som kostar ett anrop och en lista som kostar ett anrop per ställe den visas på.
@@ -36,10 +36,10 @@ const Theory = () => (
 
     <Typography>
       Nästa fråga blir hur man säger att något inte gäller längre. Svaret är <strong>invalidering</strong>, och den skiljer sig från att hämta om på
-      ett sätt som är lätt att missa: du talar inte om <em>vem</em> som ska hämta, bara att datan är inaktuell. Query avgör resten — poster som någon
+      ett sätt som är lätt att missa: du talar inte om <em>vem</em> som ska hämta, bara att datan är inaktuell. Query avgör resten: poster som någon
       tittar på hämtas om direkt, poster som ingen tittar på får vänta tills de efterfrågas igen. Datan ligger kvar under tiden, så skärmen blir
       aldrig tom. Och märkningen arbetar med <strong>prefix</strong>: en kort nyckel träffar allt som börjar likadant. Det är hela skälet till att
-      nycklarna byggs i en fabrik där de staplas ovanpå varandra — med <code>usersKeys.all</code> invaliderar du resursens allt, med{' '}
+      nycklarna byggs i en fabrik där de staplas ovanpå varandra. Med <code>usersKeys.all</code> invaliderar du resursens allt, med{' '}
       <code>usersKeys.lists()</code> bara listorna, och du behöver aldrig minnas vilka nycklar som finns. Kontrasten är <code>refetch()</code>, som
       ber en bestämd query att hämta om oavsett om den räknas som färsk. Det är ett hammarslag; invalidering är ett meddelande.
     </Typography>
@@ -47,9 +47,9 @@ const Theory = () => (
     <Typography>
       Eftersom cachen är appens och inte vyns går den att titta i, och det är värt att göra en vana av. Panelen nedan listar varje post med sin
       nyckel, sin status, om den räknas som färsk och hur många komponenter som tittar på den just nu. Har du besökt en annan konceptvy i samma flik
-      ser du dess data ligga kvar där — från en sida du lämnat. I praktiken inspekterar man dock inte cachen med en panel man byggt själv, utan med
+      ser du dess data ligga kvar där, från en sida du lämnat. I praktiken inspekterar man dock inte cachen med en panel man byggt själv, utan med
       bibliotekets eget utvecklingsverktyg: ett tillägg som visar varje post, när den senast hämtades, vad den innehåller, och som låter dig
-      invalidera eller kasta den för hand. Panelen nedan visar samma data i mindre format — kan du läsa den kan du läsa verktyget.
+      invalidera eller kasta den för hand. Panelen nedan visar samma data i mindre format. Kan du läsa den kan du läsa verktyget.
     </Typography>
   </>
 );
@@ -72,8 +72,8 @@ export const QueryCachePage = () => (
             2. Vad som faktiskt ligger i cachen
           </Typography>
           <Typography color='textSecondary'>
-            Panelen visar hela cachen, inte bara den här modulens poster. Den ser därför olika ut beroende på vilka konceptvyer du besökt i samma flik
-            — och det är poängen: posterna tillhör appen, inte vyn som hämtade dem.
+            Panelen visar hela cachen, inte bara den här modulens poster. Den ser därför olika ut beroende på vilka konceptvyer du besökt i samma
+            flik, och det är poängen: posterna tillhör appen, inte vyn som hämtade dem.
           </Typography>
           <CacheInspector />
         </Stack>
@@ -93,7 +93,7 @@ export const QueryCachePage = () => (
         fileName: 'src/modules/queryCache/components/sharedCacheDemo.tsx',
         code: sharedCacheDemoSource,
         language: 'tsx',
-        // Korten skapas i en loop och vet inget om varandra - deduperingen
+        // Korten skapas i en loop och vet inget om varandra. Deduperingen
         // följer av nyckeln, inte av någon samordning här.
         highlight: ['Array.from({ length: cardCount }', 'const requestCount = readUserRequestCount();'],
       },
@@ -139,7 +139,7 @@ export const QueryCachePage = () => (
         fileName: 'src/modules/queryCache/hooks/queries/useFetchUsers.ts',
         code: useFetchUsersSource,
         language: 'ts',
-        // Samma anrop, annan nyckel - den som invalideringsdemon arbetar mot.
+        // Samma anrop, annan nyckel: den som invalideringsdemon arbetar mot.
         highlight: ['queryKey: usersKeys.lists(),'],
       },
       {

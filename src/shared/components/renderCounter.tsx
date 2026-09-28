@@ -38,7 +38,7 @@ export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps
 
           Läsaren ska alltid mötas av det som faktiskt händer framför henne.
           Står fel mening först är det texten hon slutar lita på, inte sin egen
-          räkning - och då är noten värre än ingen not alls.
+          räkning. Och då är noten värre än ingen not alls.
 
           Båda meningarna står kvar i båda versionerna: att lägena skiljer sig
           är en lärdom i sig, och den försvinner om man bara visar den som

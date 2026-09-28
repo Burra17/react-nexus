@@ -2,7 +2,7 @@ import { lazy } from 'react';
 
 // Konceptvyerna hämtas först när man går till dem.
 //
-// En konceptvy drar in kodvisaren, som drar in Shikis grammatik och teman -
+// En konceptvy drar in kodvisaren, som drar in Shikis grammatik och teman,
 // ungefär 100 kB gzip. Ligger vyn i startchunken betalar även den som bara
 // tittar på startsidan för kod hen aldrig ser. Med lazy hamnar allt det i en
 // egen fil som hämtas vid första besöket på modulen.

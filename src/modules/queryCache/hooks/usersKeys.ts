@@ -4,7 +4,7 @@
 // ovanpå varandra, så usersKeys.all är ett prefix som träffar allt under
 // resursen medan usersKeys.lists() bara träffar listorna. Invalidering arbetar
 // med just prefix, vilket betyder att den här filen avgör vad som går att
-// invalidera var för sig - och det är modulens huvudnummer.
+// invalidera var för sig, och det är modulens huvudnummer.
 //
 // En handskriven array i varje hook hade fungerat lika bra tills den dagen någon
 // stavade fel. Då blir det en cachepost som tyst visar fel data i stället för ett
@@ -18,7 +18,7 @@
 // olika beroende på i vilken ordning kapitlen lästs.
 //
 // Att modulernas poster ändå syns bredvid varandra i inspektorn nedan är inte
-// en motsägelse - det är hela poängen. De delar cache, men inte nycklar.
+// en motsägelse. Det är hela poängen. De delar cache, men inte nycklar.
 export const usersKeys = {
   all: ['queryCache', 'users'] as const,
 
@@ -30,7 +30,7 @@ export const usersKeys = {
 
 // CLAUDE.md:s exempel har ett steg till: list(page) under lists(), för att en
 // resurs oftast hämtas med filter eller sidnummer. Den nivån finns inte här,
-// eftersom listan varken filtreras eller pagineras - och ett steg som alltid
+// eftersom listan varken filtreras eller pagineras, och ett steg som alltid
 // ser likadant ut är en nivå som låtsas vara en nyckel.
 
 // Delningsdemons egen fabrik, medvetet UTANFÖR usersKeys.all.
@@ -43,7 +43,7 @@ export const usersKeys = {
 // Demonstrationen om invalidering längre ner hämtar listan så fort sidan
 // öppnas. Delade de två nyckel skulle posten redan ligga i cachen när man
 // monterar de fyra korten, och räknaren skulle stå stilla på noll i stället för
-// att gå upp med ett - påståendet "fyra konsumenter, ett anrop" vore omöjligt
+// att gå upp med ett. Påståendet "fyra konsumenter, ett anrop" vore omöjligt
 // att visa.
 //
 // Att den ligger utanför roten är lika viktigt: annars hade knappen som

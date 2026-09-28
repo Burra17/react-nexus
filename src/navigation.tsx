@@ -13,10 +13,10 @@ export type NavItem = {
 // Det som går att navigera till: startsidan plus de moduler som är byggda.
 //
 // En planerad modul får ingen rutt alls. Därför kan ingen länk leda till en
-// tom sida - adressen finns helt enkelt inte förrän vyn gör det.
+// tom sida: adressen finns helt enkelt inte förrän vyn gör det.
 //
 // Routern och sidomenyn läser båda härifrån. Skrivs de var för sig driver de
-// isär så fort en adress ändras, och inget byggfel varnar - en felstavad
+// isär så fort en adress ändras, och inget byggfel varnar: en felstavad
 // sträng är fortfarande en giltig sträng.
 //
 // Listan ligger i en egen fil och inte hos routern. Låg den där skulle routern

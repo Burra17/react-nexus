@@ -2,7 +2,7 @@
 //
 // Varför en fabrik i stället för en handskriven array inne i hooken? Nycklarna
 // byggs ovanpå varandra, så usersKeys.all träffar allt som hör till resursen på
-// en gång - utan att du behöver minnas hur de underliggande nycklarna såg ut.
+// en gång, utan att du behöver minnas hur de underliggande nycklarna såg ut.
 // Och en bortglömd parameter blir ett typfel här, i stället för en cache-bugg
 // som visar fel data i tysthet.
 //
@@ -20,7 +20,7 @@
 // VAD du får tillbaka, fördröjningen bara NÄR. Praktisk följd i demon nedan: ett
 // drag i latensreglaget utlöser ingen ny hämtning, för nyckeln är densamma.
 // id får vara null. Demon börjar utan vald användare, och då finns nyckeln men
-// hämtningen är pausad - nyckeln beskriver vilken data man skulle titta på, inte
+// hämtningen är pausad. Nyckeln beskriver vilken data man skulle titta på, inte
 // att någon hämtning pågår.
 export const usersKeys = {
   all: ['queryBasics', 'users'] as const,
@@ -30,7 +30,7 @@ export const usersKeys = {
   // Cacheklockornas demo har en egen gren, och det är inte kosmetika.
   //
   // Demon om lägena ligger kvar monterad på samma sida. Delade de två nyckel
-  // skulle den förstas observer hålla cacheposten aktiv hela tiden - och gcTime
+  // skulle den förstas observer hålla cacheposten aktiv hela tiden, och gcTime
   // börjar först ticka när ingen längre tittar. Då vore det omöjligt att visa
   // vad som händer när posten städas bort, utan att något förklarade varför.
   //

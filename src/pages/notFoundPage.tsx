@@ -39,7 +39,7 @@ export const NotFoundPage = () => {
 
           {/* Den vanligaste orsaken är inte en felstavning utan ett planerat
               koncept. En modul utan vy får ingen rutt, så dess adress träffar
-              den här sidan - och det är värt att säga rakt ut, annars ser det
+              den här sidan, och det är värt att säga rakt ut, annars ser det
               ut som ett fel i appen. */}
           <Typography color='textSecondary'>
             Antingen är den felstavad, eller så hör den till ett koncept som ännu inte är byggt. Planerade moduler får ingen adress förrän vyn finns,

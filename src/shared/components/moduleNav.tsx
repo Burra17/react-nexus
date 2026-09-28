@@ -15,7 +15,7 @@ type NeighbourProps = {
 // En granne i roadmapen: föregående eller nästa koncept.
 //
 // Byggd blir ett kort man kan klicka på. Planerad blir ett kort som talar om att
-// den finns men inte går att öppna än - aldrig en länk. Nio av elva moduler är
+// den finns men inte går att öppna än, aldrig en länk. Nio av elva moduler är
 // planerade, så en naiv länk hade lett rakt in i 404-vyn från #49 i nästan alla
 // fall.
 const Neighbour = ({ module, direction }: NeighbourProps) => {
@@ -48,7 +48,7 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
 
   if (!built) {
     // Inget Link, ingen tabIndex, ingen hover. Kortet ska inte kunna nås med
-    // tangentbord heller - det finns ingenstans att ta vägen.
+    // tangentbord heller. Det finns ingenstans att ta vägen.
     return (
       <Paper variant='outlined' sx={{ flex: 1, borderStyle: 'dashed' }}>
         {content}
@@ -79,7 +79,7 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
 //
 // Utan den tar sidan bara slut efter quizen, och enda vägen vidare är att
 // scrolla 4000 px upp eller gå via sidomenyn. En lärobok läses i ordning, och
-// ordningen finns redan i modules.tsx - den användes bara aldrig för att ta
+// ordningen finns redan i modules.tsx. Den användes bara aldrig för att ta
 // läsaren framåt.
 export const ModuleNav = () => {
   const { pathname } = useLocation();

@@ -4,7 +4,7 @@ import type { QuizQuestion } from '../../shared/components/quiz';
 //
 // Egen fil och inte en del av pages-filen: det här är ren data utan JSX, alltså
 // .ts och inte .tsx. Samma gräns som CLAUDE.md drar för lazyPages.ts, fast åt
-// andra hållet - data och komponenter i samma fil är inte samma sorts sak.
+// andra hållet: data och komponenter i samma fil är inte samma sorts sak.
 //
 // Kodfragment markeras med backticks, som i Markdown. Quiz-komponenten gör dem
 // till code-element, så texten här förblir ren data utan JSX.

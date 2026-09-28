@@ -13,7 +13,7 @@ import { RenderCounter } from '../../../shared/components/renderCounter';
 // inputen visar det React säger åt den att visa.
 //
 // value är det enda som gör en input kontrollerad. Inte onChange, inte att
-// värdet råkar ligga i ett useState - utan att value skickas in. Reacts egen
+// värdet råkar ligga i ett useState, utan att value skickas in. Reacts egen
 // dokumentation är tydlig med att en input inte kan vara både och, och inte
 // heller byta sida under sin livstid.
 //
@@ -41,7 +41,7 @@ export const ControlledForm = () => {
         spacing={2}
         onSubmit={(event) => {
           event.preventDefault();
-          setSubmitted(`${name} — ${email}`);
+          setSubmitted(`${name}, ${email}`);
         }}
       >
         <Typography variant='body2' sx={{ fontWeight: 600 }}>
@@ -61,7 +61,7 @@ export const ControlledForm = () => {
             man väljer dem när något annat på sidan ska reagera på vad som
             står i fältet. */}
         <Typography variant='caption' color='textSecondary'>
-          React vet just nu: {name || '—'} / {email || '—'}
+          React vet just nu: {name || '(tomt)'} / {email || '(tomt)'}
         </Typography>
 
         {submitted && <Typography variant='body2'>Skickade: {submitted}</Typography>}

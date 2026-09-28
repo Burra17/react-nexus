@@ -23,7 +23,7 @@ export type CodeLanguage = 'ts' | 'tsx' | 'json' | 'bash';
 //
 // createHighlighterCoreSync är synkron, så komponenten slipper ett laddningsläge.
 // Den asynkrona varianten hade gett mindre bundle men också ett kodstycke som
-// blinkar in efter att sidan ritats - störande i en vy man läser.
+// blinkar in efter att sidan ritats. Det stör i en vy man läser.
 const highlighter = createHighlighterCoreSync({
   themes: [githubLight, githubDark],
   // Både typescript och tsx laddas. Att bara ha tsx hade sparat 16 kB gzip, men
@@ -37,7 +37,7 @@ type CodeBlockProps = {
   code: string;
   language: CodeLanguage;
   fileName?: string;
-  // Textbitar ur koden som ska pekas ut - "det är de här raderna som är poängen".
+  // Textbitar ur koden som ska pekas ut: "det är de här raderna som är poängen".
   //
   // Innehåll i stället för radnummer. Källkoden läses med ?raw ur den riktiga
   // filen just för att en kopia driver isär från originalet, och ett handskrivet
@@ -100,18 +100,18 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], startColla
   //
   // De två säger inte samma sak. highlight pekar ut de viktiga raderna inuti en
   // fil; ordningen i sources pekar ut den viktiga filen på sidan. Markeringarna
-  // försvinner inte - de syns så fort stycket öppnas.
+  // försvinner inte, utan syns så fort stycket öppnas.
   const [isExpanded, setIsExpanded] = useState(!startCollapsed && (!isCollapsible || pointIsBelowFold));
 
   // Hopfällt betyder två olika saker. Ett sekundärt stycke visar ingen kod alls,
-  // bara filnamnet i listen - det är hela poängen med att fälla ihop det. En
+  // bara filnamnet i listen. Det är hela poängen med att fälla ihop det. En
   // lång huvudfil visar fortfarande sina första rader, så att sidan inte blir
   // en rad med stängda lådor där man skulle läst koden.
   const showsNoCode = startCollapsed && !isExpanded;
 
   // Båda temana renderas samtidigt, som CSS-variabler på varje span.
   // Alternativet vore att färglägga om vid lägesbyte, vilket skulle rendera om
-  // varje kodstycke - precis det vi undvek genom att välja colorSchemes i temat.
+  // varje kodstycke, precis det vi undvek genom att välja colorSchemes i temat.
   const html = highlighter.codeToHtml(code, {
     lang: language,
     themes: { light: 'github-light', dark: 'github-dark' },
@@ -172,7 +172,7 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], startColla
         <Box
           sx={(theme) => ({
             // Shiki lägger ut färgerna som --shiki-light och --shiki-dark på varje
-            // span. Här väljs vilken av dem som gäller - ren CSS, ingen omrendering.
+            // span. Här väljs vilken av dem som gäller: ren CSS, ingen omrendering.
             '& .shiki, & .shiki span': { color: 'var(--shiki-light)' },
             '& .shiki': { backgroundColor: 'var(--shiki-light-bg)' },
 
@@ -222,7 +222,7 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], startColla
         >
           {/* Radantalet står i knappen och filnamnet i listen ovanför, så ett
               hopfällt stycke säger vad det innehåller utan att visa det.
-              "Visa hela filen" vore fel när ingen kod syns - då visas den inte
+              "Visa hela filen" vore fel när ingen kod syns. Då visas den inte
               i sin helhet, den visas alls. */}
           {isExpanded ? 'Visa mindre' : `${showsNoCode ? 'Visa koden' : 'Visa hela filen'} (${lineCount} rader)`}
         </Button>

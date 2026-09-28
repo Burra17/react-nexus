@@ -17,7 +17,7 @@ type RoleListProps = {
 // Listan som varje demonstration skriver mot.
 //
 // Alla tre demonstrationer hämtar samma lista från samma sökväg, men var och en
-// under sin egen nyckel - se mutationUsersKeys. Delade de cachepost skulle den
+// under sin egen nyckel (se mutationUsersKeys). Delade de cachepost skulle den
 // första demons frusna vy tina så fort den andra invaliderade.
 //
 // Varje demonstration äger dessutom sin egen användare, så att en rolländring i
@@ -51,7 +51,7 @@ export const RoleList = ({ demo, ownedUserId }: RoleListProps) => {
             {data.map((user) => (
               <Stack key={user.id} direction='row' spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <Typography variant='body2'>
-                  {user.name} — <strong>{user.role}</strong>
+                  {user.name}: <strong>{user.role}</strong>
                 </Typography>
 
                 {/* Etikett och inte bara en avvikande färg: den som inte

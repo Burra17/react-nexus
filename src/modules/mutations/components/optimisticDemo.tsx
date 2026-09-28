@@ -17,7 +17,7 @@ const USER_NAME = 'Cleo';
 // De två rollerna demon växlar mellan.
 //
 // Rollen räknas fram ur den som står nu i stället för att stå fast i knappen.
-// Med ett fast värde ändrade det andra klicket ingenting - hade den lyckade
+// Med ett fast värde ändrade det andra klicket ingenting. Hade den lyckade
 // knappen redan satt rollen syntes inget hopp när felknappen trycktes, och det
 // är hoppet som ska rullas tillbaka. Två roller att växla mellan gör att varje
 // klick alltid har en synlig verkan.
@@ -27,7 +27,7 @@ export const OptimisticDemo = () => {
   const { mutate, isPending, isError } = useUpdateUserRoleOptimistic();
 
   // Samma nyckel som listan nedan använder, så det här kostar ingen extra
-  // hämtning - det är själva poängen med en delad cache.
+  // hämtning. Det är själva poängen med en delad cache.
   const { data } = useFetchMutationUsers('optimistisk');
 
   useRerenderOnCacheChange();
@@ -48,7 +48,7 @@ export const OptimisticDemo = () => {
         </Button>
 
         {/* Felet är beställt och inte slumpmässigt. En rollback som bara
-            inträffar ibland går inte att demonstrera - och en växel hade
+            inträffar ibland går inte att demonstrera, och en växel hade
             tvingat läsaren att hålla reda på vilket läge den stod i mellan två
             klick. Två knappar gör jämförelsen till ett klick i taget. */}
         <Button variant='outlined' disabled={isPending} onClick={() => mutate({ id: USER_ID, role: nextRole, shouldFail: true })}>
@@ -71,14 +71,14 @@ export const OptimisticDemo = () => {
       )}
 
       <Alert severity='info'>
-        <strong>Titta på listan direkt när du klickar.</strong> Rollen byts innan anropet hunnit fram — det är cachen som skrivits i förväg, inte ett
+        <strong>Titta på listan direkt när du klickar.</strong> Rollen byts innan anropet hunnit fram. Det är cachen som skrivits i förväg, inte ett
         svar från servern. Med den vänstra knappen står värdet kvar. Med den högra rullas det tillbaka när felet kommer, och först därefter hämtas
         listan om för att kontrollera vad som faktiskt gäller.
       </Alert>
 
       <RequestCounterPanel
         total={requestCount}
-        caption='Nollställ före varje knapp. Båda kostar två anrop — skrivningen och hämtningen från onSettled. Att den misslyckade också hämtar om är hela skillnaden mot onSuccess.'
+        caption='Nollställ före varje knapp. Båda kostar två anrop: skrivningen och hämtningen från onSettled. Att den misslyckade också hämtar om är hela skillnaden mot onSuccess.'
       />
     </Stack>
   );
