@@ -282,6 +282,12 @@ En PR håller sig till en ticket. Dyker något annat upp på vägen blir det en 
 
 ## Dokumentation
 
-README.md och docs/ARKITEKTUR.md skrivs när strukturen satt sig — inte innan, eftersom ett dokument om en arkitektur som ännu ändras blir inaktuellt direkt.
+Arkitekturen beskrivs på tre ställen, och varje ställe har sin egen uppgift:
 
-När de finns gäller: dokumentationen uppdateras i samma PR som ändringen, inte efteråt. Ett dokument som beskriver en arkitektur projektet vuxit ifrån är sämre än inget dokument, eftersom det läses som sanning.
+- CLAUDE.md har reglerna: vad som gäller när man skriver kod.
+- Modul 11 (/architecture) har skälen: varför strukturen ser ut som den gör. Den läser de riktiga källfilerna med ?raw och kan därför inte hamna i otakt med koden.
+- README.md är kartan för den som kommer ny: vad projektet är, hur det körs, mappträdet i korthet. Den länkar till Modul 11 i stället för att upprepa motiveringarna.
+
+Något docs/ARKITEKTUR.md skrivs inte. Det vore ännu ett ställe som säger samma sak som Modul 11, men utan att kunna läsa koden, och det skulle bli inaktuellt i tysthet första gången en mapp flyttas.
+
+Dokumentationen uppdateras i samma PR som ändringen, inte efteråt. Ett dokument som beskriver en arkitektur projektet vuxit ifrån är sämre än inget dokument, eftersom det läses som sanning.
