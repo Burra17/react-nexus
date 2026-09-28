@@ -11,6 +11,7 @@ import StorageOutlined from '@mui/icons-material/StorageOutlined';
 import ToggleOnOutlined from '@mui/icons-material/ToggleOnOutlined';
 import type { ReactNode } from 'react';
 import {
+  ArchitecturePage,
   ContextPage,
   EffectsPage,
   FormsPage,
@@ -119,5 +120,6 @@ export const appModules: AppModule[] = [
     label: 'Arkitektur',
     description: 'Repots egen struktur och flödet page → hook → service → axiosClient → API.',
     icon: <SchemaOutlined />,
+    element: <ArchitecturePage />,
   },
 ];
