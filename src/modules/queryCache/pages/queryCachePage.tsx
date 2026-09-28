@@ -13,7 +13,7 @@ import userListCardSource from '../components/userListCard.tsx?raw';
 import useFetchSharedUsersSource from '../hooks/queries/useFetchSharedUsers.ts?raw';
 import useFetchUserSource from '../hooks/queries/useFetchUser.ts?raw';
 import useFetchUsersSource from '../hooks/queries/useFetchUsers.ts?raw';
-import useRerenderOnCacheChangeSource from '../hooks/useRerenderOnCacheChange.ts?raw';
+import useRerenderOnCacheChangeSource from '../../../shared/hooks/useRerenderOnCacheChange.ts?raw';
 import usersKeysSource from '../hooks/usersKeys.ts?raw';
 import { queryCacheQuestions } from '../queryCacheQuestions';
 
@@ -121,7 +121,7 @@ export const QueryCachePage = () => (
         highlight: ['const queries = queryClient.getQueryCache().getAll();', 'const isThisModule ='],
       },
       {
-        fileName: 'src/modules/queryCache/hooks/useRerenderOnCacheChange.ts',
+        fileName: 'src/shared/hooks/useRerenderOnCacheChange.ts',
         code: useRerenderOnCacheChangeSource,
         language: 'ts',
         // Prenumerationen som gör att panelerna visar nuet och inte det läge
