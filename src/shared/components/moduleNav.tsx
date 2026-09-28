@@ -5,56 +5,16 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Link, useLocation } from 'react-router-dom';
-import { appModules, isBuilt, type AppModule } from '../../modules';
+import { appModules, type AppModule } from '../../modules';
 
 type NeighbourProps = {
   module: AppModule;
   direction: 'previous' | 'next';
 };
 
-// En granne i roadmapen: föregående eller nästa koncept.
-//
-// Byggd blir ett kort man kan klicka på. Planerad blir ett kort som talar om att
-// den finns men inte går att öppna än, aldrig en länk. Nio av elva moduler är
-// planerade, så en naiv länk hade lett rakt in i 404-vyn från #49 i nästan alla
-// fall.
+// En granne i roadmapen: föregående eller nästa koncept, som en länk dit.
 const Neighbour = ({ module, direction }: NeighbourProps) => {
-  const built = isBuilt(module);
   const isPrevious = direction === 'previous';
-
-  const content = (
-    <Stack direction='row' spacing={1.5} sx={{ p: 2, alignItems: 'center', justifyContent: isPrevious ? 'flex-start' : 'flex-end' }}>
-      {isPrevious && <ArrowBackOutlined fontSize='small' sx={{ color: built ? 'primary.main' : 'text.disabled' }} />}
-
-      <Box sx={{ textAlign: isPrevious ? 'left' : 'right' }}>
-        <Typography variant='body2' color='textSecondary'>
-          {isPrevious ? 'Förra' : 'Nästa'}
-        </Typography>
-
-        <Typography sx={{ fontWeight: 600, color: built ? 'text.primary' : 'text.secondary' }}>{module.label}</Typography>
-
-        {/* Statusen står som text, inte bara som nedtonad färg och streckad
-            kant. Samma regel som startsidans kort följer. */}
-        {!built && (
-          <Typography variant='body2' color='textSecondary'>
-            Kommer snart
-          </Typography>
-        )}
-      </Box>
-
-      {!isPrevious && <ArrowForwardOutlined fontSize='small' sx={{ color: built ? 'primary.main' : 'text.disabled' }} />}
-    </Stack>
-  );
-
-  if (!built) {
-    // Inget Link, ingen tabIndex, ingen hover. Kortet ska inte kunna nås med
-    // tangentbord heller. Det finns ingenstans att ta vägen.
-    return (
-      <Paper variant='outlined' sx={{ flex: 1, borderStyle: 'dashed' }}>
-        {content}
-      </Paper>
-    );
-  }
 
   return (
     <Paper
@@ -70,7 +30,18 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
         '&:hover': { borderColor: 'primary.main' },
       })}
     >
-      {content}
+      <Stack direction='row' spacing={1.5} sx={{ p: 2, alignItems: 'center', justifyContent: isPrevious ? 'flex-start' : 'flex-end' }}>
+        {isPrevious && <ArrowBackOutlined fontSize='small' sx={{ color: 'primary.main' }} />}
+
+        <Box sx={{ textAlign: isPrevious ? 'left' : 'right' }}>
+          <Typography variant='body2' color='textSecondary'>
+            {isPrevious ? 'Förra' : 'Nästa'}
+          </Typography>
+          <Typography sx={{ fontWeight: 600, color: 'text.primary' }}>{module.label}</Typography>
+        </Box>
+
+        {!isPrevious && <ArrowForwardOutlined fontSize='small' sx={{ color: 'primary.main' }} />}
+      </Stack>
     </Paper>
   );
 };

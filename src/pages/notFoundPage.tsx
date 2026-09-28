@@ -29,23 +29,12 @@ export const NotFoundPage = () => {
       </Typography>
 
       <ReadableColumn>
-        <Stack spacing={2}>
-          <Typography color='textSecondary'>
-            {/* Rent <code>, inte Typography component="code". Typography sätter
-                font-family från temat och slår därmed ut CssBaseline-regeln för
-                code, så adressen hade renderats i brödtextens typsnitt. */}
-            Adressen <code>{pathname}</code> leder ingenstans i appen.
-          </Typography>
-
-          {/* Den vanligaste orsaken är inte en felstavning utan ett planerat
-              koncept. En modul utan vy får ingen rutt, så dess adress träffar
-              den här sidan, och det är värt att säga rakt ut, annars ser det
-              ut som ett fel i appen. */}
-          <Typography color='textSecondary'>
-            Antingen är den felstavad, eller så hör den till ett koncept som ännu inte är byggt. Planerade moduler får ingen adress förrän vyn finns,
-            och syns på startsidan som nedtonade kort.
-          </Typography>
-        </Stack>
+        <Typography color='textSecondary'>
+          {/* Rent <code>, inte Typography component="code". Typography sätter
+              font-family från temat och slår därmed ut CssBaseline-regeln för
+              code, så adressen hade renderats i brödtextens typsnitt. */}
+          Adressen <code>{pathname}</code> leder ingenstans i appen. Kontrollera stavningen, eller välj ett koncept från startsidan.
+        </Typography>
       </ReadableColumn>
 
       {/* Button med component={Link} renderar ett <a>: navigering ska vara en
