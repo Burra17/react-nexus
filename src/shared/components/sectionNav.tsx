@@ -57,7 +57,7 @@ export const SectionNav = () => {
 
         // Ogenomskinlig bakgrund, inte backdrop-filter. Designlinjen är "djup
         // aldrig": inga gradienter, ingen glöd, inga glaseffekter. Raden lånar
-        // AppBar:ens formspråk i stället - platt, med en tunn underkant.
+        // AppBar:ens formspråk i stället: platt, med en tunn underkant.
         bgcolor: 'background.default',
         borderBottom: 1,
         borderColor: 'divider',

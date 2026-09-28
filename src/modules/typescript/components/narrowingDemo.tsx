@@ -20,7 +20,7 @@ type Inspection = {
 };
 
 // Här sker narrowing. TypeScript läser status och vet därefter exakt vilken av de
-// tre varianterna vi håller i - och därmed vilka fält som går att skriva.
+// tre varianterna vi håller i, och därmed vilka fält som går att skriva.
 const inspect = (result: Result): Inspection => {
   if (result.status === 'loading') {
     // @ts-expect-error message finns bara på error-varianten, så den här raden är
@@ -31,7 +31,7 @@ const inspect = (result: Result): Inspection => {
     return {
       branch: "status === 'loading'",
       available: 'status',
-      text: `Inget svar än. Att läsa .message här gav ${String(missing)} - fältet finns inte på den här varianten.`,
+      text: `Inget svar än. Att läsa .message här gav ${String(missing)}. Fältet finns inte på den här varianten.`,
     };
   }
 
@@ -46,7 +46,7 @@ const inspect = (result: Result): Inspection => {
   // Tredje grenen behöver ingen kontroll. De två andra varianterna är redan
   // uteslutna, så TypeScript vet att result måste vara done här.
   return {
-    branch: 'ingen kontroll kvar - done är det enda som återstår',
+    branch: 'ingen kontroll kvar: done är det enda som återstår',
     available: 'status, data',
     text: result.data.join(', '),
   };
@@ -88,8 +88,8 @@ export const NarrowingDemo = () => {
 
       <Typography variant='body2' color='textSecondary'>
         Alla tre svaren har typen Result, men olika fält. Det är status som avgör vilken variant du håller i, och TypeScript följer med: i
-        error-grenen går det att skriva .message, i done-grenen .data — och i loading-grenen ingetdera. Raden som ändå försöker läsa .message står
-        kvar i koden nedan, märkt med @ts-expect-error.
+        error-grenen går det att skriva .message, i done-grenen .data, och i loading-grenen ingetdera. Raden som ändå försöker läsa .message står kvar
+        i koden nedan, märkt med @ts-expect-error.
       </Typography>
     </Stack>
   );

@@ -15,8 +15,8 @@ type NameCardProps = {
   fullName: string;
 };
 
-// Kortet som båda varianterna visar sitt resultat i. Bara utseende, ingen logik
-// - det enda som skiljer varianterna åt ska vara hur fullName blir till.
+// Kortet som båda varianterna visar sitt resultat i. Bara utseende, ingen logik.
+// Det enda som skiljer varianterna åt ska vara hur fullName blir till.
 const NameCard = ({ title, fullName }: NameCardProps) => (
   <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
     <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
@@ -28,7 +28,7 @@ const NameCard = ({ title, fullName }: NameCardProps) => (
 // Varianten som lägger ett härlett värde i state.
 //
 // Avsiktligt felaktig kod. Den står här för att visa vad den kostar, inte som
-// ett mönster att kopiera - se raden märkt FEL nedan.
+// ett mönster att kopiera. Se raden märkt FEL nedan.
 const BadForm = ({ firstName, lastName }: NameProps) => {
   const [fullName, setFullName] = useState('');
 
@@ -40,7 +40,7 @@ const BadForm = ({ firstName, lastName }: NameProps) => {
   // regeln heter set-state-in-effect och länkar själv till react.dev-sidan om
   // att du förmodligen inte behöver en effekt. Undantaget görs bara för att
   // felet är hela demonstrationen. Skriv aldrig så här i kod som ska göra
-  // något på riktigt - den rättade versionen står i GoodForm nedan.
+  // något på riktigt. Den rättade versionen står i GoodForm nedan.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- felet är poängen, se kommentaren ovan
     setFullName(`${firstName} ${lastName}`);

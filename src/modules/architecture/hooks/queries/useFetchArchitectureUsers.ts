@@ -10,7 +10,7 @@ const RESPONSE_DELAY_MS = 900;
 
 // Hämtningen som demon spårar.
 //
-// Hooken är med flit oremarkabel - den ser ut precis som useFetchUsers i modul
+// Hooken är med flit oremarkabel. Den ser ut precis som useFetchUsers i modul
 // 8, och det är poängen. Det som demonstreras är inte den här filen utan
 // kedjan den ingår i.
 //

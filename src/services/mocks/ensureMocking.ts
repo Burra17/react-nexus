@@ -1,8 +1,8 @@
 // Väntar tills mockservern säkert hanterar den här flikens anrop igen.
 //
 // Filen har med flit inga importer. axiosClient behöver anropa den, och
-// axiosClient nås i sin tur från api/users, som handlers.ts hämtar sin typ ur -
-// importerade den här filen något av det skulle beroendena gå i ring.
+// axiosClient nås i sin tur från api/users, som handlers.ts hämtar sin typ ur.
+// Importerade den här filen något av det skulle beroendena gå i ring.
 //
 // Bakgrunden: webbläsaren stoppar en service worker som varit inaktiv i ungefär
 // trettio sekunder, och MSW håller listan över anslutna flikar i workerns minne.
@@ -18,7 +18,7 @@ export const ensureMocking = (): Promise<void> =>
   new Promise((resolve) => {
     const controller = navigator.serviceWorker?.controller;
 
-    // Ingen worker styr sidan - då finns inget att återuppliva, och den som
+    // Ingen worker styr sidan. Då finns inget att återuppliva, och den som
     // anropade får hantera svaret som det blev.
     if (!controller) {
       resolve();

@@ -12,7 +12,7 @@ const MODULE_ROOT = usersKeys.all[0];
 // Inspektorn över hela cachen.
 //
 // Den filtrerar med flit INTE bort andra modulers poster. Har du besökt en
-// annan konceptvy i samma flik ligger dess data kvar här - data från en sida du
+// annan konceptvy i samma flik ligger dess data kvar här: data från en sida du
 // lämnat, som finns kvar för att cachen tillhör appen och inte vyn. Det är
 // modulens tema, synligt utan att någon behöver argumentera för det.
 //

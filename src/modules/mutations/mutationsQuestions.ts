@@ -8,7 +8,7 @@ import type { QuizQuestion } from '../../shared/components/quiz';
 //
 // Vad invalidateQueries gör med en post frågas INTE här. Modul 8 har redan den
 // frågan, och en lärobok som ställer samma fråga två gånger mäter inte något
-// nytt - den mäter om man kommer ihåg förra kapitlet.
+// nytt. Den mäter om man kommer ihåg förra kapitlet.
 export const mutationsQuestions: QuizQuestion[] = [
   {
     id: 'servern-sparade-vyn-star-still',
@@ -20,7 +20,7 @@ export const mutationsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Servern svarade med gammal data',
         explanation:
-          'Nej — svaret innehåller det nya värdet, och det går att se i mutationens `data`. Problemet ligger inte i vad servern skickade tillbaka utan i vad som gjordes med det.',
+          'Nej. Svaret innehåller det nya värdet, och det går att se i mutationens `data`. Problemet ligger inte i vad servern skickade tillbaka utan i vad som gjordes med det.',
       },
       {
         id: 'b',
@@ -32,7 +32,7 @@ export const mutationsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Komponenten har inte renderats om',
         explanation:
-          'Den har renderats om flera gånger — mutationen gick från pending till success, och det är ett tillståndsbyte som ritar om. En omrendering hjälper bara om det finns något nytt att rita, och cachen innehåller fortfarande det gamla värdet.',
+          'Den har renderats om flera gånger: mutationen gick från pending till success, och det är ett tillståndsbyte som ritar om. En omrendering hjälper bara om det finns något nytt att rita, och cachen innehåller fortfarande det gamla värdet.',
       },
     ],
   },
@@ -44,9 +44,9 @@ export const mutationsQuestions: QuizQuestion[] = [
     options: [
       {
         id: 'a',
-        text: 'I `onSuccess` — det är bara vid en lyckad sparning som servern faktiskt har ny data',
+        text: 'I `onSuccess`, eftersom det är bara vid en lyckad sparning som servern faktiskt har ny data',
         explanation:
-          'Det stämmer för en mutation som inte rör cachen själv, och det är precis vad andra demon gör. Men här har klienten skrivit i cachen på egen hand. Går anropet fel står cachen på ett värde som rullats tillbaka av kod och aldrig kontrollerats mot servern — och det är just det fallet `onSuccess` hoppar över.',
+          'Det stämmer för en mutation som inte rör cachen själv, och det är precis vad andra demon gör. Men här har klienten skrivit i cachen på egen hand. Går anropet fel står cachen på ett värde som rullats tillbaka av kod och aldrig kontrollerats mot servern. Det är just det fallet `onSuccess` hoppar över.',
       },
       {
         id: 'b',
@@ -69,7 +69,7 @@ export const mutationsQuestions: QuizQuestion[] = [
     options: [
       {
         id: 'a',
-        text: 'Ingenting — den har sitt eget tillstånd',
+        text: 'Ingenting, den har sitt eget tillstånd',
         explanation:
           'Rätt. En `useQuery` identifieras av sin `queryKey` och delas av alla som frågar efter samma. En `useMutation` har ingen nyckel: varje anrop av hooken ger en egen instans med eget `isPending`, `data` och `error`.',
       },

@@ -11,7 +11,7 @@ export type User = {
 };
 
 // Det demon får styra hos den mockade backenden. Fördröjningen och felsvaret är
-// inget ett riktigt API skulle erbjuda - de finns för att laddnings- och
+// inget ett riktigt API skulle erbjuda. De finns för att laddnings- och
 // felläget ska gå att framkalla på begäran i stället för att vänta på otur.
 export type UserRequestOptions = {
   delayMs?: number;
@@ -35,7 +35,7 @@ export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]
   return response.data;
 };
 
-// Hämtar en användare. Servicen innehåller ingen React - den returnerar typad
+// Hämtar en användare. Servicen innehåller ingen React: den returnerar typad
 // data, och hooken som anropar den bestämmer vad som händer med den.
 //
 // Anropet är en funktion och inte en metod på en basklass. Förlagan ärver Get,

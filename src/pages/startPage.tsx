@@ -31,8 +31,8 @@ const ModuleCardContent = ({ module }: { module: AppModule }) => {
         {module.description}
       </Typography>
 
-      {/* Statusen står som text i båda fallen, inte bara som färg eller form -
-          en markering som bara syns på stilen når inte den som inte ser den.
+      {/* Statusen står som text i båda fallen, inte bara som färg eller form.
+          En markering som bara syns på stilen når inte den som inte ser den.
           Det som skiljer är tyngden: byggda får en ifylld chip, planerade bara
           ett ord. Kontrasten mellan korten kommer alltså av att de planerade
           tonas ned, inte av att de byggda förstärks med ännu en färg. */}

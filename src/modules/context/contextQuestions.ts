@@ -7,7 +7,7 @@ import type { QuizQuestion } from '../../shared/components/quiz';
 //
 // Turordningen props -> children -> context testas inte. Den är ett omdöme, och ett
 // omdöme som pressas in i ett flervalsformat blir ett påstående att memorera i
-// stället för något att förstå. Versionsnoten om .Provider testas inte heller - den
+// stället för något att förstå. Versionsnoten om .Provider testas inte heller. Den
 // är ett faktum, inte en förståelse.
 //
 // Kodfragment markeras med backticks, som i Markdown. Se stateQuestions.ts.
@@ -34,7 +34,7 @@ export const contextQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Den ritas om bara om `login` pekar på en ny funktion',
         explanation:
-          'Nej, och det är en vanlig gissning. Prenumerationen gäller contexten som helhet — det finns inget sätt att prenumerera på ett enskilt fält i den.',
+          'Nej, och det är en vanlig gissning. Prenumerationen gäller contexten som helhet. Det finns inget sätt att prenumerera på ett enskilt fält i den.',
       },
     ],
   },
@@ -47,7 +47,7 @@ export const contextQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Den hoppas över, eftersom `memo` ser att inga props ändrats',
         explanation:
-          'Nej. `memo` jämför props, och den jämförelsen går bra här — men omrenderingen kommer inte via props. Den kommer från contexten komponenten själv läser.',
+          'Nej. `memo` jämför props, och den jämförelsen går bra här, men omrenderingen kommer inte via props. Den kommer från contexten komponenten själv läser.',
       },
       {
         id: 'b',
@@ -71,7 +71,7 @@ export const contextQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Det hindrar omrendering när providern renderar om av något annat skäl, men inte när värdet faktiskt ändras',
         explanation:
-          'Rätt. Så länge beroendena är oförändrade får konsumenterna samma referens och står still. Byts användaren är värdet nytt på riktigt, och då ritas alla om — även de som bara ville åt funktionen.',
+          'Rätt. Så länge beroendena är oförändrade får konsumenterna samma referens och står still. Byts användaren är värdet nytt på riktigt, och då ritas alla om, även de som bara ville åt funktionen.',
       },
       {
         id: 'b',
@@ -83,7 +83,7 @@ export const contextQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Ingenting, eftersom en context alltid renderar om alla som läser den',
         explanation:
-          'Nej. Alla ritas om när värdet ändras — men `useMemo` gör just att värdet inte räknas som ändrat när ingenting i det har ändrats.',
+          'Nej. Alla ritas om när värdet ändras, men `useMemo` gör just att värdet inte räknas som ändrat när ingenting i det har ändrats.',
       },
     ],
   },

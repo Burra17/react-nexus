@@ -19,7 +19,7 @@ type RequestCounterPanelProps = {
 // prefix träffar tre poster. En totalsumma tvingar läsaren att subtrahera i
 // huvudet, samtidigt som talet rör sig av annat som händer på sidan. Den
 // avläsningen gick fel två gånger under bygget av #107, för den som skrivit
-// demon - då är det inte rimligt att begära att läsaren ska klara den.
+// demon. Då är det inte rimligt att begära att läsaren ska klara den.
 //
 // Nollpunkten är därför panelens eget tillstånd och inte backendens. Två
 // paneler på samma sida mäter var för sig, och en nollställning i den ena rör

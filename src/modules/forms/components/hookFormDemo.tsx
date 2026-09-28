@@ -9,7 +9,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { RenderCounter } from '../../../shared/components/renderCounter';
 import { ROLES, type ProfileFormValues } from '../types/profile';
 
-// Samma formulär igen, nu med React Hook Form - och med rollen tillagd.
+// Samma formulär igen, nu med React Hook Form och med rollen tillagd.
 //
 // Räknaren står still medan du skriver, precis som i det okontrollerade
 // formuläret i förra delen. Det är ingen slump och ingen optimering i
@@ -25,7 +25,7 @@ import { ROLES, type ProfileFormValues } from '../types/profile';
 //
 // Vad du vinner jämfört med refs för hand: du slipper hålla reda på en ref per
 // fält, du får formState gratis, och valideringen har någonstans att bo. Det
-// är det biblioteket egentligen säljer - inte omrenderingarna, som bara är
+// är det biblioteket egentligen säljer, inte omrenderingarna, som bara är
 // följden av hur det läser värdena.
 export const HookFormDemo = () => {
   const {
@@ -36,7 +36,7 @@ export const HookFormDemo = () => {
   } = useForm<ProfileFormValues>({
     // Utan defaultValues är fälten undefined tills någon skriver i dem, och
     // ett fält som går från undefined till en sträng byter från okontrollerat
-    // till kontrollerat - precis det React säger att en input inte får göra.
+    // till kontrollerat, precis det React säger att en input inte får göra.
     defaultValues: { name: '', email: '', role: ROLES[0] },
   });
 
@@ -60,7 +60,7 @@ export const HookFormDemo = () => {
         <TextField label='E-post' size='small' {...register('email')} />
 
         {/* Select går inte samma väg, och det är inte en brist i MUI.
-            En Select har inget textfält att läsa ett värde ur - den visar en
+            En Select har inget textfält att läsa ett värde ur. Den visar en
             lista och håller sitt val själv, alltså måste något styra den.
             Controller är bryggan: den prenumererar på fältet och ger dig
             value och onChange att koppla in, medan resten av formuläret
@@ -85,7 +85,7 @@ export const HookFormDemo = () => {
 
         {/* Två fält ur formState. isDirty blir sant så fort något skiljer sig
             från defaultValues, och submitCount räknar inskickningarna.
-            Att läsa dem här kostar omrenderingar - formState är en proxy, och
+            Att läsa dem här kostar omrenderingar: formState är en proxy, och
             biblioteket ritar om just de komponenter som faktiskt läser ett
             fält ur den. Därför tickar räknaren när isDirty slår om från falskt
             till sant, men inte vid varje tangenttryck efter det. */}
@@ -95,7 +95,7 @@ export const HookFormDemo = () => {
 
         {submitted && (
           <Typography variant='body2'>
-            Skickade: {submitted.name} — {submitted.email} — {submitted.role}
+            Skickade: {submitted.name}, {submitted.email}, {submitted.role}
           </Typography>
         )}
 
@@ -105,7 +105,7 @@ export const HookFormDemo = () => {
             sedan aldrig mer. Utan den här raden ser det ut som att
             påståendet ovan är fel. */}
         <Typography variant='caption' color='textSecondary'>
-          Räknaren tickar en gång vid det första tecknet — det är <code>isDirty</code> ovanför som slår om från falskt till sant.{' '}
+          Räknaren tickar en gång vid det första tecknet. Det är <code>isDirty</code> ovanför som slår om från falskt till sant.{' '}
           <code>formState</code> är en proxy som bara ritar om de komponenter som faktiskt läser ett fält ur den. Skriv vidare: siffran står still,
           hur många tecken du än skriver.
         </Typography>

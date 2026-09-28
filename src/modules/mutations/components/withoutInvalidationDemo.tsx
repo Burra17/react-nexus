@@ -22,7 +22,7 @@ type RoleButtonProps = {
 // Att hooken anropas HÄR och inte i föräldern är hela poängen med att det är
 // två knappar. Varje knapp får sin egen useMutation, och därmed sitt eget
 // isPending och sitt eget svar. Klickar du på den ena händer ingenting med den
-// andra - en useQuery med samma nyckel hade delats av båda, en useMutation har
+// andra. En useQuery med samma nyckel hade delats av båda, en useMutation har
 // ingen nyckel att dela.
 const RoleButton = ({ role }: RoleButtonProps) => {
   const { mutate, isPending, data, isError, error } = useUpdateUserRole();
@@ -59,7 +59,7 @@ export const WithoutInvalidationDemo = () => {
   // stå kvar på noll efter ett klick och säga emot Network-fliken.
   //
   // useIsMutating räknar pågående mutationer, och antalet ändras både när en
-  // startar och när den blir klar. Returvärdet används inte - det är
+  // startar och när den blir klar. Returvärdet används inte, det är
   // omritningen vi är ute efter.
   useIsMutating();
 
@@ -76,14 +76,14 @@ export const WithoutInvalidationDemo = () => {
 
       <Alert severity='warning'>
         <strong>Den här demon är med flit ofullständig.</strong> Mutationen saknar den rad som talar om för cachen att listan inte längre stämmer.
-        Klicka på en knapp: anropet går iväg, servern svarar med den nya rollen — och listan ovanför står kvar på den gamla. Beviset står under
+        Klicka på en knapp: anropet går iväg, servern svarar med den nya rollen, och listan ovanför står kvar på den gamla. Beviset står under
         knappen, och det är serverns eget svar och inte vad vi hoppades på. Att ladda om sidan hjälper däremot inte: den mockade backenden lever i
         webbläsarens minne och börjar om från utgångsläget varje gång sidan laddas.
       </Alert>
 
       <RequestCounterPanel
         total={requestCount}
-        caption='Nollställ och klicka en gång. Ett anrop går iväg, och inget mer — utan invalidering finns det ingen hämtning efteråt.'
+        caption='Nollställ och klicka en gång. Ett anrop går iväg, och inget mer. Utan invalidering finns det ingen hämtning efteråt.'
       />
     </Stack>
   );

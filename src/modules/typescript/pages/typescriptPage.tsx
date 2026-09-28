@@ -13,20 +13,20 @@ const Theory = () => (
   <>
     <Typography>
       Första gången du lägger till en typ i en import i det här repot stoppar bygget dig. <code>{"import { Result } from './types/result'"}</code> går
-      inte — det ska stå <code>import type</code>. Det ser ut som en petitess, och det är frestande att lära sig regeln utantill och gå vidare. Men
+      inte: det ska stå <code>import type</code>. Det ser ut som en petitess, och det är frestande att lära sig regeln utantill och gå vidare. Men
       regeln följer av något, och det något är den enda idé den här modulen handlar om: <strong>typerna finns inte när koden kör</strong>.
     </Typography>
 
     <Typography>
       TypeScript kompilerar nämligen inte din kod i den meningen man först tänker sig. Den läser koden, kontrollerar att den går ihop, och stryker
       sedan allt som var typer. Kvar blir JavaScript. Kravet är så pass strikt att Node numera kan köra en <code>.ts</code>-fil direkt genom att bara
-      stryka typerna och köra det som blir över — och det fungerar bara om allt TypeScript-specifikt <em>går</em> att stryka och lämna giltig
-      JavaScript kvar.
+      stryka typerna och köra det som blir över. Det fungerar bara om allt TypeScript-specifikt <em>går</em> att stryka och lämna giltig JavaScript
+      kvar.
     </Typography>
 
     <Typography>
       Då blir <code>import type</code> begripligt. Kompilatorn måste veta vilka importer som ska följa med och vilka som ska bort, och utan hjälp
-      gissar den: används namnet bara som en typ tas hela importraden bort. Det kallas <em>import elision</em>, och gissandet är ett problem — en
+      gissar den: används namnet bara som en typ tas hela importraden bort. Det kallas <em>import elision</em>, och gissandet är ett problem: en
       import kan ha sidoeffekter som någon räknar med, och då försvinner de tyst. <code>verbatimModuleSyntax</code> i repots{' '}
       <code>tsconfig.app.json</code> stänger av gissandet: skriver du <code>import type</code> försvinner raden, annars står den kvar. Du talar om vad
       du menar i stället för att låta kompilatorn tolka dig.
@@ -34,7 +34,7 @@ const Theory = () => (
 
     <Typography>
       Samma idé förklarar varför <code>enum</code> är förbjuden här medan <code>{"type Status = 'idle' | 'klar'"}</code> går bra. En union är bara ett
-      påstående om vilka värden som är tillåtna — det finns ingenting att lämna kvar, den försvinner helt. En <code>enum</code> blir däremot ett
+      påstående om vilka värden som är tillåtna. Det finns ingenting att lämna kvar, den försvinner helt. En <code>enum</code> blir däremot ett
       riktigt objekt i den körda koden, som man kan slå upp värden i. Den går alltså inte att stryka, och flaggan <code>erasableSyntaxOnly</code>{' '}
       säger nej. Samma sak gäller <code>namespace</code> med kod i, och parameter-properties i en konstruktor. Felmeddelandet lyder{' '}
       <code>{"This syntax is not allowed when 'erasableSyntaxOnly' is enabled."}</code>
@@ -52,20 +52,20 @@ const Theory = () => (
       Mot allt det här står <strong>narrowing</strong>, som är undantaget. Skriver du <code>{"if (result.status === 'done')"}</code> är det ingen
       typanteckning utan en helt vanlig jämförelse som körs på riktigt. Skillnaden är att TypeScript läser med: den vet att värdet i den grenen bara
       kan vara en av varianterna, och låter dig därför nå <code>data</code> där men inte någon annanstans. Formen kallas{' '}
-      <strong>diskriminerad union</strong> — ett krångligt namn på något enkelt, nämligen att alla varianter har ett gemensamt fält med ett eget fast
+      <strong>diskriminerad union</strong>, ett krångligt namn på något enkelt, nämligen att alla varianter har ett gemensamt fält med ett eget fast
       värde i var och en. Det fältet är flaggan som talar om vad som gäller.
     </Typography>
 
     <Typography>
       Formen är värd att lägga på minnet, för den återkommer. Ett svar som antingen är på väg, misslyckat eller klart är precis hur data från en
-      server modelleras — och det är den form Query-modulerna längre fram bygger på. En komponent som tar emot en sådan union går heller inte att
+      server modelleras, och det är den form Query-modulerna längre fram bygger på. En komponent som tar emot en sådan union går heller inte att
       använda fel: det finns inget läge där man råkar läsa ett fält som inte finns än, eftersom kompilatorn hindrar det redan när man skriver.
     </Typography>
 
     <Typography>
       <strong>Regeln att ta med sig:</strong> TypeScript skyddar dig medan du skriver, inte medan koden kör. Allt du skrev är borta före körningen,
-      och kvar står bara de vanliga jämförelserna du själv satte dit. Ett <code>as</code> är därför ingen kontroll utan ett löfte — och den andra
-      demon nedan visar vad ett löfte utan täckning är värt.
+      och kvar står bara de vanliga jämförelserna du själv satte dit. Ett <code>as</code> är därför ingen kontroll utan ett löfte. Den andra demon
+      nedan visar vad ett löfte utan täckning är värt.
     </Typography>
   </>
 );

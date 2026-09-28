@@ -1,6 +1,6 @@
 // Query-nycklarna för arkitekturmodulens spårning.
 //
-// Roten bär modulens namn, precis som i modul 7, 8 och 9 - och det är just det
+// Roten bär modulens namn, precis som i modul 7, 8 och 9. Det är just det
 // avsteget den här modulen tar upp som sitt fjärde exempel. Fabriken är alltså
 // både verktyg och lektionsmaterial.
 //

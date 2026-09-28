@@ -26,7 +26,7 @@ const closedWidth = 64;
 
 // Så bred innehållsytan får bli, oavsett hur bred skärmen är.
 //
-// Utan taket sträckte sig både text och kortrutnät över hela skärmen - 1601 px
+// Utan taket sträckte sig både text och kortrutnät över hela skärmen: 1601 px
 // text vid en skärm på 1920. Kodblocken och demona får använda hela den här
 // bredden; texten begränsas ytterligare av ReadableColumn.
 const PAGE_WIDTH = 1200;
@@ -69,7 +69,7 @@ export const PageTemplate = () => {
   const menuLabel = isSmallScreen ? (isMobileOpen ? 'Stäng sidomenyn' : 'Öppna sidomenyn') : isExpanded ? 'Fäll ihop sidomenyn' : 'Fäll ut sidomenyn';
 
   // mode är 'system' tills användaren väljer själv, och undefined första
-  // rendret. systemMode säger vad 'system' faktiskt landade i - utan den
+  // rendret. systemMode säger vad 'system' faktiskt landade i. Utan den
   // visar knappen fel ikon för den som kör mörkt operativsystem.
   const resolvedMode = mode === 'system' ? systemMode : mode;
   const isDark = resolvedMode === 'dark';
@@ -81,7 +81,7 @@ export const PageTemplate = () => {
           sammanhang. React Router scrollar inte till toppen av sig själv.
 
           Den gör bara det, ingenting mer. Bakåt, framåt och ankarlänkar lämnas
-          orörda - de fungerar redan, och skälen står i komponenten. Se #71. */}
+          orörda. De fungerar redan, och skälen står i komponenten. Se #71. */}
       <ScrollToTop />
 
       <AppBar
@@ -137,7 +137,7 @@ export const PageTemplate = () => {
             const isActive = pathname === item.path;
 
             return (
-              // Tooltipen är inte dekoration - hopfälld meny visar bara ikoner,
+              // Tooltipen är inte dekoration. Hopfälld meny visar bara ikoner,
               // och då är den enda kvarvarande ledtråden till vad länken gör.
               <Tooltip key={item.path} title={showLabels ? '' : item.label} placement='right'>
                 <ListItemButton
@@ -153,7 +153,7 @@ export const PageTemplate = () => {
                   sx={{
                     minHeight: 48,
                     // MUI:s egen markering är accentfärgen på 12 procent, cirka
-                    // 1.15:1 mot vitt - en nyans, inte en markering. Kanten och
+                    // 1.15:1 mot vitt: en nyans, inte en markering. Kanten och
                     // den färgade ikonen ger något som syns även hopfällt.
                     borderLeft: 3,
                     borderColor: isActive ? 'primary.main' : 'transparent',

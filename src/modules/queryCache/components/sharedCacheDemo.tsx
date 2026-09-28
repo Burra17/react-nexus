@@ -37,7 +37,7 @@ export const SharedCacheDemo = () => {
 
         {/* Tar bort korten OCH cacheposten, så att demon går att köra om från
             noll. Utan removeQueries ligger listan kvar och är dessutom färsk i
-            en halv minut - nästa montering skulle ge noll anrop, och det första
+            en halv minut. Nästa montering skulle ge noll anrop, och det första
             påståendet gick inte att visa en andra gång. */}
         <Button
           onClick={() => {
@@ -52,7 +52,7 @@ export const SharedCacheDemo = () => {
 
       <RequestCounterPanel
         total={requestCount}
-        caption='Träffar i den mockade backenden, inte renderingar. Nollställ först och gör sedan en sak i taget — montera korten, lägg till ett till — så visar talet exakt vad just den saken kostade.'
+        caption='Träffar i den mockade backenden, inte renderingar. Nollställ först och gör sedan en sak i taget, som att montera korten eller lägga till ett till. Då visar talet exakt vad just den saken kostade.'
       />
 
       {isMounted ? (

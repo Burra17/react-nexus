@@ -22,22 +22,22 @@ const Theory = () => (
     <Typography>
       De två föregående modulerna handlade om att hämta. Nu ska något skickas åt andra hållet, och det första som händer är att en bekvämlighet
       försvinner. En hämtning sköter sig själv: <code>useQuery</code> kör när komponenten monteras, och Query bestämmer när det är dags igen. En
-      skrivning gör ingenting förrän du säger till. Den hör till ett klick, ett formulär, ett beslut — och därför heter hooken{' '}
-      <code>useMutation</code> och ger dig en funktion att anropa i stället för att köra av sig själv. Allt annat i den är sig likt:{' '}
-      <code>isPending</code> medan den arbetar, <code>data</code> när den lyckats, <code>error</code> när den inte gjorde det.
+      skrivning gör ingenting förrän du säger till. Den hör till ett klick, ett formulär, ett beslut, och därför heter hooken <code>useMutation</code>{' '}
+      och ger dig en funktion att anropa i stället för att köra av sig själv. Allt annat i den är sig likt: <code>isPending</code> medan den arbetar,{' '}
+      <code>data</code> när den lyckats, <code>error</code> när den inte gjorde det.
     </Typography>
 
     <Typography>
       Den verkliga skillnaden märks först efteråt. <strong>En lyckad skrivning säger ingenting till cachen.</strong> Servern har det nya värdet, men
       listan på skärmen kommer från en post som hämtades för en stund sedan, och ingen har talat om för den att den inte längre stämmer. Det ser ut
-      som en bugg och är det inte — det följer av att cachen är en kopia av något du inte äger. Antingen talar du om att kopian är inaktuell med{' '}
+      som en bugg och är det inte. Det följer av att cachen är en kopia av något du inte äger. Antingen talar du om att kopian är inaktuell med{' '}
       <code>invalidateQueries</code>, och låter Query hämta sanningen, eller så skriver du det nya värdet i kopian själv med <code>setQueryData</code>
       . Första demon nedan gör ingetdera, med flit, så att du får se vad som faktiskt saknas.
     </Typography>
 
     <Typography>
       <code>useMutation</code> skiljer sig också på en punkt som är lätt att ta för given efter förra modulen: <strong>den har ingen nyckel</strong>.
-      En <code>useQuery</code> identifieras av sin <code>queryKey</code>, och fyra komponenter som frågar efter samma nyckel delar en enda post — det
+      En <code>useQuery</code> identifieras av sin <code>queryKey</code>, och fyra komponenter som frågar efter samma nyckel delar en enda post. Det
       var hela poängen med cachen. En mutation identifieras inte av någonting. Två komponenter som anropar samma mutationshook får varsitt oberoende
       tillstånd, och den ena vet inte om att den andra sparar. Det finns en <code>mutationKey</code>, men den delar inte tillstånd; den finns för att
       kunna sätta standardvärden och för att kunna hitta pågående mutationer utifrån.
@@ -48,16 +48,16 @@ const Theory = () => (
       Att hoppa kallas en optimistisk uppdatering: du skriver det nya värdet i cachen innan servern svarat, i tron att det kommer att gå bra. Mönstret
       har tre delar, och var och en löser ett eget problem. <code>onMutate</code> kör före anropet, avbryter pågående hämtningar så att ett svar på
       väg inte skriver över hoppet, sparar undan det som låg i cachen, och skriver dit det nya. Det den returnerar skickas vidare till de andra.{' '}
-      <code>onError</code> använder det sparade för att rulla tillbaka — utan ögonblicksbilden finns ingenting att rulla tillbaka till. Och{' '}
+      <code>onError</code> använder det sparade för att rulla tillbaka. Utan ögonblicksbilden finns ingenting att rulla tillbaka till. Och{' '}
       <code>onSettled</code> kör oavsett hur det gick och hämtar sanningen från servern.
     </Typography>
 
     <Typography>
       Att invalideringen ligger just i <code>onSettled</code> och inte i <code>onSuccess</code> är den detalj som skiljer ett fungerande mönster från
-      ett som nästan fungerar. Efter ett misslyckat hopp står cachen på ett värde som klienten skrivit och sedan rullat tillbaka med egen kod — det
-      har aldrig kontrollerats mot servern. <code>onSuccess</code> hoppar över precis det fallet, alltså det enda där kontrollen verkligen behövs. En
-      versionsnot på köpet: <code>onSuccess</code> och <code>onError</code> togs bort från <code>useQuery</code> i version 5 men finns kvar på{' '}
-      <code>useMutation</code>. En kodbas på version 4 ser därför likadan ut på skrivsidan och helt annorlunda på läsidan, vilket är värt att veta
+      ett som nästan fungerar. Efter ett misslyckat hopp står cachen på ett värde som klienten skrivit och sedan rullat tillbaka med egen kod, ett
+      värde som aldrig har kontrollerats mot servern. <code>onSuccess</code> hoppar över precis det fallet, alltså det enda där kontrollen verkligen
+      behövs. En versionsnot på köpet: <code>onSuccess</code> och <code>onError</code> togs bort från <code>useQuery</code> i version 5 men finns kvar
+      på <code>useMutation</code>. En kodbas på version 4 ser därför likadan ut på skrivsidan och helt annorlunda på läsidan, vilket är värt att veta
       innan man drar slutsatser om vilken version man har framför sig.
     </Typography>
   </>
@@ -125,7 +125,7 @@ export const MutationsPage = () => (
         code: useUpdateUserRoleOptimisticSource,
         language: 'ts',
         // De fyra raderna som utgör mönstret: avbryt, spara, skriv, rulla
-        // tillbaka - och invalideringen som kör oavsett utfall.
+        // tillbaka. Och så invalideringen som kör oavsett utfall.
         highlight: [
           'await queryClient.cancelQueries({ queryKey });',
           'const previousUsers = queryClient.getQueryData<User[]>(queryKey);',
@@ -175,7 +175,7 @@ export const MutationsPage = () => (
         fileName: 'src/services/api/mutationUsers.ts',
         code: mutationUsersServiceSource,
         language: 'ts',
-        // Skrivningen. Servicen innehåller ingen React - den tar en nyttolast
+        // Skrivningen. Servicen innehåller ingen React. Den tar en nyttolast
         // och returnerar typad data.
         highlight: ['export const updateMutationUserRole'],
       },

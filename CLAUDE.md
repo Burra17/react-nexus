@@ -161,6 +161,7 @@ Saknas en typ:
 - KISS — kod som en kollega förstår vid första genomläsningen.
 - DRY — upprepas något på ett tredje ställe, bryt ut det. Inte vid det första.
 - Svenska kommentarer. Varje funktion får en rad om vad den gör, varje workaround en rad om varför den finns. Kommentaren förklarar avsikten, den upprepar inte kodraden.
+- Inga tankstreck i text eller kommentarer, varken — eller ett bindestreck med mellanslag runt. Dela meningen, eller använd kolon eller komma. Kommentarerna räknas med eftersom Kod-delen visar källfilerna för läsaren, och i en svensk lärobok bryter strecken läsflödet. Regeln gäller src/, inte den här filen.
 - Prettier (.prettierrc) sköter formateringen: enkla citattecken, semikolon, 150 tecken per rad. Formatera on save. Formatering diskuteras aldrig i en PR.
 
 ## Varje konceptvy har fyra delar

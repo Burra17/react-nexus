@@ -16,12 +16,12 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Att ett nätverksanrop pågår just nu',
         explanation:
-          'Det är `fetchStatus` som svarar på om hämtningen kör. En query kan vara pending utan att hämta — till exempel när nätverket är nere och hämtningen är pausad.',
+          'Det är `fetchStatus` som svarar på om hämtningen kör. En query kan vara pending utan att hämta, till exempel när nätverket är nere och hämtningen är pausad.',
       },
       {
         id: 'b',
         text: 'Att hämtningen har misslyckats och försöker igen',
-        explanation: 'Ett misslyckande syns som `isError`, och under omförsöken finns fortfarande ingen data — men pending säger inget om orsaken.',
+        explanation: 'Ett misslyckande syns som `isError`, och under omförsöken finns fortfarande ingen data, men pending säger inget om orsaken.',
       },
       {
         id: 'c',
@@ -38,7 +38,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
     options: [
       {
         id: 'a',
-        text: 'Ingenting — varje komponent får sin egen kopia av datan',
+        text: 'Ingenting, eftersom varje komponent får sin egen kopia av datan',
         explanation:
           'Det är så det fungerar med `useState` i varje komponent, och det är precis vad cachen gör onödigt. Nyckeln hör till datan, inte till komponenten som råkade be om den.',
       },
@@ -46,7 +46,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'De tittar på samma post i cachen',
         explanation:
-          'Rätt. Nyckeln identifierar datan. Var i trädet komponenten sitter spelar ingen roll — samma nyckel är samma post, och vem som helst som frågar efter den får den.',
+          'Rätt. Nyckeln identifierar datan. Var i trädet komponenten sitter spelar ingen roll: samma nyckel är samma post, och vem som helst som frågar efter den får den.',
       },
       {
         id: 'c',
@@ -62,7 +62,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
     options: [
       {
         id: 'a',
-        text: 'För att datan ägs av servern — din kopia kan bli inaktuell utan att något i komponenten märker det',
+        text: 'För att datan ägs av servern: din kopia kan bli inaktuell utan att något i komponenten märker det',
         explanation:
           'Rätt. State du äger ändras bara när du ändrar det. En kopia av serverdata kan bli fel medan den ligger stilla, och då behövs något som vet när den hämtades och när den ska hämtas om.',
       },
@@ -75,20 +75,20 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'För att state försvinner vid omrendering',
         explanation:
-          'State överlever omrenderingar — det är hela poängen med det. Det försvinner när komponenten avmonteras, vilket är ett annat problem, och det är också ett cachen löser.',
+          'State överlever omrenderingar. Det är hela poängen med det. Det försvinner när komponenten avmonteras, vilket är ett annat problem, och det är också ett cachen löser.',
       },
     ],
   },
   {
     id: 'tillbaka-efter-staletime',
-    question: 'Du lämnar en vy och kommer tillbaka — efter att `staleTime` gått ut, men innan `gcTime` hunnit ta bort posten. Vad ser du?',
+    question: 'Du lämnar en vy och kommer tillbaka efter att `staleTime` gått ut, men innan `gcTime` hunnit ta bort posten. Vad ser du?',
     correct: 'b',
     options: [
       {
         id: 'a',
         text: 'Laddningsläget igen, eftersom datan hunnit bli inaktuell',
         explanation:
-          'Inaktuell är inte samma sak som borta. Posten ligger kvar tills `gcTime` städat den, och så länge den finns visas den — ett tomt laddningsläge kommer först när posten faktiskt är borta.',
+          'Inaktuell är inte samma sak som borta. Posten ligger kvar tills `gcTime` städat den, och så länge den finns visas den. Ett tomt laddningsläge kommer först när posten faktiskt är borta.',
       },
       {
         id: 'b',
@@ -100,7 +100,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Den gamla datan, och inget anrop förrän `gcTime` gått ut',
         explanation:
-          '`gcTime` styr inte när något hämtas om, bara när posten kastas bort. Det är `staleTime` som avgör om en ny hämtning startar — och den har redan gått ut här.',
+          '`gcTime` styr inte när något hämtas om, bara när posten kastas bort. Det är `staleTime` som avgör om en ny hämtning startar, och den har redan gått ut här.',
       },
     ],
   },

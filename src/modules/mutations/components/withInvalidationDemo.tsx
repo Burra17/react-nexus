@@ -30,7 +30,7 @@ export const WithInvalidationDemo = () => {
       <Stack direction='row' sx={{ flexWrap: 'wrap', gap: 2 }}>
         {/* En mutation delas här, till skillnad från i del 1. Två knappar mot
             samma hook betyder att båda blir inaktiva medan någon av dem
-            sparar - vilket är vad man oftast vill ha, och skälet till att
+            sparar, vilket är vad man oftast vill ha, och skälet till att
             skillnaden mot del 1 är värd att se.
 
             Att BÅDA blir inaktiva men bara EN säger "Sparar …" är avsiktligt.
@@ -53,7 +53,7 @@ export const WithInvalidationDemo = () => {
 
       <Alert severity='info'>
         <strong>Ordningen är det som lärs ut här.</strong> Klicka och följ listan ovanför: den står stilla medan anropet är på väg, snurran tänds när
-        invalideringen utlöst en hämtning, och först när den kommit tillbaka byts rollen. Vyn uppdateras alltså inte av att mutationen lyckades — den
+        invalideringen utlöst en hämtning, och först när den kommit tillbaka byts rollen. Vyn uppdateras alltså inte av att mutationen lyckades. Den
         uppdateras av hämtningen invalideringen orsakade.
       </Alert>
 

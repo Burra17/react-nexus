@@ -10,13 +10,13 @@ import { EffectLog, type LogEntry, type LogKind } from './effectLog';
 
 // AVSIKTLIGT FELAKTIG KOD I DEN HÄR FILEN.
 //
-// CLAUDE.md förbjuder datahämtning med useEffect - all serverdata ska gå genom
+// CLAUDE.md förbjuder datahämtning med useEffect: all serverdata ska gå genom
 // TanStack Query. Undantaget gäller en vy vars syfte är att visa vad mönstret
 // gör fel, och det är precis vad BuggyUserCard nedan finns till för.
 //
 // Felet den demonstrerar är en kapplöpning: två hämtningar startas efter
 // varandra, svaren kommer i omvänd ordning, och det gamla svaret skriver över
-// det nya. Ingenting kraschar och inget felmeddelande syns - skärmen visar
+// det nya. Ingenting kraschar och inget felmeddelande syns. Skärmen visar
 // bara fel data.
 //
 // FixedUserCard längre ner är samma komponent med städningen på plats. Kopiera
@@ -39,7 +39,7 @@ const USERS: Record<UserId, User> = {
   bo: { id: 'bo', name: 'Bo Nilsson', role: 'Systemarkitekt', delayMs: 300 },
 };
 
-// Den fejkade hämtningen. Ingen HTTP, ingen mockserver - bara ett löfte som
+// Den fejkade hämtningen. Ingen HTTP, ingen mockserver, bara ett löfte som
 // löser ut efter användarens egen fördröjning.
 //
 // Den ligger i den här filen med flit. Servicelagret skapas först i
@@ -100,7 +100,7 @@ const BuggyUserCard = ({ userId, onLog }: UserCardProps) => {
 
       // FEL: svaret skrivs oavsett om det fortfarande är aktuellt. Effekten
       // returnerar ingen städning, så den här körningen vet inte att en nyare
-      // hämtning redan startat - och ett långsamt svar vinner över ett snabbt
+      // hämtning redan startat, och ett långsamt svar vinner över ett snabbt
       // bara för att det kom sist.
       setShown(loaded);
     });
@@ -196,20 +196,20 @@ export const RaceConditionDemo = () => {
 
           Två versioner, eftersom StrictMode bara monterar om i utvecklingsläge.
           Lokalt startar monteringen två hämtningar, i ett byggt projekt en. Den
-          som läser måste få veta vilket av fallen hon tittar på - annars
+          som läser måste få veta vilket av fallen hon tittar på. Annars
           beskriver noten en logg som inte står på skärmen. */}
       <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
             Loggen börjar med två hämtningar av samma person. Det är StrictMode som monterar om komponenten en gång i utvecklingsläge, precis som i
-            demo 1 — och utan städning slår båda svaren igenom till state. Med städningen påslagen kastas det första, som en kapplöpning i miniatyr
-            redan innan du hunnit klicka.
+            demo 1. Utan städning slår båda svaren igenom till state. Med städningen påslagen kastas det första, som en kapplöpning i miniatyr redan
+            innan du hunnit klicka.
           </>
         ) : (
           <>
             Loggen börjar med en enda hämtning. Kör du appen lokalt börjar den med två, eftersom StrictMode monterar om komponenten en gång i
-            utvecklingsläge — och utan städning slår båda svaren igenom till state. Det är en kapplöpning i miniatyr, framkallad av React självt. Här
-            får du framkalla den med knapparna ovan i stället.
+            utvecklingsläge. Utan städning slår båda svaren igenom till state. Det är en kapplöpning i miniatyr, framkallad av React självt. Här får
+            du framkalla den med knapparna ovan i stället.
           </>
         )}
       </Typography>

@@ -2,7 +2,7 @@
 // så att en färg går att byta på ett ställe i stället för i trettio komponenter.
 //
 // Varje färg finns i två toner: en för ljust läge och en för mörkt. Samma nyans,
-// olika ljushet - en accent som fungerar mot vitt är för mörk mot grafit.
+// olika ljushet: en accent som fungerar mot vitt är för mörk mot grafit.
 // Alla kombinationer nedan är kontrollerade mot WCAG AA (4.5:1).
 
 // Accenten bär knappar, länkar och aktiv navigering.
@@ -24,7 +24,7 @@ export const onAccent = {
 };
 
 // Ytorna: background är sidan, paper är kort och paneler ovanpå den.
-// Skillnaden mellan dem är medvetet liten - ett kort ska läsas som upphöjt,
+// Skillnaden mellan dem är medvetet liten. Ett kort ska läsas som upphöjt,
 // inte som ett eget färgfält.
 export const surface = {
   light: { background: '#F7F9FA', paper: '#FFFFFF', border: '#E1E6EB' },
@@ -65,7 +65,7 @@ export const text = {
 // En ljus yta behöver mycket mer påslag för samma upplevda lyft: 0,13 i ljust
 // läge ger ungefär vad 0,10 ger i mörkt, och för att nå mörkt lägets 1,51:1
 // skulle ljust behöva 0,20. Samma tal i båda lägena ger alltså inte samma
-// resultat - de här två är valda för att se lika starka ut, inte för att vara
+// resultat. De här två är valda för att se lika starka ut, inte för att vara
 // lika stora.
 export const codeSurface = {
   light: 'rgba(20, 24, 29, 0.13)',

@@ -24,7 +24,7 @@ const USER_ID = 'ada';
 // direkt. Det är en av modulens poänger och måste gå att se.
 //
 // gcTime börjar på en sekund. Med noll tas posten bort i samma ögonblick som den
-// sista komponenten slutar titta - också i den lilla lucka StrictMode skapar när
+// sista komponenten slutar titta, också i den lilla lucka StrictMode skapar när
 // den avmonterar och monterar om varje komponent en extra gång i utvecklingsläge.
 // Då kan posten hinna försvinna mitt i en pågående hämtning, och demon blir
 // ryckig på ett sätt som inte lär ut något om gcTime. En sekund räcker för att
@@ -62,7 +62,7 @@ const CachedUserCard = ({ staleTimeMs, gcTimeMs }: CachedUserCardProps) => {
     return (
       <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
         <CircularProgress size={24} />
-        <Typography>Hämtar från början — posten fanns inte i cachen.</Typography>
+        <Typography>Hämtar från början. Posten fanns inte i cachen.</Typography>
       </Stack>
     );
   }
@@ -106,8 +106,8 @@ export const CacheClockDemo = () => {
   //
   // Startvärdet sätts med en funktion och inte med Date.now() rakt av. Ett
   // argument beräknas vid varje rendering även när det bara används första
-  // gången, och en klocka avläst mitt under renderingen gör komponenten oren -
-  // lintregeln react-hooks/purity stoppar det.
+  // gången, och en klocka avläst mitt under renderingen gör komponenten oren.
+  // Lintregeln react-hooks/purity stoppar det.
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export const CacheClockDemo = () => {
   }, []);
 
   // Cachen läses direkt, utanför hooken. Det är enda sättet att se posten när
-  // ingen komponent tittar på den - och det är precis det läget demon handlar om.
+  // ingen komponent tittar på den, och det är precis det läget demon handlar om.
   //
   // getQueryState returnerar undefined när posten är borta. Skillnaden mellan
   // "finns kvar men inaktuell" och "borttagen" är hela lektionen.
@@ -141,10 +141,10 @@ export const CacheClockDemo = () => {
   // Tar bort cacheposten så att nästa hämtning skapar den på nytt.
   //
   // Behövs för att gcTime ska gå att sänka. Biblioteket sätter en posts gcTime
-  // till det STÖRSTA värde den någonsin sett - i query-core står det ordagrant
-  // som Math.max(this.gcTime || 0, nytt värde) - eftersom tiden hör till
-  // cacheposten och inte till hooken som tittar på den. Utan den här knappen
-  // skulle ett drag nedåt i reglaget se ut att göra något utan att göra det.
+  // till det STÖRSTA värde den någonsin sett, eftersom tiden hör till cacheposten
+  // och inte till hooken som tittar på den. I query-core står det ordagrant som
+  // Math.max(this.gcTime || 0, nytt värde). Utan den här knappen skulle ett drag
+  // nedåt i reglaget se ut att göra något utan att göra det.
   //
   // removeQueries är inte invalidering, som markerar data som inaktuell och
   // hämtar om. Den tar bort posten, vilket är precis vad demon behöver för att
@@ -158,7 +158,7 @@ export const CacheClockDemo = () => {
 
   const freshnessValue = (() => {
     if (cacheState === undefined) {
-      return '—';
+      return 'ingen post';
     }
 
     return freshMsLeft > 0 ? `färsk i ${Math.ceil(freshMsLeft / 1000)} s till` : 'inaktuell';
@@ -166,7 +166,7 @@ export const CacheClockDemo = () => {
 
   const gcValue = (() => {
     if (isVisiting) {
-      return 'tickar inte — någon tittar';
+      return 'tickar inte, eftersom någon tittar';
     }
 
     return cacheState === undefined ? 'posten är städad' : `städas om ${Math.ceil(gcMsLeft / 1000)} s`;
@@ -176,7 +176,7 @@ export const CacheClockDemo = () => {
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography id='staletime-etikett' variant='body2' color='textSecondary'>
-          staleTime — hur länge datan räknas som färsk
+          staleTime: hur länge datan räknas som färsk
         </Typography>
         <Box sx={{ pb: 2.5 }}>
           <Slider
@@ -194,7 +194,7 @@ export const CacheClockDemo = () => {
 
       <Stack spacing={1}>
         <Typography id='gctime-etikett' variant='body2' color='textSecondary'>
-          gcTime — hur länge posten ligger kvar när ingen tittar
+          gcTime: hur länge posten ligger kvar när ingen tittar
         </Typography>
         <Box sx={{ pb: 2.5 }}>
           <Slider
@@ -220,7 +220,7 @@ export const CacheClockDemo = () => {
 
       <Alert severity='info'>
         <strong>gcTime går bara att höja för en post som redan finns.</strong> Biblioteket tar det största värde posten sett, eftersom tiden hör till
-        cacheposten och inte till hooken som råkar titta på den. Drar du ner reglaget händer alltså ingenting förrän posten är borta — nollställ den
+        cacheposten och inte till hooken som råkar titta på den. Drar du ner reglaget händer alltså ingenting förrän posten är borta. Nollställ den
         med knappen ovan, så gäller det nya värdet från nästa hämtning.
       </Alert>
 
@@ -233,7 +233,7 @@ export const CacheClockDemo = () => {
           {isVisiting ? (
             <CachedUserCard staleTimeMs={staleTimeMs} gcTimeMs={gcTimeMs} />
           ) : (
-            <Typography color='textSecondary'>Du har lämnat vyn. Komponenten är avmonterad — men posten kan ligga kvar i cachen.</Typography>
+            <Typography color='textSecondary'>Du har lämnat vyn. Komponenten är avmonterad, men posten kan ligga kvar i cachen.</Typography>
           )}
         </Stack>
       </Paper>
@@ -255,7 +255,7 @@ export const CacheClockDemo = () => {
           själv startar, och den behöver en knapp. */}
       <RequestCounterPanel
         total={requestCount}
-        caption='Träffar i den mockade backenden, inte renderingar — ett tal som betyder samma sak här som i ett bygge. Nollställ före varje steg, så syns det direkt om återbesöket kostade ett anrop eller inte.'
+        caption='Träffar i den mockade backenden, inte renderingar. Det är ett tal som betyder samma sak här som i ett bygge. Nollställ före varje steg, så syns det direkt om återbesöket kostade ett anrop eller inte.'
       />
     </Stack>
   );

@@ -16,7 +16,7 @@ type TraceStep = {
   id: StepId;
   label: string;
   file: string;
-  // Varför det här lagret finns. Det är hela modulens innehåll - flödet är
+  // Varför det här lagret finns. Det är hela modulens innehåll, och flödet är
   // bara tråden att hänga besluten på.
   decision: string;
   // Om tidsstämpeln är tagen i samma ögonblick som händelsen, eller först
@@ -30,7 +30,7 @@ const STEPS: TraceStep[] = [
     label: 'Hooken startar hämtningen',
     file: 'modules/architecture/hooks/queries/useFetchArchitectureUsers.ts',
     decision:
-      'Hooken är gränsen mellan React och data. Den vet vilken nyckel som gäller och hur länge svaret får räknas som färskt — men ingenting om HTTP. Därför kan servicen bytas ut utan att någon komponent märker det, och därför kan en komponent använda hooken utan att veta att det finns ett nätverk inblandat.',
+      'Hooken är gränsen mellan React och data. Den vet vilken nyckel som gäller och hur länge svaret får räknas som färskt, men ingenting om HTTP. Därför kan servicen bytas ut utan att någon komponent märker det, och därför kan en komponent använda hooken utan att veta att det finns ett nätverk inblandat.',
     isExact: false,
   },
   {
@@ -38,7 +38,7 @@ const STEPS: TraceStep[] = [
     label: 'Anropet lämnar klienten',
     file: 'services/api/users.ts → services/axios/axiosClient.ts',
     decision:
-      'Servicelagret ligger på rotnivå och inte i modulen. De flesta moduler i appen demonstrerar något som inte har med HTTP att göra — en vy om useState har inget att hämta — och ett gemensamt services/ slipper frågan helt i stället för att varje modul får en tom mapp. Servicen innehåller ingen React: den tar argument och returnerar typad data, vilket är varför den går att läsa utan att veta något om komponenten som råkade anropa den.',
+      'Servicelagret ligger på rotnivå och inte i modulen. De flesta moduler i appen demonstrerar något som inte har med HTTP att göra. En vy om useState har inget att hämta, och ett gemensamt services/ slipper frågan helt i stället för att varje modul får en tom mapp. Servicen innehåller ingen React: den tar argument och returnerar typad data, vilket är varför den går att läsa utan att veta något om komponenten som råkade anropa den.',
     isExact: true,
   },
   {
@@ -46,7 +46,7 @@ const STEPS: TraceStep[] = [
     label: 'Svaret kommer tillbaka',
     file: 'services/axios/axiosClient.ts',
     decision:
-      'Här sitter appens enda interceptor, och den kontrollerar att svaret faktiskt är JSON. Appen är en ensidesapp, så allt som inte matchar en fil besvaras med index.html — också ett anrop under /api som mocken missade. Utan kontrollen ser axios en webbsida med status 200 som en lyckad hämtning. En regel som ska gälla varje anrop hör hemma på ett ställe, inte upprepad i varje service.',
+      'Här sitter appens enda interceptor, och den kontrollerar att svaret faktiskt är JSON. Appen är en ensidesapp, så allt som inte matchar en fil besvaras med index.html, också ett anrop under /api som mocken missade. Utan kontrollen ser axios en webbsida med status 200 som en lyckad hämtning. En regel som ska gälla varje anrop hör hemma på ett ställe, inte upprepad i varje service.',
     isExact: true,
   },
   {
@@ -54,7 +54,7 @@ const STEPS: TraceStep[] = [
     label: 'Query lägger svaret i cachen',
     file: 'services/queryClient.ts',
     decision:
-      'Cachen tillhör appen och inte komponenten som råkade hämta. Det är därför fyra komponenter med samma nyckel ger ett anrop, och därför data finns kvar när du kommer tillbaka till en vy. QueryClient lämnas med bibliotekets standardvärden orörda — sätts staleTime globalt blir det osynlig magi, och en hook som kopieras härifrån till ett annat projekt beter sig då annorlunda utan att något i den avslöjar varför.',
+      'Cachen tillhör appen och inte komponenten som råkade hämta. Det är därför fyra komponenter med samma nyckel ger ett anrop, och därför data finns kvar när du kommer tillbaka till en vy. QueryClient lämnas med bibliotekets standardvärden orörda. Sätts staleTime globalt blir det osynlig magi, och en hook som kopieras härifrån till ett annat projekt beter sig då annorlunda utan att något i den avslöjar varför.',
     isExact: false,
   },
 ];
@@ -62,7 +62,7 @@ const STEPS: TraceStep[] = [
 // Är det här cachehändelsen om demons egen hämtning?
 //
 // Cachen är appens, så prenumerationen får händelser om varje query i hela
-// appen - även poster andra moduler lagt in i samma flik. Utan filtret skulle
+// appen, även poster andra moduler lagt in i samma flik. Utan filtret skulle
 // panelen stämpla någon annans hämtning som sin egen.
 const isTraceQuery = (queryKey: readonly unknown[]) => queryKey[0] === architectureKeys.all[0] && queryKey[1] === 'trace';
 
@@ -85,7 +85,7 @@ export const FlowTraceDemo = () => {
   // avmonteras. axiosClient.ts rörs inte med en enda rad.
   //
   // Hade panelen krävt loggning inne i axiosClient skulle modulen visa en
-  // förvanskad version av just den kod den påstår sig förklara - och då vore
+  // förvanskad version av just den kod den påstår sig förklara, och då vore
   // den värdelös. Att interceptorer går att haka på och av utifrån är också
   // precis varför de är rätt plats för regler som ska gälla varje anrop.
   //
@@ -111,13 +111,13 @@ export const FlowTraceDemo = () => {
     };
   }, [mark]);
 
-  // Steg 1 och 4 går inte att observera med en interceptor - de sker inne i
-  // Query. Vi prenumererar på cachen i stället.
+  // Steg 1 och 4 går inte att observera med en interceptor, eftersom de sker
+  // inne i Query. Vi prenumererar på cachen i stället.
   //
   // Att det blir en prenumeration och inte två effekter som läser hookens
   // fetchStatus är inte en smaksak: setState rakt i en effektkropp ger
   // kaskadrenderingar, och lintregeln react-hooks/set-state-in-effect stoppar
-  // det. En callback från ett externt system är undantaget regeln pekar ut -
+  // det. En callback från ett externt system är undantaget regeln pekar ut,
   // och query-cachen ÄR ett externt system, vilket är hela skälet till att
   // useRerenderOnCacheChange i shared/hooks finns och ser ut som den gör.
   useEffect(() => {
@@ -144,7 +144,7 @@ export const FlowTraceDemo = () => {
 
   const formatOffset = (at: number | undefined) => {
     if (at === undefined || startedAt === undefined) {
-      return '—';
+      return 'väntar';
     }
 
     return `+${Math.round(at - startedAt)} ms`;
@@ -206,8 +206,8 @@ export const FlowTraceDemo = () => {
               >
                 <Stack direction='row' spacing={2} sx={{ alignItems: 'center', minWidth: 0 }}>
                   {/* Siffran säger ordningen även innan något hänt, och
-                      "klar" står som ord bredvid - status aldrig enbart som
-                      färg. */}
+                      "klar" står som ord bredvid. Status visas aldrig enbart
+                      som färg. */}
                   <Chip size='small' label={index + 1} />
 
                   <Stack sx={{ minWidth: 0 }}>
@@ -217,7 +217,7 @@ export const FlowTraceDemo = () => {
                     {/* overflowWrap: 'anywhere' behövs för att en sökväg inte
                         har några mellanslag att brytas vid. Utan den svämmar
                         raden över sin spalt på en smal skärm och tvingar fram
-                        horisontell scroll för hela sidan - uppmätt till 511 px
+                        horisontell scroll för hela sidan, uppmätt till 511 px
                         innehåll i en 375 px vid.
 
                         Att korta av sökvägen med ellips vore fel: det är just
@@ -251,7 +251,7 @@ export const FlowTraceDemo = () => {
       <Alert severity='info'>
         <strong>Tiderna räknas från steg 1, och två av dem är ungefärliga.</strong> Steg 2 och 3 stämplas i interceptorerna, i samma ögonblick som
         anropet går och svaret kommer. Steg 1 och 4 sker inne i Query och avläses först när React ritat om, så de ligger några millisekunder sent.
-        Glappet mellan 2 och 3 är det enda som är en riktig mätning — och det är där nätverket ligger.
+        Glappet mellan 2 och 3 är det enda som är en riktig mätning, och det är där nätverket ligger.
       </Alert>
     </Stack>
   );

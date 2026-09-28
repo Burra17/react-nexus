@@ -7,7 +7,7 @@ import type { QuizQuestion } from '../../shared/components/quiz';
 // gör för narrowing.
 //
 // import type och generics testas inte. Den första är en regel man följer snarare
-// än förstår, den andra är visad i teorin men aldrig demonstrerad - och en fråga om
+// än förstår, den andra är visad i teorin men aldrig demonstrerad. En fråga om
 // något läsaren bara läst testar minne, inte förståelse.
 //
 // Kodfragment markeras med backticks, som i Markdown. Se stateQuestions.ts.
@@ -21,7 +21,7 @@ export const typescriptQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'TypeScript kastar ett fel vid körning, eftersom svaret inte matchar typen',
         explanation:
-          'Nej. `as` är borta när koden kör — det finns ingenting kvar som kan jämföra svaret med typen. Handboken är uttrycklig: det blir varken ett undantag eller `null` om påståendet är fel.',
+          'Nej. `as` är borta när koden kör. Det finns ingenting kvar som kan jämföra svaret med typen. Handboken är uttrycklig: det blir varken ett undantag eller `null` om påståendet är fel.',
       },
       {
         id: 'b',
@@ -31,7 +31,7 @@ export const typescriptQuestions: QuizQuestion[] = [
       },
       {
         id: 'c',
-        text: 'Ingenting — förrän någon läser `.data`, och då kraschar det',
+        text: 'Ingenting förrän någon läser `.data`, och då kraschar det',
         explanation:
           'Rätt. Påståendet kontrolleras aldrig, varken vid bygget eller vid körning. Felet dyker upp först där värdet används, långt från raden som ljög.',
       },
@@ -77,7 +77,7 @@ export const typescriptQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'Att varianterna har olika fält, så TypeScript ser vilken det är',
         explanation:
-          'Olika fält räcker inte i sig. Det går att smalna av på förekomsten av ett fält med `in`, men det är en annan mekanism — diskriminanten är det gemensamma fältet med fasta värden.',
+          'Olika fält räcker inte i sig. Det går att smalna av på förekomsten av ett fält med `in`, men det är en annan mekanism. Diskriminanten är det gemensamma fältet med fasta värden.',
       },
       {
         id: 'c',

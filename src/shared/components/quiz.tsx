@@ -24,8 +24,8 @@ import {
 // Ett svarsalternativ.
 //
 // explanation visas efter svaret för alla tre alternativen, inte bara för det
-// man valde. Den som gissade rätt ska också få veta varför det var rätt -
-// annars går hen vidare i tron att hen kunde det.
+// man valde. Den som gissade rätt ska också få veta varför det var rätt.
+// Annars går hen vidare i tron att hen kunde det.
 export type QuizOption = {
   id: AnswerChoice;
   text: string;
@@ -46,21 +46,21 @@ export type QuizQuestion = {
 
 // Gör `kod` i en textsträng till riktiga code-element.
 //
-// Frågorna ligger som rena strängar i .ts-filer och inte som JSX - det var hela
+// Frågorna ligger som rena strängar i .ts-filer och inte som JSX. Det var hela
 // poängen med att skilja data från komponent. Backticks blir därför markeringen,
 // samma som i Markdown, och den här funktionen är det som gör dem till element.
 // Den som skriver en ny fråga behöver inte veta något om React.
 //
 // Ett rent <code>, aldrig Typography component="code". Typography sätter
 // font-family från temat och slår då ut CssBaseline-regeln för code, så
-// fragmentet hade renderats i brödtextens typsnitt - vilket är precis det vi
+// fragmentet hade renderats i brödtextens typsnitt, vilket är precis det vi
 // försöker undvika här.
 const withInlineCode = (text: string) => text.split('`').map((del, index) => (index % 2 === 1 ? <code key={index}>{del}</code> : del));
 
 // Kopplar lagringen till komponentens state.
 //
 // Ligger i samma fil som komponenten eftersom den har exakt en användare.
-// Dashboarden i #54 kommer inte behöva den - att räkna framsteg är en läsning
+// Dashboarden i #54 kommer inte behöva den. Att räkna framsteg är en läsning
 // direkt ur services/storage/, inte en interaktion med låsning och omsvar.
 const useQuizProgress = (modulePath: string) => {
   const [answers, setAnswers] = useState<ModuleAnswers>(() => readModuleAnswers(modulePath));
@@ -69,7 +69,7 @@ const useQuizProgress = (modulePath: string) => {
     saveAnswer(modulePath, questionId, choice);
 
     // State uppdateras oavsett om skrivningen lyckades. Är lagringen avstängd,
-    // som i Safaris privata läge, ska quizen ändå fungera under sessionen - den
+    // som i Safaris privata läge, ska quizen ändå fungera under sessionen. Den
     // blir bara inte ihågkommen. Att läsa tillbaka ur lagringen i stället hade
     // gett en quiz där ingenting händer när man klickar.
     setAnswers((current) => ({ ...current, [questionId]: { choice, answeredAt: new Date().toISOString() } }));
@@ -139,8 +139,8 @@ const QuizItem = ({ question, index, answer, onAnswer }: QuizItemProps) => {
                 '& .MuiRadio-root': { pt: 0.25 },
 
                 // Hela raden är redan klickbar: FormControlLabel renderar ett
-                // <label> som omsluter radion. Hovern finns för att visa det -
-                // utan den ser bara den lilla cirkeln ut som träffytan.
+                // <label> som omsluter radion. Hovern finns för att visa det.
+                // Utan den ser bara den lilla cirkeln ut som träffytan.
                 //
                 // action.hover är rätt token just här. Den är ljusare än
                 // underlaget i mörkt läge och mörkare i ljust, alltså alltid en
@@ -157,13 +157,13 @@ const QuizItem = ({ question, index, answer, onAnswer }: QuizItemProps) => {
       </FormControl>
 
       {/* Regionen ligger i DOM:en från början, tom. En aria-live-region som
-          monteras samtidigt som sitt innehåll annonseras ofta inte alls -
-          skärmläsaren måste ha sett regionen innan den ändras. */}
+          monteras samtidigt som sitt innehåll annonseras ofta inte alls.
+          Skärmläsaren måste ha sett regionen innan den ändras. */}
       <Box aria-live='polite' sx={{ mt: isAnswered ? 2 : 0 }}>
         {isAnswered && (
           // Facit får en egen platta med kant, så att gränsen mot frågan och
           // alternativen syns. background.default är nedtonad mot kortets
-          // background.paper i båda färglägena - uppmätt, inte antaget: 27→20 i
+          // background.paper i båda färglägena. Uppmätt, inte antaget: 27→20 i
           // mörkt läge och 255→247 i ljust. action.hover hade tonat åt olika
           // håll i de två lägena och därför känts som två olika ytor.
           <Box sx={{ bgcolor: 'background.default', border: 1, borderColor: 'divider', borderRadius: 1, p: 2 }}>
@@ -185,7 +185,7 @@ const QuizItem = ({ question, index, answer, onAnswer }: QuizItemProps) => {
                     {option.id.toUpperCase()}. {option.id === question.correct ? 'Rätt.' : 'Fel.'}
                   </Box>{' '}
                   {withInlineCode(option.explanation)}
-                  {option.id === answer.choice && ' — ditt svar.'}
+                  {option.id === answer.choice && ' Ditt svar.'}
                 </Typography>
               ))}
             </Stack>
@@ -206,7 +206,7 @@ type QuizProps = {
 // kan återkalla den senare. Det gör bara ett test.
 export const Quiz = ({ questions }: QuizProps) => {
   // Modulens path kommer ur routern och skickas inte som prop. En path som
-  // skrivs för hand kan stavas fel - '/State' i stället för '/state' - och då
+  // skrivs för hand kan stavas fel, '/State' i stället för '/state', och då
   // hamnar svaren under en nyckel ingen läser, utan att något varnar.
   const { pathname } = useLocation();
   const { answers, answer, reset } = useQuizProgress(pathname);

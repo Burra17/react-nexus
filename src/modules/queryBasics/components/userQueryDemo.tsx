@@ -47,14 +47,14 @@ export const UserQueryDemo = () => {
   // för fel, och ingen useEffect som håller ihop dem.
   const { data, status, fetchStatus, isPending, isError, error, dataUpdatedAt } = useFetchUser({ id, delayMs, shouldFail });
 
-  // De tre lägena, uttryckta som kombinationer av de två fälten - inte som en
+  // De tre lägena, uttryckta som kombinationer av de två fälten och inte som en
   // egen flagga vid sidan om. Det är kombinationerna som är lektionen.
   const isPaused = isPending && fetchStatus === 'idle';
   const isFirstLoad = isPending && fetchStatus === 'fetching';
   const isBackgroundFetch = !isPending && fetchStatus === 'fetching';
 
   // Nyckeln skrivs ut som den faktiskt ser ut. Den ändras när du byter användare
-  // och när du slår på felväxeln - men inte när du drar i latensreglaget, och
+  // och när du slår på felväxeln, men inte när du drar i latensreglaget, och
   // den skillnaden är hela poängen med vad som hör hemma i en queryKey.
   const queryKey = JSON.stringify(usersKeys.detail(id, shouldFail));
 
@@ -90,7 +90,7 @@ export const UserQueryDemo = () => {
         {/* Boxen finns för utrymmets skull, inte för layoutens.
 
             Sliderns marks-etiketter ligger absolut positionerade och sticker ut
-            20 px under sliderns egen box, utan att räknas in i höjden - så
+            20 px under sliderns egen box, utan att räknas in i höjden, så
             texten under hamnar under dem. En marginal på slidern hjälper inte:
             Stack nollställer margin på sina direkta barn, och den regeln väger
             tyngre än sx. Padding rör Stack inte, därav wrappern. */}
@@ -141,7 +141,7 @@ export const UserQueryDemo = () => {
           </Stack>
 
           {isPaused && (
-            <Typography color='textSecondary'>Ingen användare vald. Queryn finns, men den kör inte - se de två fälten i panelen nedan.</Typography>
+            <Typography color='textSecondary'>Ingen användare vald. Queryn finns, men den kör inte. Se de två fälten i panelen nedan.</Typography>
           )}
 
           {isFirstLoad && (
@@ -152,7 +152,7 @@ export const UserQueryDemo = () => {
           )}
 
           {/* Felets eget meddelande står med, och inte bara en text vi skrivit.
-              Rutan ska säga vad som faktiskt hände - annars påstår den 500 även
+              Rutan ska säga vad som faktiskt hände. Annars påstår den 500 även
               den gång felet var något helt annat. Nyckeln med felflaggan är
               dessutom ny, så det finns ingen tidigare data att falla tillbaka på
               och kortet är tomt. */}
@@ -196,7 +196,7 @@ export const UserQueryDemo = () => {
 
           {/* Raden finns för att reglaget ska gå att jämföra med verkligheten.
               Står det 3000 ovanför medan hämtningen kördes med 800 är det inte
-              en bugg - det är att fördröjningen inte står i nyckeln. */}
+              en bugg. Det är att fördröjningen inte står i nyckeln. */}
           <StatusRow label='svarstid i senaste anropet' value={data ? `${data.usedDelayMs} ms` : 'inget anrop än'} />
         </Stack>
       </Paper>

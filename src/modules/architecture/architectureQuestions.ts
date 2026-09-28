@@ -3,7 +3,7 @@ import type { QuizQuestion } from '../../shared/components/quiz';
 // Kunskapskontrollen för arkitekturmodulen.
 //
 // Frågorna testar tillämpning och resonemang, aldrig placering. "Var ligger
-// servicelagret" är en minneslek som mäter om man scrollat förbi en rubrik -
+// servicelagret" är en minneslek som mäter om man scrollat förbi en rubrik,
 // och en arkitektur man bara kan rabbla är en arkitektur man inte kan använda.
 export const architectureQuestions: QuizQuestion[] = [
   {
@@ -21,7 +21,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'I `services/api/`, tillsammans med de andra anropen',
         explanation:
-          'Rätt. Servicelagret ligger på rotnivå eftersom de flesta moduler inte hämtar någonting alls — en vy om `useState` har inget att hämta, och ett gemensamt `services/` slipper frågan i stället för att varje modul får en tom mapp. Servicen innehåller ingen React: den returnerar typad data, och hooken bestämmer vad som händer med den.',
+          'Rätt. Servicelagret ligger på rotnivå eftersom de flesta moduler inte hämtar någonting alls. En vy om `useState` har inget att hämta, och ett gemensamt `services/` slipper frågan i stället för att varje modul får en tom mapp. Servicen innehåller ingen React: den returnerar typad data, och hooken bestämmer vad som händer med den.',
       },
       {
         id: 'c',
@@ -41,7 +41,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Klasser hör inte hemma i modern React-kod',
         explanation:
-          'Servicelagret innehåller ingen React alls — det är vanliga funktioner mot ett API, och en klass där hade varit fullt möjlig. Att komponenter numera skrivs som funktioner säger ingenting om hur man pratar med ett API.',
+          'Servicelagret innehåller ingen React alls. Det är vanliga funktioner mot ett API, och en klass där hade varit fullt möjlig. Att komponenter numera skrivs som funktioner säger ingenting om hur man pratar med ett API.',
       },
       {
         id: 'b',
@@ -52,7 +52,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Arvet lönar sig först vid många resurser',
         explanation:
-          'Rätt. Basklassen tjänar in sig över tjugosju resurser. Här finns två eller tre, och då blir den en inpackning som döljer vad anropet gör. Samma mönster kan alltså vara rätt i ett projekt och fel i ett annat — skillnaden är skala, inte smak.',
+          'Rätt. Basklassen tjänar in sig över tjugosju resurser. Här finns två eller tre, och då blir den en inpackning som döljer vad anropet gör. Samma mönster kan alltså vara rätt i ett projekt och fel i ett annat: skillnaden är skala, inte smak.',
       },
     ],
   },
@@ -66,7 +66,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Query lägger HTML-strängen i cachen som data, vyn renderar tomma fält, och ingenting säger till',
         explanation:
-          'Rätt, och det är modulens skarpaste poäng. Status 200 betyder för axios att allt gick bra, så felhanteringen slår aldrig till. Ett fel som ser ut som ett lyckat svar är värre än ett fel, eftersom det inte upptäcks — och kontrollen finns därför på ett enda ställe som varje anrop passerar.',
+          'Rätt, och det är modulens skarpaste poäng. Status 200 betyder för axios att allt gick bra, så felhanteringen slår aldrig till. Ett fel som ser ut som ett lyckat svar är värre än ett fel, eftersom det inte upptäcks. Kontrollen finns därför på ett enda ställe som varje anrop passerar.',
       },
       {
         id: 'b',
@@ -78,7 +78,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Query försöker igen automatiskt tills den får ett riktigt svar',
         explanation:
-          'Query gör omförsök vid fel, men det här räknas inte som ett fel — statuskoden är 200. Och även om den försökte igen skulle den få samma HTML-sida tillbaka.',
+          'Query gör omförsök vid fel, men det här räknas inte som ett fel, eftersom statuskoden är 200. Och även om den försökte igen skulle den få samma HTML-sida tillbaka.',
       },
     ],
   },

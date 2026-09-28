@@ -21,7 +21,7 @@ const sansFontFamily = "'Inter Variable', system-ui, -apple-system, 'Segoe UI', 
 // Ett tema med två färglägen, inte två teman.
 //
 // MUI kan lägga ljust och mörkt i samma tema och växla via CSS-variabler.
-// Alternativet - att byta hela temat i ThemeProvider - renderar om hela
+// Alternativet, att byta hela temat i ThemeProvider, renderar om hela
 // React-trädet vid varje lägesbyte. I en app som ska visa vad som orsakar
 // en omrendering vore det en lögn inbyggd i grunden.
 //
@@ -63,7 +63,7 @@ export const theme = createTheme({
     // Fyra nivåer: 40, 22, 18 och 16 px.
     //
     // h2 är sektionsrubriker som Teori, Demo, Kod och Quiz. De är etiketter i ett
-    // flöde och inte konkurrenter till sidans rubrik - på 1.75rem vägde de
+    // flöde och inte konkurrenter till sidans rubrik. På 1.75rem vägde de
     // nästan lika tungt som h1.
     //
     // h3 följer med ned. Hade den stannat på 1.25rem låge den 2 px från h2,
@@ -90,13 +90,13 @@ export const theme = createTheme({
         // Inline-kod får rätt typsnitt utan att varje vy behöver be om det.
         //
         // Ligaturerna stängs av. JetBrains Mono slår annars ihop => till en
-        // dubbelpil och !== till ett genomstruket likhetstecken - glyfer som
+        // dubbelpil och !== till ett genomstruket likhetstecken, glyfer som
         // inte finns på tangentbordet. I en lärobok arbetar det emot syftet:
         // den som läser setCount(c => c + 1) ska kunna skriva av det.
         //
         // none räcker och täcker båda fallen. JetBrains Mono bygger sina
         // kodligaturer på kontextuella alternativ och inte bara på liga, men
-        // none stänger av båda - uppmätt, inte antaget. Se #64.
+        // none stänger av båda. Uppmätt, inte antaget. Se #64.
         //
         // Regeln står här och inte i en komponent, så att inline-kod och
         // kodblock behandlas lika. Sätts den per vy ser den elfte inte ut som
@@ -125,7 +125,7 @@ export const theme = createTheme({
         // det ändå ungefär lika stor plats som förut.
         //
         // box-decoration-break: clone gäller fragment som bryts över ett
-        // radslut - utan den får den första halvan en öppen högerkant och ser
+        // radslut. Utan den får den första halvan en öppen högerkant och ser
         // trasig ut i stället för avsiktlig. Alternativet white-space: nowrap
         // valdes bort: det tvingar fram horisontell rullning på mobil, vilket
         // är ett sämre fel än ett delat hörn. Se #81.

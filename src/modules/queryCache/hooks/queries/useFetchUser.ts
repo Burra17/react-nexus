@@ -7,7 +7,7 @@ import { RESPONSE_DELAY_MS } from './responseDelay';
 //
 // Finns här för att demon ska ha poster under BÅDA grenarna av nyckelfabriken.
 // Utan detaljposter går det inte att visa skillnaden mellan att invalidera hela
-// resursen och att invalidera bara listorna - och den skillnaden är hela skälet
+// resursen och att invalidera bara listorna, och den skillnaden är hela skälet
 // till att nycklarna byggs ovanpå varandra.
 export const useFetchUser = (id: string) =>
   useQuery({

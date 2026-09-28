@@ -5,10 +5,10 @@ import type { User } from '../api/users';
 //
 // Namnen är desamma som i kapplöpningsdemon i modul 3. Där hämtades de med ett
 // löfte inne i komponenten; här går samma hämtning över riktig HTTP, och det är
-// hela poängen med modulen - det är din egen trasiga hämtning, gjord om.
+// hela poängen med modulen: det är din egen trasiga hämtning, gjord om.
 //
 // De två första har egna knappar i den modulen. De övriga syns bara när hela
-// listan hämtas, vilket först behövdes i modulen om cachen - en lista på två
+// listan hämtas, vilket först behövdes i modulen om cachen. En lista på två
 // poster ser inte ut som en lista.
 const USERS: Record<string, User> = {
   ada: { id: 'ada', name: 'Ada Lovelace', role: 'Analytiker', email: 'ada@example.com' },
@@ -21,7 +21,7 @@ const USERS: Record<string, User> = {
 // Mutationsmodulens egen kopia av datamängden, och den enda som får skrivas i.
 //
 // Modul 9 byter roll på en användare. Skrevs ändringen i USERS ovan skulle Ada
-// stå kvar som Systemarkitekt när läsaren gick tillbaka till modul 7 - tills
+// stå kvar som Systemarkitekt när läsaren gick tillbaka till modul 7, tills
 // sidan laddades om och det tyst återställdes. Samma resonemang som de separata
 // nyckelgrenarna i modul 7 och 8: en modul ska gå att förstå isolerad.
 //
@@ -44,7 +44,7 @@ type RequestControls = {
 // syns det i Network-fliken exakt vad som styrde svaret, vilket är hela skälet
 // till att vi mockar på nätverksnivå i stället för att fejka ett löfte.
 //
-// Sökparametrar får inte stå i mönstret till http.get - MSW matchar bara på
+// Sökparametrar får inte stå i mönstret till http.get. MSW matchar bara på
 // sökvägen och läser parametrarna ur anropet.
 const readControls = (request: Request): RequestControls => {
   const params = new URL(request.url).searchParams;
@@ -71,10 +71,10 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 // och anrop ljuger på utvecklarens maskin. Absoluta tal gör det inte.
 //
 // Den räknas upp här och ingen annanstans, för att det som räknas ska vara
-// anrop som verkligen nådde backenden - inte hookar som kördes.
+// anrop som verkligen nådde backenden, inte hookar som kördes.
 //
 // Varje handler räknar upp den, också skrivningen. Räknaren mäter anrop och
-// inte hämtningar, vilket är vad den alltid utgett sig för att vara - och i
+// inte hämtningar, vilket är vad den alltid utgett sig för att vara. I
 // modul 9 är hela påståendet att en lyckad mutation kostar ett skrivanrop plus
 // de hämtningar invalideringen utlöser. Räknades bara GET skulle panelen visa
 // ett tal som säger emot Network-fliken.
@@ -121,7 +121,7 @@ export const handlers = [
     return HttpResponse.json(user);
   }),
 
-  // Mutationsmodulens läsning. Egen sökväg, egen datamängd - se MUTATION_USERS.
+  // Mutationsmodulens läsning. Egen sökväg, egen datamängd, se MUTATION_USERS.
   http.get('/api/mutations/users', async ({ request }) => {
     userRequestCount += 1;
 
@@ -140,8 +140,8 @@ export const handlers = [
   //
   // Felet styrs av samma fail-parameter som hämtningarna, och det är avsiktligt:
   // demon om optimistisk uppdatering behöver ett fel den kan beställa, annars
-  // går rollbacken inte att visa. Att felet kommer FÖRE skrivningen spelar roll
-  // - ett misslyckat anrop ska inte ha ändrat något, annars visar demon en
+  // går rollbacken inte att visa. Att felet kommer FÖRE skrivningen spelar roll:
+  // ett misslyckat anrop ska inte ha ändrat något, annars visar demon en
   // rollback av en ändring som blev kvar på servern.
   http.put('/api/mutations/users/:id', async ({ request, params }) => {
     userRequestCount += 1;

@@ -12,7 +12,7 @@ export const SnapshotDemo = () => {
     setCount(count + 1);
 
     // count är fortfarande värdet ur fotot. Raden ovanför ändrade inte
-    // variabeln - den beställde ett nytt värde till nästa ritning.
+    // variabeln. Den beställde ett nytt värde till nästa ritning.
     setReadBack(count);
   };
 
@@ -28,7 +28,7 @@ export const SnapshotDemo = () => {
 
       {readBack !== null && (
         <Typography color='textSecondary'>
-          Direkt efter anropet till setCount var count fortfarande <strong>{readBack}</strong> — inte {readBack + 1}.
+          Direkt efter anropet till setCount var count fortfarande <strong>{readBack}</strong>, inte {readBack + 1}.
         </Typography>
       )}
     </Stack>

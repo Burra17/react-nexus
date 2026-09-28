@@ -16,7 +16,7 @@ const MIN_NAME_LENGTH = 2;
 
 // De tre lägen demon låter läsaren välja mellan.
 //
-// RHF har fler - onTouched och all - men tre val räcker för att känna
+// RHF har fler (onTouched och all), men tre val räcker för att känna
 // skillnaden, och fem knappar i rad blir en inställningspanel i stället för
 // en demonstration.
 const MODES = [
@@ -34,9 +34,9 @@ type ValidatedFormProps = {
 // Formuläret som valideras. Tar mode som prop.
 //
 // Reglerna ligger i register, som ett andra argument. Det är bibliotekets egna
-// regler och inget schemabibliotek: zod och liknande löser ett annat problem -
-// att beskriva en datamodell en gång och återanvända den - och det problemet
-// har inte den här modulen.
+// regler och inget schemabibliotek: zod och liknande löser ett annat problem:
+// att beskriva en datamodell en gång och återanvända den. Det problemet har
+// inte den här modulen.
 const ValidatedForm = ({ mode }: ValidatedFormProps) => {
   const {
     register,
@@ -50,9 +50,9 @@ const ValidatedForm = ({ mode }: ValidatedFormProps) => {
   const [submitted, setSubmitted] = useState<string | null>(null);
 
   return (
-    <Stack component='form' spacing={2} onSubmit={handleSubmit((values) => setSubmitted(`${values.name} — ${values.email}`))}>
+    <Stack component='form' spacing={2} onSubmit={handleSubmit((values) => setSubmitted(`${values.name}, ${values.email}`))}>
       {/* error och helperText kopplar MUI:s utseende till RHF:s tillstånd.
-          Felet står som text och inte bara som röd ram - en röd kant utan ord
+          Felet står som text och inte bara som röd ram. En röd kant utan ord
           säger att något är fel men inte vad. */}
       <TextField
         label='Namn'
@@ -94,7 +94,7 @@ export const ValidationDemo = () => {
     <Stack spacing={2}>
       <Stack spacing={1}>
         <Typography id='mode-etikett' variant='body2' color='textSecondary'>
-          mode — när valideringen körs
+          mode: när valideringen körs
         </Typography>
 
         <ToggleButtonGroup
@@ -131,12 +131,12 @@ export const ValidationDemo = () => {
             skulle knapparna se ut att göra något utan att göra det.
 
             Att formuläret samtidigt töms är en bieffekt, och en välkommen
-            sådan - varje läge provas från ett rent utgångsläge. */}
+            sådan: varje läge provas från ett rent utgångsläge. */}
         <ValidatedForm key={mode} mode={mode} />
       </Paper>
 
       <Alert severity='info'>
-        <strong>Prova att skicka ett tomt formulär i läget onSubmit.</strong> Felen dyker upp först då — men rätta sedan namnet och titta på
+        <strong>Prova att skicka ett tomt formulär i läget onSubmit.</strong> Felen dyker upp först då. Men rätta sedan namnet och titta på
         felmeddelandet medan du skriver. Det försvinner tecken för tecken, trots att läget heter onSubmit. Efter den första inskickningen växlar
         biblioteket till att omvärdera det fält som fallerade vid varje ändring, och det är den detaljen som gör standardläget användbart i stället
         för envist.

@@ -6,13 +6,13 @@
 // Inget interface och ingen utbytbar implementation. Ett interface med exakt en
 // implementation döljer mer än det abstraherar, och skulle en backend komma
 // skrivs den ändå om från grunden när vi vet vad servern erbjuder. Förberedelsen
-// ligger i att all åtkomst går genom den här filen - då finns det ett ställe att
+// ligger i att all åtkomst går genom den här filen. Då finns det ett ställe att
 // ändra på, vilket är vad ett utbytbart lager egentligen ska ge.
 
 // Formen på det som ligger lagrat. Höjs när något lagrat byter form.
 //
-// Versionen är gemensam för alla nycklar. Det är trubbigt - en ändring i ett
-// format kastar allt - men appen lagrar i dag under en enda nyckel, och en
+// Versionen är gemensam för alla nycklar. Det är trubbigt, eftersom en ändring
+// i ett format kastar allt, men appen lagrar i dag under en enda nyckel, och en
 // version per nyckel vore maskineri för ett problem som inte finns.
 const STORAGE_VERSION = 1;
 
@@ -76,7 +76,7 @@ export const readStored = <T>(key: string, fallback: T): T => {
   }
 
   // Att versionen stämmer är hela kontrollen. Att data verkligen har formen T
-  // kontrolleras inte - det skulle kräva ett schema per nyckel, och repot tar
+  // kontrolleras inte, eftersom det skulle kräva ett schema per nyckel, och repot tar
   // inte in ett nytt bibliotek för det. Versionsfältet är kontraktet: ändrar
   // man formen höjer man versionen, och då kastas det gamla.
   return stored.data;

@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 // Så bred en textrad får vara.
 //
 // ch är bredden på siffran noll i det aktuella typsnittet, och den är bredare
-// än genomsnittstecknet i svensk prosa - som är full av mellanslag, kommatecken
+// än genomsnittstecknet i svensk prosa, som är full av mellanslag, kommatecken
 // och i:n. Ett ch-värde ger därför fler faktiska tecken än siffran antyder:
 // 58ch mäter upp till 73-76 tecken per rad vid 1920 px, beroende på vilken vy
 // som mäts.
@@ -24,5 +24,5 @@ const MAX_LINE_LENGTH = '58ch';
 //
 // Spalten är vänsterställd i sidans behållare och centreras inte för sig.
 // Centrerades den skulle dess vänsterkant hamna drygt 300 px in, medan
-// kodblocken började vid behållarens kant - två olika vänsterkanter i samma vy.
+// kodblocken började vid behållarens kant: två olika vänsterkanter i samma vy.
 export const ReadableColumn = ({ children }: { children: ReactNode }) => <Box sx={{ maxWidth: MAX_LINE_LENGTH }}>{children}</Box>;

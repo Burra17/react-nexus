@@ -19,13 +19,13 @@ export const performanceQuestions: QuizQuestion[] = [
     options: [
       {
         id: 'a',
-        text: 'Ingenting — det är samma kod som användarna kör',
+        text: 'Ingenting, eftersom det är samma kod som användarna kör',
         explanation:
           'Det är samma kod du skrivit, men inte samma kod som körs. Utvecklingsläget kör extra kontroller, och bygget optimerar på ett sätt som dev-servern inte gör.',
       },
       {
         id: 'b',
-        text: 'Utvecklingsläget kör mer än produktionsbygget — bland annat renderar StrictMode varje komponent två gånger',
+        text: 'Utvecklingsläget kör mer än produktionsbygget: bland annat renderar StrictMode varje komponent två gånger',
         explanation:
           'Rätt. react.dev säger uttryckligen att mätningar i utvecklingsläge inte ger tillförlitliga resultat, och pekar särskilt på StrictMode. Mät i ett bygge, och helst på en maskin som liknar användarens.',
       },
@@ -33,7 +33,7 @@ export const performanceQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Siffran är för låg, eftersom utvecklingsläget hoppar över arbete',
         explanation:
-          'Tvärtom — utvecklingsläget gör mer arbete, inte mindre. Felet går åt andra hållet, men det är fortfarande fel att lita på talet.',
+          'Tvärtom, utvecklingsläget gör mer arbete, inte mindre. Felet går åt andra hållet, men det är fortfarande fel att lita på talet.',
       },
     ],
   },
@@ -45,7 +45,7 @@ export const performanceQuestions: QuizQuestion[] = [
     options: [
       {
         id: 'a',
-        text: 'Full effekt — beräkningen körs bara en gång per sökning',
+        text: 'Full effekt: beräkningen körs bara en gång per sökning',
         explanation:
           'Nej. Varje tangenttryck ger en ny söksträng, alltså ett nytt beroende. `useMemo` jämför, ser att det ändrats, och kör beräkningen om.',
       },
@@ -57,7 +57,7 @@ export const performanceQuestions: QuizQuestion[] = [
       },
       {
         id: 'c',
-        text: 'Ingenting — beroendet ändras vid varje render ändå',
+        text: 'Ingenting, eftersom beroendet ändras vid varje render ändå',
         explanation:
           'Rätt. Memoisering hjälper bara när beroendena står still. Ändras de vid varje interaktion betalar du jämförelsen och kör ändå beräkningen. Vinsten kommer först när något annat än söksträngen orsakar renderingen.',
       },

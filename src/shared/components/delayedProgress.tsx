@@ -9,7 +9,7 @@ const DELAY_MS = 200;
 // En chunk hämtas oftast på under hundra millisekunder. En indikator som visas
 // direkt hinner därför bara blinka förbi, och ett gränssnitt som blinkar känns
 // trasigt. Tar hämtningen längre tid är det däremot värre att inte visa något
-// alls - då tror man att länken inte fungerade.
+// alls. Då tror man att länken inte fungerade.
 //
 // useEffect här är en timer, inte datahämtning. Regeln i CLAUDE.md om att
 // aldrig hämta med useEffect gäller serverdata.
