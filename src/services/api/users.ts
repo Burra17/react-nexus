@@ -20,10 +20,13 @@ export type UserRequestOptions = {
 
 // Hämtar hela listan med användare.
 //
-// Den byggdes först när något faktiskt behövde den. Modulen om cachen visar att
-// flera komponenter som frågar efter samma nyckel ger ett enda anrop, och det
-// går svårligen att demonstrera utan något som flera vyer naturligt vill visa
-// samtidigt.
+// Sökvägen står som /users och inte /api/users. Basen /api sitter i
+// axiosClient, så varje anrop här går ut som /api/users, vilket är den sökväg
+// den mockade backenden lyssnar på.
+//
+// Listan byggdes först när något faktiskt behövde den, nämligen en demonstration
+// av att flera komponenter som frågar efter samma nyckel ger ett enda anrop. Det
+// går svårligen att visa utan något som flera vyer naturligt vill visa samtidigt.
 export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]> => {
   const response = await axiosClient.get<User[]>('/users', {
     params: {

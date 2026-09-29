@@ -49,9 +49,15 @@ const Neighbour = ({ module, direction }: NeighbourProps) => {
 // Vägen vidare, längst ner i en konceptvy.
 //
 // Utan den tar sidan bara slut efter quizen, och enda vägen vidare är att
-// scrolla 4000 px upp eller gå via sidomenyn. En lärobok läses i ordning, och
-// ordningen finns redan i modules.tsx. Den användes bara aldrig för att ta
-// läsaren framåt.
+// scrolla 4000 px upp eller gå via sidomenyn. Ordningen finns redan i
+// modules.tsx. Den användes bara aldrig för att ta läsaren framåt.
+//
+// Etiketterna "Förra" och "Nästa" är relativa markörer, och sådana är förbjudna
+// i vyernas text enligt regeln om att varje vy står på egna ben. Undantaget här
+// är avsiktligt: regeln gäller förklaringen, inte vägvisningen. En läsordning är
+// ett förslag, ett beroende är ett krav, och komponenten kräver ingenting av
+// läsaren. Skälet står utskrivet för att knapparna annars städas bort av nästa
+// person som läser regeln och ser dem som en miss.
 export const ModuleNav = () => {
   const { pathname } = useLocation();
   const index = appModules.findIndex((module) => module.path === pathname);

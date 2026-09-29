@@ -14,17 +14,20 @@ type RequestCounterPanelProps = {
 
 // Visar hur många anrop som gått iväg sedan läsaren själv nollställde.
 //
-// Räknaren i backenden är en totalsumma, men varje påstående demonstrationerna
-// gör handlar om effekten av ETT klick: fyra kort ger ett anrop, ett brett
-// prefix träffar tre poster. En totalsumma tvingar läsaren att subtrahera i
-// huvudet, samtidigt som talet rör sig av annat som händer på sidan. Den
-// avläsningen gick fel två gånger under bygget av #107, för den som skrivit
-// demon. Då är det inte rimligt att begära att läsaren ska klara den.
+// Räknaren i den mockade backenden är en totalsumma som bara växer, men varje
+// påstående demonstrationerna gör handlar om effekten av ETT klick: fyra kort
+// ger ett anrop, ett brett prefix träffar tre poster. En totalsumma tvingar
+// läsaren att subtrahera i huvudet, samtidigt som talet rör sig av annat som
+// händer på sidan. Den avläsningen gick fel två gånger för den som skrev
+// demonstrationerna. Då är det inte rimligt att begära att läsaren ska klara
+// den.
 //
-// Nollpunkten är därför panelens eget tillstånd och inte backendens. Två
-// paneler på samma sida mäter var för sig, och en nollställning i den ena rör
-// inte den andra. Hade handlers.ts i stället exporterat en
-// resetUserRequestCount() skulle en demo kunna nolla en annan demos mätning.
+// "Nollställ" rör därför aldrig backendens räknare. Knappen flyttar bara
+// panelens egen nollpunkt upp till dagens totalsumma, och det som visas är
+// skillnaden. Två paneler på samma sida mäter på så vis var för sig, och en
+// nollställning i den ena rör inte den andra. Exporterade backenden i stället
+// en funktion som nollade totalsumman skulle en demo kunna radera en annan
+// demos mätning mitt i.
 export const RequestCounterPanel = ({ total, caption }: RequestCounterPanelProps) => {
   // Startvärdet sätts vid första renderingen, så att panelen börjar på noll
   // och räknar just den här demons anrop.

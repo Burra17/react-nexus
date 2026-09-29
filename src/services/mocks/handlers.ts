@@ -3,13 +3,15 @@ import type { User } from '../api/users';
 
 // Den mockade backendens hela datamängd.
 //
-// Namnen är desamma som i kapplöpningsdemon i modul 3. Där hämtades de med ett
-// löfte inne i komponenten; här går samma hämtning över riktig HTTP, och det är
-// hela poängen med modulen: det är din egen trasiga hämtning, gjord om.
+// Filen är appens enda backend och betjänar alla vyer, så här finns sökvägar och
+// data som den vy du läser just nu inte använder. Den besvarar riktiga
+// HTTP-anrop i webbläsaren, med hjälp av Mock Service Worker, i stället för att
+// lämna ifrån sig ett löst löfte inne i koden. Det är därför anropen syns i
+// webbläsarens Network-flik och går att räkna.
 //
-// De två första har egna knappar i den modulen. De övriga syns bara när hela
-// listan hämtas, vilket först behövdes i modulen om cachen. En lista på två
-// poster ser inte ut som en lista.
+// Fem poster och inte två. De demonstrationer som hämtar en enskild användare
+// klarar sig på två, men en lista på två poster ser inte ut som en lista, och
+// då blir det svårt att se att det är samma lista som visas på flera ställen.
 const USERS: Record<string, User> = {
   ada: { id: 'ada', name: 'Ada Lovelace', role: 'Analytiker', email: 'ada@example.com' },
   bo: { id: 'bo', name: 'Bo Nilsson', role: 'Systemarkitekt', email: 'bo@example.com' },
@@ -18,12 +20,12 @@ const USERS: Record<string, User> = {
   elin: { id: 'elin', name: 'Elin Kvist', role: 'Produktägare', email: 'elin@example.com' },
 };
 
-// Mutationsmodulens egen kopia av datamängden, och den enda som får skrivas i.
+// En egen kopia av datamängden, och den enda som får skrivas i.
 //
-// Modul 9 byter roll på en användare. Skrevs ändringen i USERS ovan skulle Ada
-// stå kvar som Systemarkitekt när läsaren gick tillbaka till modul 7, tills
-// sidan laddades om och det tyst återställdes. Samma resonemang som de separata
-// nyckelgrenarna i modul 7 och 8: en modul ska gå att förstå isolerad.
+// Skrivningar hör hemma i en vy som demonstrerar dem, och bara där. Gick de mot
+// USERS ovan skulle en ändrad roll ligga kvar och möta läsaren i varje annan vy
+// som hämtar användare, tills sidan laddades om och den tyst återställdes. Varje
+// vy ska bete sig likadant oavsett vad läsaren gjort dessförinnan.
 //
 // Objekten kopieras med spread och inte genom att peka på USERS poster, så att
 // en skrivning här inte når den delade datamängden via referensen.
@@ -64,9 +66,9 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 
 // Hur många anrop den mockade backenden faktiskt tagit emot.
 //
-// Räknaren finns för demon om cachens klockor, som påstår saker om när ett
-// anrop sker och när det uteblir. Ett sådant påstående måste gå att kontrollera
-// mot något annat än en renderräknare: StrictMode dubblerar renderingar lokalt
+// Räknaren finns för de demonstrationer som påstår saker om när ett anrop sker
+// och när det uteblir. Ett sådant påstående måste gå att kontrollera mot något
+// annat än en renderräknare: React kör renderingar två gånger i utvecklingsläge
 // men inte i ett bygge, så ett mått som är ett förhållande mellan renderingar
 // och anrop ljuger på utvecklarens maskin. Absoluta tal gör det inte.
 //
@@ -74,9 +76,9 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 // anrop som verkligen nådde backenden, inte hookar som kördes.
 //
 // Varje handler räknar upp den, också skrivningen. Räknaren mäter anrop och
-// inte hämtningar, vilket är vad den alltid utgett sig för att vara. I
-// modul 9 är hela påståendet att en lyckad mutation kostar ett skrivanrop plus
-// de hämtningar invalideringen utlöser. Räknades bara GET skulle panelen visa
+// inte hämtningar, vilket är vad den alltid utgett sig för att vara. En
+// skrivning som följs av en invalidering kostar ett skrivanrop plus de
+// hämtningar invalideringen utlöser, och räknades bara GET skulle panelen visa
 // ett tal som säger emot Network-fliken.
 let userRequestCount = 0;
 
@@ -121,7 +123,8 @@ export const handlers = [
     return HttpResponse.json(user);
   }),
 
-  // Mutationsmodulens läsning. Egen sökväg, egen datamängd, se MUTATION_USERS.
+  // Läsningen som hör ihop med skrivningen nedan. Egen sökväg, egen datamängd,
+  // se MUTATION_USERS.
   http.get('/api/mutations/users', async ({ request }) => {
     userRequestCount += 1;
 
@@ -139,8 +142,8 @@ export const handlers = [
   // Skrivningen. Den enda handlern i filen som ändrar något.
   //
   // Felet styrs av samma fail-parameter som hämtningarna, och det är avsiktligt:
-  // demon om optimistisk uppdatering behöver ett fel den kan beställa, annars
-  // går rollbacken inte att visa. Att felet kommer FÖRE skrivningen spelar roll:
+  // en demonstration som visar hur en misslyckad skrivning tas tillbaka behöver
+  // ett fel den kan beställa. Att felet kommer FÖRE skrivningen spelar roll:
   // ett misslyckat anrop ska inte ha ändrat något, annars visar demon en
   // rollback av en ändring som blev kvar på servern.
   http.put('/api/mutations/users/:id', async ({ request, params }) => {

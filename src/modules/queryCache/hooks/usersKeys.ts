@@ -10,12 +10,14 @@
 // stavade fel. Då blir det en cachepost som tyst visar fel data i stället för ett
 // typfel här.
 //
-// AVSTEG FRÅN CLAUDE.md: roten bär modulens namn, inte bara resursens.
+// Roten bär vyns namn och inte bara resursens. Det vanliga är att en nyckelrot
+// bara namnger resursen, alltså ['users'], eftersom poängen med en cache är att
+// samma data delas av alla som frågar efter den. Här görs tvärtom, med flit.
 //
-// Samma skäl som i modulen om Query-grunder. Servicen som hämtar användare delas
-// mellan modulerna, men nycklarna gör det inte: med en delad rot skulle den här
-// modulens demo hitta data som den förra lagt in, och sidan skulle bete sig
-// olika beroende på i vilken ordning kapitlen lästs.
+// Servicen som hämtar användare delas mellan vyerna, men nycklarna gör det inte:
+// med en delad rot skulle den här vyns demo hitta data som en annan vy lagt in,
+// och sidan skulle bete sig olika beroende på i vilken ordning kapitlen lästs.
+// Samma val är gjort i vyn Query: grunder.
 //
 // Att modulernas poster ändå syns bredvid varandra i inspektorn nedan är inte
 // en motsägelse. Det är hela poängen. De delar cache, men inte nycklar.
@@ -28,17 +30,17 @@ export const usersKeys = {
   detail: (id: string) => [...usersKeys.details(), id] as const,
 };
 
-// CLAUDE.md:s exempel har ett steg till: list(page) under lists(), för att en
-// resurs oftast hämtas med filter eller sidnummer. Den nivån finns inte här,
+// Mönstret har ofta ett steg till: list(page) under lists(), för att en resurs
+// vanligen hämtas med filter eller sidnummer. Den nivån finns inte här,
 // eftersom listan varken filtreras eller pagineras, och ett steg som alltid
 // ser likadant ut är en nivå som låtsas vara en nyckel.
 
 // Delningsdemons egen fabrik, medvetet UTANFÖR usersKeys.all.
 //
-// Att det blev en fabrik och inte en naken array är ingen slump: CLAUDE.md
-// säger att query-nycklar skrivs i en fabrik och inte på plats, och en modul
-// med två uppsättningar nycklar får två fabriker. Den här har bara två nivåer,
-// eftersom demon bara hämtar en sak.
+// Att det blev en fabrik och inte en naken array är ingen slump: query-nycklar
+// skrivs i en fabrik och inte på plats, och en vy med två uppsättningar nycklar
+// får två fabriker. Den här har bara två nivåer, eftersom demon bara hämtar en
+// sak.
 //
 // Demonstrationen om invalidering längre ner hämtar listan så fort sidan
 // öppnas. Delade de två nyckel skulle posten redan ligga i cachen när man

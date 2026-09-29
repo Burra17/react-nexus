@@ -16,9 +16,16 @@ type DetailCardProps = {
   title: string;
   name: string | undefined;
   isFetching: boolean;
+  errorMessage: string | undefined;
 };
 
-const DetailCard = ({ title, name, isFetching }: DetailCardProps) => (
+// Kortet har tre lägen och inte två: namn, fel, eller hämtar.
+//
+// Felet måste stå med. Hookarna körs med retry: false, så en misslyckad
+// hämtning lämnar data som undefined för alltid, och ett kort som bara väljer
+// mellan namn och "hämtar …" påstår då i all evighet att det hämtar. I en vy om
+// hur data hämtas är ett läge som ljuger värre än ett fel.
+const DetailCard = ({ title, name, isFetching, errorMessage }: DetailCardProps) => (
   <Paper variant='outlined' sx={{ p: 2, flex: 1, minWidth: 180 }}>
     <Stack spacing={0.5}>
       <Stack direction='row' spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
@@ -27,7 +34,14 @@ const DetailCard = ({ title, name, isFetching }: DetailCardProps) => (
         </Typography>
         {isFetching && <CircularProgress size={14} />}
       </Stack>
-      <Typography>{name ?? 'hämtar …'}</Typography>
+
+      {errorMessage === undefined ? (
+        <Typography>{name ?? 'hämtar …'}</Typography>
+      ) : (
+        <Typography color='error' variant='body2'>
+          {errorMessage}
+        </Typography>
+      )}
     </Stack>
   </Paper>
 );
@@ -56,12 +70,18 @@ export const InvalidationDemo = () => {
               </Typography>
               {list.fetchStatus === 'fetching' && <CircularProgress size={14} />}
             </Stack>
-            <Typography>{list.data ? `${list.data.length} användare` : 'hämtar …'}</Typography>
+            {list.error === null ? (
+              <Typography>{list.data ? `${list.data.length} användare` : 'hämtar …'}</Typography>
+            ) : (
+              <Typography color='error' variant='body2'>
+                {list.error.message}
+              </Typography>
+            )}
           </Stack>
         </Paper>
 
-        <DetailCard title='Detalj: ada' name={ada.data?.name} isFetching={ada.fetchStatus === 'fetching'} />
-        <DetailCard title='Detalj: bo' name={bo.data?.name} isFetching={bo.fetchStatus === 'fetching'} />
+        <DetailCard title='Detalj: ada' name={ada.data?.name} isFetching={ada.fetchStatus === 'fetching'} errorMessage={ada.error?.message} />
+        <DetailCard title='Detalj: bo' name={bo.data?.name} isFetching={bo.fetchStatus === 'fetching'} errorMessage={bo.error?.message} />
       </Stack>
 
       <Stack direction='row' spacing={2} sx={{ flexWrap: 'wrap', gap: 1 }}>
@@ -86,12 +106,16 @@ export const InvalidationDemo = () => {
 
       <RequestCounterPanel
         total={requestCount}
-        caption='Nollställ före varje knapptryck. Talet är beviset: det breda prefixet träffar tre poster, det smala en.'
+        caption='Nollställ före varje knapptryck. Talet är beviset: det breda prefixet träffar tre poster, det smala en, och den sista knappen en enda utan att märka något som inaktuellt.'
       />
 
-      {/* Samma inspektor som i föregående del, här som mätinstrument. Posterna
-          växlar till "inaktuell" i samma ögonblick som knappen trycks, och
-          tillbaka till "färsk" när hämtningen kommit tillbaka. */}
+      {/* Samma inspektor som under rubriken Vad som faktiskt ligger i cachen,
+          här som mätinstrument. Att den står två gånger sägs i texten nedan:
+          på skärmen ser två likadana paneler annars ut som ett misstag. */}
+      <Typography color='textSecondary'>
+        Panelen nedan är samma cacheinspektor som under rubriken ovan, här som mätinstrument. Posterna växlar till inaktuella i samma ögonblick som du
+        trycker på en knapp, och tillbaka till färska när hämtningen kommit hem.
+      </Typography>
       <CacheInspector />
     </Stack>
   );
