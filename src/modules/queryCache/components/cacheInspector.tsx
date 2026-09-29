@@ -39,6 +39,15 @@ export const CacheInspector = () => {
           </Typography>
         </Stack>
 
+        {/* Legenden står här och inte i teorin. Chipsen är fyra ord utan
+            sammanhang för den som scrollat hit direkt, och ett av dem är
+            bibliotekets egna engelska lägesnamn. */}
+        <Typography variant='caption' color='textSecondary'>
+          Varje post visar sin nyckel och fyra uppgifter: om posten hör till den här vyn, hämtningens läge (pending innan data finns, success när
+          svaret kommit, error om det gick fel), om posten räknas som färsk eller inaktuell, och hur många konsumenter som tittar på den just nu.
+          Biblioteket kallar en konsument för en observer, och det är det ordet du möter i koden längre ner.
+        </Typography>
+
         {queries.length === 0 && <Typography color='textSecondary'>Cachen är tom.</Typography>}
 
         {queries.map((query) => {
@@ -62,7 +71,7 @@ export const CacheInspector = () => {
               </Typography>
 
               <Stack direction='row' spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
-                <Chip size='small' label={isThisModule ? 'den här modulen' : 'en annan vy'} variant='outlined' />
+                <Chip size='small' label={isThisModule ? 'den här vyn' : 'en annan vy'} variant='outlined' />
                 <Chip size='small' label={query.state.status} variant='outlined' />
                 <Chip size='small' label={query.isStale() ? 'inaktuell' : 'färsk'} variant='outlined' />
                 <Chip size='small' label={`${query.observers.length} tittar`} variant='outlined' />

@@ -177,6 +177,21 @@ Ordningen är inte valfri. Bestäms den i varje modul kommer den elfte vyn inte 
 
 Quizen står sist, efter Kod. I det här repot är källkoden en del av läromedlet och inte ett uppslagsverk vid sidan om — testar man före den testar man på halva materialet.
 
+### Varje vy står på egna ben
+
+En konceptvy förutsätter inte att någon annan vy lästs först. Läsaren kommer lika ofta från en sökning eller en länk som från föregående kapitel, och den som landar mitt i ska förstå sidan, inte få veta vad hen borde ha läst.
+
+Det betyder fyra saker när en vy skrivs:
+
+- **Inga relativa markörer.** Inte "förra modulen", "modul 2", "förra kapitlet" eller "som du såg tidigare". Behövs en referens skrivs vyns faktiska namn ut, till exempel Query: grunder, gärna som en länk. Ett namn går att slå upp; en ordningsmarkör går bara att följa för den som läst i ordning.
+- **Lånade begrepp definieras just-in-time.** En mening där begreppet först används, tillräckligt för att den här sidans resonemang ska gå ihop. Inte en genomgång: `staleTime` i en vy om cachen behöver "tiden en post räknas som färsk", inte hela jämförelsen med `gcTime`. Utan gränsen blir varje vy en repris av alla tidigare.
+- **Demon guidar ögat.** Varje kontroll säger på skärmen vad som händer när man trycker och vad man ska titta på. Att det står i en kodkommentar räcker inte: kommentaren läses i Kod-delen, långt efter att knappen tryckts.
+- **Reglerna gäller allt läsaren ser**, alltså också källkommentarerna i Kod-delen och quizens facit. Kod-delen visar filerna i sin helhet, så en kommentar som hänvisar till CLAUDE.md eller ett ticketnummer hänvisar till något läsaren inte har.
+
+Delad infrastruktur i services/ lyder under samma regel, och hårdare: den visas i flera vyer, så en kommentar som motiverar sig med när något används smittar varje vy som visar filen. Motivera med varför koden ser ut som den gör i stället.
+
+Det här är ett medvetet avsteg från roadmapen i #6, som slog fast att varje modul lutar sig mot den innan. Ordningen i modules.tsx finns kvar och "Förra / Nästa" längst ner i vyn likaså: en läsordning är ett förslag, ett beroende är ett krav. Skälet prövades mot /query-cache i #121, där två isolerade granskare oberoende av varandra fastnade på sjutton ställen, varav flera i kod som såg färdig ut.
+
 Kod-delen läser den riktiga källfilen, aldrig en kopierad sträng. Vite kan importera en fil som text:
 
 ```ts

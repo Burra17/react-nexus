@@ -15,9 +15,9 @@ const buildSignature = (queryClient: QueryClient) =>
 
 // Ritar om den som anropar den när något i cachen faktiskt har ändrats.
 //
-// Låg i modulen om cachen tills modulen om mutationer behövde den. Då flyttades
-// den hit i stället för att kopieras: en hook som två moduler använder hör
-// hemma i shared/hooks, och två kopior driver isär första gången den ena rättas.
+// Skrevs för en enda vy och flyttades hit när en andra behövde den, i stället
+// för att kopieras: en hook som två vyer använder hör hemma i shared/hooks, och
+// två kopior driver isär första gången den ena rättas.
 //
 // Hooken returnerar ingenting med flit. Allt den gör är en biverkan, en
 // omrendering, och ett returvärde hade lovat ett tillstånd att läsa, som ingen

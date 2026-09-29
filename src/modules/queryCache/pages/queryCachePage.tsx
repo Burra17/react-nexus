@@ -1,5 +1,7 @@
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router-dom';
 import usersServiceSource from '../../../services/api/users.ts?raw';
 import handlersSource from '../../../services/mocks/handlers.ts?raw';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
@@ -10,9 +12,11 @@ import invalidationDemoSource from '../components/invalidationDemo.tsx?raw';
 import { SharedCacheDemo } from '../components/sharedCacheDemo';
 import sharedCacheDemoSource from '../components/sharedCacheDemo.tsx?raw';
 import userListCardSource from '../components/userListCard.tsx?raw';
+import responseDelaySource from '../hooks/queries/responseDelay.ts?raw';
 import useFetchSharedUsersSource from '../hooks/queries/useFetchSharedUsers.ts?raw';
 import useFetchUserSource from '../hooks/queries/useFetchUser.ts?raw';
 import useFetchUsersSource from '../hooks/queries/useFetchUsers.ts?raw';
+import requestCounterPanelSource from '../../../shared/components/requestCounterPanel.tsx?raw';
 import useRerenderOnCacheChangeSource from '../../../shared/hooks/useRerenderOnCacheChange.ts?raw';
 import usersKeysSource from '../hooks/usersKeys.ts?raw';
 import { queryCacheQuestions } from '../queryCacheQuestions';
@@ -20,36 +24,54 @@ import { queryCacheQuestions } from '../queryCacheQuestions';
 const Theory = () => (
   <>
     <Typography>
-      Förra modulen byggde på en regel: en konsument, en nyckel. Den var inte hela sanningen utan en avgränsning, ett sätt att visa lägena och nyckeln
-      utan att allt annat hände samtidigt. Nu tas den bort, och det som återstår är det som gör en cache till något annat än ett kortare sätt att
-      skriva en hämtning. Du lärde dig att nyckeln identifierar datan och inte komponenten som råkade hämta den. Här får du se vad det faktiskt
-      innebär.
+      Fyra komponenter i olika delar av gränssnittet ska visa samma lista med användare. Var och en anropar <code>useQuery</code>, hooken i
+      biblioteket TanStack Query som hämtar data: du ger den en nyckel och en funktion som utför hämtningen, och får tillbaka datan tillsammans med
+      lägen som säger om den finns och om en hämtning pågår. De fyra monteras samtidigt, så hooken körs fyra gånger. Hur många HTTP-anrop går iväg
+      till servern? Gissar du fyra är det en rimlig gissning, för i ren React äger varje komponent sin egen hämtning. Demon nedan skickar ett.
     </Typography>
 
     <Typography>
-      Det innebär att <strong>datan är delad</strong>. Nyckeln är en adress i appens cache, inte i din komponent, och alla som frågar efter samma
-      adress får samma post. Monterar du fyra komponenter som alla vill visa listan går det iväg <em>ett</em> anrop. De tre andra hittar en hämtning
-      som redan pågår och hakar på den. När svaret kommer ritas alla fyra om samtidigt, eftersom de tittar på samma sak. Lägger du till en femte
-      komponent efteråt sker ingen hämtning alls: posten finns redan, och den fylls direkt. Det kallas dedupering, och det är skillnaden mellan en
-      lista som kostar ett anrop och en lista som kostar ett anrop per ställe den visas på.
+      Skälet är att <strong>datan är delad</strong>. Cachen ägs av en <code>QueryClient</code>, ett objekt som sätts upp en gång för hela appen och
+      ligger ovanför alla komponenter. Hooken <code>useQueryClient</code> ger dig tag i det när du behöver röra cachen själv, vilket demonstrationerna
+      nedan gör. Nyckeln du ger <code>useQuery</code> är en adress i den cachen och inte i din komponent, så alla som frågar efter samma adress får
+      samma post. Varje komponent som anropar hooken för en viss nyckel är en <strong>konsument</strong> av posten. Monterar du fyra konsumenter
+      samtidigt går det iväg ett anrop: de tre andra hittar en hämtning som redan pågår och hakar på den. När svaret kommer ritas alla fyra om
+      samtidigt, eftersom de tittar på samma sak. Det kallas dedupering, och det är skillnaden mellan en lista som kostar ett anrop och en lista som
+      kostar ett anrop per ställe den visas på.
     </Typography>
 
     <Typography>
-      Nästa fråga blir hur man säger att något inte gäller längre. Svaret är <strong>invalidering</strong>, och den skiljer sig från att hämta om på
-      ett sätt som är lätt att missa: du talar inte om <em>vem</em> som ska hämta, bara att datan är inaktuell. Query avgör resten: poster som någon
-      tittar på hämtas om direkt, poster som ingen tittar på får vänta tills de efterfrågas igen. Datan ligger kvar under tiden, så skärmen blir
-      aldrig tom. Och märkningen arbetar med <strong>prefix</strong>: en kort nyckel träffar allt som börjar likadant. Det är hela skälet till att
-      nycklarna byggs i en fabrik där de staplas ovanpå varandra. Med <code>usersKeys.all</code> invaliderar du resursens allt, med{' '}
-      <code>usersKeys.lists()</code> bara listorna, och du behöver aldrig minnas vilka nycklar som finns. Kontrasten är <code>refetch()</code>, som
-      ber en bestämd query att hämta om oavsett om den räknas som färsk. Det är ett hammarslag; invalidering är ett meddelande.
+      Lägger du till en femte konsument efteråt sker ingen hämtning alls: posten finns redan och fylls direkt. Att det blir så beror på en inställning
+      som heter <code>staleTime</code>, tiden en post räknas som <strong>färsk</strong>. Så länge posten är färsk nöjer sig en ny konsument med det
+      som redan ligger i cachen. Är den i stället <strong>inaktuell</strong> visas datan fortfarande, men ett anrop går i bakgrunden för att hämta en
+      ny version. Standardvärdet är noll, alltså inaktuell i samma stund svaret kommit hem, vilket förvånar de flesta. Listan i demon är satt till en
+      halv minut, annars hade det femte kortet kostat ett anrop i stället för noll. Att datan visas samtidigt som den hämtas om är förresten skälet
+      till att ett kort kan ha en snurra i hörnet trots att det redan står ett namn i det. Klockan som styr färskhet, och den som styr hur länge en
+      post ligger kvar när ingen tittar, gås igenom i{' '}
+      <Link component={RouterLink} to='/query-basics'>
+        Query: grunder
+      </Link>
+      .
     </Typography>
 
     <Typography>
-      Eftersom cachen är appens och inte vyns går den att titta i, och det är värt att göra en vana av. Panelen nedan listar varje post med sin
-      nyckel, sin status, om den räknas som färsk och hur många komponenter som tittar på den just nu. Har du besökt en annan konceptvy i samma flik
-      ser du dess data ligga kvar där, från en sida du lämnat. I praktiken inspekterar man dock inte cachen med en panel man byggt själv, utan med
-      bibliotekets eget utvecklingsverktyg: ett tillägg som visar varje post, när den senast hämtades, vad den innehåller, och som låter dig
-      invalidera eller kasta den för hand. Panelen nedan visar samma data i mindre format. Kan du läsa den kan du läsa verktyget.
+      Nästa fråga är hur man säger att något inte gäller längre. Svaret är <strong>invalidering</strong>, och den skiljer sig från att hämta om på ett
+      sätt som är lätt att missa: du talar inte om <em>vem</em> som ska hämta, bara att datan är inaktuell. Query avgör resten, så att poster någon
+      tittar på hämtas om direkt medan poster ingen tittar på får vänta tills de efterfrågas igen. Datan ligger kvar under tiden, så skärmen blir
+      aldrig tom. Att märka poster som inaktuella arbetar dessutom med <strong>prefix</strong>: nyckeln är en array, och en kortare array träffar
+      varje post vars nyckel börjar likadant. Det är hela skälet till att nycklarna inte skrivs för hand på varje ställe utan byggs i en{' '}
+      <strong>fabrik</strong>, ett litet objekt vars funktioner staplar nycklarna ovanpå varandra. Med <code>usersKeys.all</code> invaliderar du allt
+      som hör till resursen, med <code>usersKeys.lists()</code> bara listorna, och du behöver aldrig minnas vilka nycklar som finns. Kontrasten är{' '}
+      <code>refetch()</code>, som <code>useQuery</code> ger tillbaka och som tvingar just den queryn att hämta om: ett hammarslag, där invalidering är
+      ett meddelande.
+    </Typography>
+
+    <Typography>
+      Eftersom cachen är appens och inte vyns går den att titta i, och det är värt att göra en vana av. Panelen längre ner listar varje post med sin
+      nyckel och fyra uppgifter: om posten hör till den här vyn, vilket läge hämtningen har, om posten räknas som färsk, och hur många konsumenter som
+      tittar på den just nu. Lägena är bibliotekets egna ord: <code>pending</code> innan någon data finns, <code>success</code> när svaret kommit och{' '}
+      <code>error</code> om hämtningen misslyckades. Har du besökt en annan konceptvy i samma flik ser du dess data ligga kvar i listan, från en sida
+      du redan lämnat.
     </Typography>
   </>
 );
@@ -64,6 +86,16 @@ export const QueryCachePage = () => (
           <Typography variant='h3' component='h3'>
             1. Flera konsumenter, ett anrop
           </Typography>
+          <Typography color='textSecondary'>
+            Nollställ räknaren först och gör sedan en sak i taget. Montera korten: räknaren går upp med ett, inte med fyra. Knappen bredvid blir
+            klickbar när korten är monterade, och lägger du till ett kort till står räknaren stilla, eftersom posten redan finns och räknas som färsk
+            i en halv minut. Börja om tömmer både korten och cacheposten, så att den första mätningen går att göra en gång till.
+          </Typography>
+          <Typography color='textSecondary'>
+            Titta också på snurrorna: de tänds i alla korten samtidigt, eftersom det är en hämtning fyra komponenter tittar på och inte fyra
+            hämtningar. Att en snurra kan synas i ett kort som redan visar namn beror på att hooken har två lägen som svarar på olika frågor:{' '}
+            <code>status</code> säger om vi har data, <code>fetchStatus</code> om en hämtning pågår just nu.
+          </Typography>
           <SharedCacheDemo />
         </Stack>
 
@@ -72,15 +104,29 @@ export const QueryCachePage = () => (
             2. Vad som faktiskt ligger i cachen
           </Typography>
           <Typography color='textSecondary'>
-            Panelen visar hela cachen, inte bara den här modulens poster. Den ser därför olika ut beroende på vilka konceptvyer du besökt i samma
-            flik, och det är poängen: posterna tillhör appen, inte vyn som hämtade dem.
+            Panelen visar hela cachen, inte bara den här vyns poster. Den ser därför olika ut beroende på vilka konceptvyer du besökt i samma flik,
+            och det är poängen: posterna tillhör appen, inte vyn som hämtade dem.
           </Typography>
           <CacheInspector />
+          {/* Noten om det riktiga verktyget står här och inte i teorin. Ett
+              verktyg förklaras bäst där läsaren kan jämföra det med en panel
+              hen ser framför sig. Den ligger på sidan och inte i komponenten,
+              eftersom inspektorn renderas en gång till längre ner. */}
+          <Typography variant='body2' color='textSecondary'>
+            I praktiken inspekterar man inte cachen med en panel man byggt själv, utan med React Query Devtools: ett tillägg som visar varje post, när
+            den senast hämtades, vad den innehåller, och som låter dig invalidera eller kasta den för hand. Panelen ovan visar samma uppgifter i
+            mindre format, så kan du läsa den kan du läsa verktyget.
+          </Typography>
         </Stack>
 
         <Stack spacing={1}>
           <Typography variant='h3' component='h3'>
             3. Invalidering med prefix
+          </Typography>
+          <Typography color='textSecondary'>
+            Tre poster ligger under samma rot: en lista och två detaljer. Nollställ räknaren före varje knapptryck. Det breda prefixet träffar alla
+            tre, det smala bara listan, och den tredje knappen hämtar om en enda post utan att märka något som inaktuellt. Titta på räknaren för att
+            se hur många anrop knappen kostade, och på panelen längst ner för att se vilka poster som växlade till inaktuella på vägen.
           </Typography>
           <InvalidationDemo />
         </Stack>
@@ -96,6 +142,14 @@ export const QueryCachePage = () => (
         // Korten skapas i en loop och vet inget om varandra. Deduperingen
         // följer av nyckeln, inte av någon samordning här.
         highlight: ['Array.from({ length: cardCount }', 'const requestCount = readUserRequestCount();'],
+      },
+      {
+        // Mätinstrumentet som varje påstående på sidan vilar på. Utan filen ser
+        // läsaren ett tal utan att kunna se vad "nollställ" gör med det.
+        fileName: 'src/shared/components/requestCounterPanel.tsx',
+        code: requestCounterPanelSource,
+        language: 'tsx',
+        highlight: ['const [zeroPoint, setZeroPoint] = useState(total);', 'const sinceReset = total - zeroPoint;'],
       },
       {
         fileName: 'src/modules/queryCache/components/userListCard.tsx',
@@ -151,6 +205,15 @@ export const QueryCachePage = () => (
         highlight: ['queryKey: usersKeys.detail(id),'],
       },
       {
+        // Ligger i sources trots att den bara innehåller ett tal. Alla tre
+        // hookarna ovan skickar RESPONSE_DELAY_MS till servicen, och utan filen
+        // är det ett värde läsaren ser användas men inte kan se.
+        fileName: 'src/modules/queryCache/hooks/queries/responseDelay.ts',
+        code: responseDelaySource,
+        language: 'ts',
+        highlight: ['export const RESPONSE_DELAY_MS'],
+      },
+      {
         fileName: 'src/modules/queryCache/hooks/usersKeys.ts',
         code: usersKeysSource,
         language: 'ts',
@@ -161,7 +224,7 @@ export const QueryCachePage = () => (
         fileName: 'src/services/api/users.ts',
         code: usersServiceSource,
         language: 'ts',
-        // Listan, som byggdes först när den här modulen behövde den.
+        // Listan, som byggdes först när den här vyn behövde den.
         highlight: ['export const getUsers'],
       },
       {

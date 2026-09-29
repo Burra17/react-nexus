@@ -21,10 +21,14 @@ import { RESPONSE_DELAY_MS } from './responseDelay';
 // konsument som monteras en hämtning i bakgrunden. Det femte kortet hade gett
 // ett anrop i stället för noll. Uppmätt, inte antaget.
 //
-// Att sätta den här är också det normala i en riktig app, och det knyter an
-// till förra modulen: staleTime är tiden datan räknas som färsk.
+// Att sätta den är också det normala i en riktig app. staleTime är tiden datan
+// räknas som färsk, och de två klockor som styr färskhet och bortkastning gås
+// igenom i vyn Query: grunder.
 const STALE_TIME_MS = 30_000;
 
+// retry: false stänger av omförsöken. Query gör annars tre nya försök när ett
+// anrop misslyckas, och då skulle räknaren i demon visa fyra anrop för en enda
+// misslyckad hämtning. Varje hook i vyn sätter den av samma skäl.
 export const useFetchSharedUsers = () =>
   useQuery({
     queryKey: sharedUsersKeys.list(),

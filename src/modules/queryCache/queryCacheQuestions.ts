@@ -41,7 +41,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Den raderas ur cachen',
         explanation:
-          'Nej. Det är `gcTime` som styr när en post kastas bort, och det sker först när ingen tittar på den. En invaliderad post ligger kvar och visas medan den hämtas om.',
+          'Nej. En post kastas ur cachen först en stund efter att den sista konsumenten slutat titta på den, styrt av en egen klocka som heter `gcTime`. Invalidering rör inte den klockan: en invaliderad post ligger kvar och visas medan den hämtas om.',
       },
       {
         id: 'b',

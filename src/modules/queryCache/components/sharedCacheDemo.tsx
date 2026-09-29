@@ -52,7 +52,7 @@ export const SharedCacheDemo = () => {
 
       <RequestCounterPanel
         total={requestCount}
-        caption='Träffar i den mockade backenden, inte renderingar. Nollställ först och gör sedan en sak i taget, som att montera korten eller lägga till ett till. Då visar talet exakt vad just den saken kostade.'
+        caption='Talet är träffar i den mockade backenden som svarar på anropen, inte renderingar och inte hookanrop. Nollställ före varje steg, så visar det exakt vad just det steget kostade.'
       />
 
       {isMounted ? (
