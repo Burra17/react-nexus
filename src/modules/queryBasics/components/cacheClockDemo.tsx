@@ -21,7 +21,7 @@ const USER_ID = 'ada';
 // De två reglagen har olika lägsta värde, och det är uppmätt och inte tyckt.
 //
 // staleTime börjar på noll eftersom det ÄR standarden: data räknas som inaktuell
-// direkt. Det är en av modulens poänger och måste gå att se.
+// direkt. Det är en av vyns poänger och måste gå att se.
 //
 // gcTime börjar på en sekund. Med noll tas posten bort i samma ögonblick som den
 // sista komponenten slutar titta, också i den lilla lucka StrictMode skapar när
@@ -34,8 +34,9 @@ const GC_TIMES_MS = [1000, 5000, 30000];
 
 const formatSeconds = (ms: number) => `${Math.round(ms / 1000)} s`;
 
-// En rad i panelen. Kopierad från userQueryDemo med flit: det är andra
-// förekomsten, och CLAUDE.md bryter ut vid tredje.
+// En rad i panelen, samma som i den första demon. Den kopieras i stället för
+// att brytas ut: två förekomster är för få för att en gemensam komponent ska
+// löna sig, och varje demofil går då att läsa för sig.
 const StatusRow = ({ label, value }: { label: string; value: string }) => (
   <Stack direction='row' spacing={2} sx={{ justifyContent: 'space-between' }}>
     <Typography variant='body2' color='textSecondary'>
@@ -90,8 +91,15 @@ const CachedUserCard = ({ staleTimeMs, gcTimeMs }: CachedUserCardProps) => {
 export const CacheClockDemo = () => {
   const queryClient = useQueryClient();
 
-  const [staleTimeMs, setStaleTimeMs] = useState(5000);
-  const [gcTimeMs, setGcTimeMs] = useState(5000);
+  // staleTime startar på standardens noll. Det färska utfallet framkallas genom
+  // att dra reglaget uppåt, inte genom att hinna tillbaka i tid: färskheten
+  // räknas från när datan hämtades, och några sekunder räcker inte för att läsa
+  // instruktionen och trycka två gånger.
+  //
+  // gcTime startar på 30 s, så att posten ligger kvar medan läsaren provar de
+  // två första utfallen.
+  const [staleTimeMs, setStaleTimeMs] = useState(0);
+  const [gcTimeMs, setGcTimeMs] = useState(30000);
   const [isVisiting, setIsVisiting] = useState(true);
 
   // När man senast lämnade vyn. Behövs för nedräkningen mot gcTime, som börjar
@@ -124,9 +132,15 @@ export const CacheClockDemo = () => {
   const cacheState = queryClient.getQueryState(usersKeys.clock(USER_ID));
   const requestCount = readRequestCount(CACHE_CLOCK_DEMO);
 
+  // Postens egen gcTime, och inte reglagets. Posten behåller det största värde
+  // den sett, så efter en sänkning av reglaget gäller fortfarande det gamla.
+  // Räknade nedräkningen med reglaget skulle den visa noll sekunder för en post
+  // som ligger kvar.
+  const entryGcTimeMs = queryClient.getQueryCache().find({ queryKey: usersKeys.clock(USER_ID) })?.gcTime ?? gcTimeMs;
+
   const dataUpdatedAt = cacheState?.dataUpdatedAt ?? 0;
   const freshMsLeft = dataUpdatedAt === 0 ? 0 : Math.max(0, dataUpdatedAt + staleTimeMs - now);
-  const gcMsLeft = leftAt === null ? 0 : Math.max(0, leftAt + gcTimeMs - now);
+  const gcMsLeft = leftAt === null ? 0 : Math.max(0, leftAt + entryGcTimeMs - now);
 
   const leaveView = () => {
     setLeftAt(Date.now());
@@ -142,8 +156,8 @@ export const CacheClockDemo = () => {
   //
   // Behövs för att gcTime ska gå att sänka. Biblioteket sätter en posts gcTime
   // till det STÖRSTA värde den någonsin sett, eftersom tiden hör till cacheposten
-  // och inte till hooken som tittar på den. I query-core står det ordagrant som
-  // Math.max(this.gcTime || 0, nytt värde). Utan den här knappen skulle ett drag
+  // och inte till hooken som tittar på den. I bibliotekets källkod står det som
+  // Math.max(gammalt värde, nytt värde). Utan den här knappen skulle ett drag
   // nedåt i reglaget se ut att göra något utan att göra det.
   //
   // removeQueries är inte invalidering, som markerar data som inaktuell och
@@ -190,6 +204,9 @@ export const CacheClockDemo = () => {
             valueLabelDisplay='off'
           />
         </Box>
+        <Typography variant='caption' color='textSecondary'>
+          Startar på standardens 0: datan räknas som inaktuell direkt. Värdet hör till hooken, så ett drag här gäller genast.
+        </Typography>
       </Stack>
 
       <Stack spacing={1}>
@@ -210,6 +227,26 @@ export const CacheClockDemo = () => {
         </Box>
       </Stack>
 
+      <Stack spacing={1}>
+        <Typography variant='body2'>
+          Lämna vyn och kom tillbaka, och läs av räknaren längst ner. Vad återbesöket kostar beror på klockorna, och det finns tre utfall:
+        </Typography>
+        <Box component='ol' sx={{ m: 0, pl: 3, typography: 'body2' }}>
+          <li>
+            <strong>Färsk.</strong> Dra staleTime till 30 s och tryck på Nollställ cacheposten, så hämtas datan på nytt och raden färskhet räknar ner
+            från 30. Lämna vyn och kom tillbaka innan den når noll. Kortet fylls direkt, och inget anrop görs.
+          </li>
+          <li>
+            <strong>Inaktuell men kvar.</strong> Dra staleTime tillbaka till 0 s, så säger raden inaktuell. Lämna vyn och kom tillbaka. Kortet fylls
+            direkt, och ett anrop går i bakgrunden.
+          </li>
+          <li>
+            <strong>Städad.</strong> Ställ gcTime på 1 s, tryck på Nollställ cacheposten, lämna vyn och vänta några sekunder. Queryn är borta, och
+            kortet börjar om med ett laddningsläge.
+          </li>
+        </Box>
+      </Stack>
+
       <Stack direction='row' spacing={2}>
         <Button variant={isVisiting ? 'outlined' : 'contained'} onClick={isVisiting ? leaveView : returnToView}>
           {isVisiting ? 'Lämna vyn' : 'Kom tillbaka'}
@@ -221,7 +258,7 @@ export const CacheClockDemo = () => {
       <Alert severity='info'>
         <strong>gcTime går bara att höja för en post som redan finns.</strong> Biblioteket tar det största värde posten sett, eftersom tiden hör till
         cacheposten och inte till hooken som råkar titta på den. Drar du ner reglaget händer alltså ingenting förrän posten är borta. Nollställ den
-        med knappen ovan, så gäller det nya värdet från nästa hämtning.
+        med knappen ovan, så gäller det nya värdet från nästa hämtning. Raden postens gcTime nedan visar det värde som faktiskt gäller.
       </Alert>
 
       <Paper variant='outlined' sx={{ p: 2, minHeight: 124 }}>
@@ -246,6 +283,7 @@ export const CacheClockDemo = () => {
 
           <StatusRow label='posten i cachen' value={cacheValue} />
           <StatusRow label='färskhet (staleTime)' value={freshnessValue} />
+          <StatusRow label='postens gcTime' value={cacheState === undefined ? 'ingen post' : formatSeconds(entryGcTimeMs)} />
           <StatusRow label='städning (gcTime)' value={gcValue} />
         </Stack>
       </Paper>
@@ -255,7 +293,7 @@ export const CacheClockDemo = () => {
           själv startar, och den behöver en knapp. */}
       <RequestCounterPanel
         total={requestCount}
-        caption='Träffar i den mockade backenden, inte renderingar. Det är ett tal som betyder samma sak här som i ett bygge. Nollställ före varje steg, så syns det direkt om återbesöket kostade ett anrop eller inte.'
+        caption='Anrop som nått den mockade backenden, inte renderingar. React kan rendera en komponent två gånger under utveckling, men ett anrop är ett anrop. Nollställ räknaren innan du trycker på Kom tillbaka, så visar talet vad återbesöket kostade.'
       />
     </Stack>
   );

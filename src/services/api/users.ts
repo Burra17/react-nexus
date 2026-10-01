@@ -1,8 +1,8 @@
 import { axiosClient } from '../axios/axiosClient';
 
 // Formen på det API:et svarar med för en användare. Typen ligger bredvid anropet
-// den hör till, inte i en response/-mapp: resursen har bara den här typen än, och
-// tre mappar med en fil i varje är ceremoni.
+// den hör till. Större kodbaser samlar ofta typerna i egna mappar, men här har
+// resursen bara den här typen, och en mapp för en enda fil är ceremoni.
 export type User = {
   id: string;
   name: string;
@@ -39,10 +39,6 @@ export const toControlParams = (options: UserRequestOptions) => ({
 // Sökvägen står som /users och inte /api/users. Basen /api sitter i
 // axiosClient, så varje anrop här går ut som /api/users, vilket är den sökväg
 // den mockade backenden lyssnar på.
-//
-// Listan byggdes först när något faktiskt behövde den, nämligen en demonstration
-// av att flera komponenter som frågar efter samma nyckel ger ett enda anrop. Det
-// går svårligen att visa utan något som flera vyer naturligt vill visa samtidigt.
 export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]> => {
   const response = await axiosClient.get<User[]>('/users', { params: toControlParams(options) });
 
@@ -52,10 +48,10 @@ export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]
 // Hämtar en användare. Servicen innehåller ingen React: den returnerar typad
 // data, och hooken som anropar den bestämmer vad som händer med den.
 //
-// Anropet är en funktion och inte en metod på en basklass. Förlagan ärver Get,
-// GetAll, Create och Update från en BaseAPI, vilket lönar sig över tjugosju
-// resurser men här bara skulle packa in ett anrop i ett lager som döljer vad det
-// gör.
+// Anropet är en funktion och inte en metod på en basklass. I en kodbas med
+// många resurser lönar det sig ofta att låta varje resurs ärva Get, GetAll,
+// Create och Update från en gemensam klass. Här finns två, och då vore klassen
+// ett lager som döljer vad anropet gör.
 export const getUser = async (id: string, options: UserRequestOptions = {}): Promise<User> => {
   const response = await axiosClient.get<User>(`/users/${id}`, { params: toControlParams(options) });
 

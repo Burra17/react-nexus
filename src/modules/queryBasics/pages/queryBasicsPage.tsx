@@ -15,68 +15,97 @@ import { queryBasicsQuestions } from '../queryBasicsQuestions';
 const Theory = () => (
   <>
     <Typography>
-      I Effects-modulen skrev du en hämtning för hand, och såg den gå sönder. Två klick efter varandra gav ett svar som tillhörde fel användare, och
-      lösningen krävde en flagga i städfunktionen som ingen kommer ihåg att skriva varje gång. Reacts egen dokumentation räknar upp fler invändningar
-      mot mönstret: hämtningen startar först när komponenten redan renderat, en förälder som hämtar innan barnet får hämta gör anropen till ett
-      vattenfall i stället för till parallella anrop, och ingenting sparas: avmonteras komponenten och monteras igen hämtas allt om från början.
-      Rekommendationen därefter är kort: använd, eller bygg, en cache på klientsidan. Den här modulen handlar om den cachen.
+      Det vanliga första sättet att hämta data i React är för hand: en <code>useEffect</code> som anropar API:et och tre <code>useState</code> för
+      datan, laddningen och felet. Det fungerar tills två svar kommer i fel ordning. Klickar läsaren på en användare och sedan snabbt på en annan kan
+      det första, långsammare svaret landa sist och skriva över det andra, och skärmen visar då fel person. Skyddet är en flagga i effektens
+      städfunktion, och den måste skrivas varje gång. Reacts egen dokumentation räknar upp fler invändningar: hämtningen startar först när komponenten
+      redan renderat, en förälder som hämtar innan barnet får hämta gör anropen till ett vattenfall i stället för till parallella anrop, och ingenting
+      sparas: avmonteras komponenten och monteras igen hämtas allt om från början. Rekommendationen därefter är kort: använd, eller bygg, en cache på
+      klientsidan.
+    </Typography>
+
+    <Typography>
+      Den här vyn handlar om en sådan cache, biblioteket <strong>TanStack Query</strong>. Appen har en enda <code>QueryClient</code>, skapad en gång
+      och given till hela komponentträdet längst upp, och den håller cachen. En komponent som behöver data anropar hooken <code>useQuery</code> med
+      två saker: en <strong>nyckel</strong>, som säger vilken data det gäller, och en <code>queryFn</code>, funktionen som hämtar den. Det som ligger
+      i cachen under en nyckel kallas en <strong>query</strong>: datan, läget den befinner sig i, och funktionen som kan hämta den igen. Komponenten
+      äger inte datan. Den tittar på en query, och det kan flera komponenter göra samtidigt.
     </Typography>
 
     <Typography>
       Det som gör serverdata svårt är inte hämtningen utan <strong>ägandeskapet</strong>. Ett vanligt state äger du: det ändras när du ändrar det, och
       däremellan står det stilla. Ett svar från ett API är i stället en <strong>kopia av något någon annan äger</strong>, lånad för att visas på
       skärmen. Kopian kan bli inaktuell medan den ligger stilla, utan att något i komponenten märker det, och hämtningen kan misslyckas på ett sätt en{' '}
-      <code>useState</code> aldrig kan. Därför är laddning och fel inte något du bygger själv av tre useState, utan lägen hooken redan har:{' '}
-      <code>status</code> svarar på frågan <em>har vi data?</em> med <code>pending</code>, <code>error</code> eller <code>success</code>, medan{' '}
-      <code>fetchStatus</code> svarar på <em>kör hämtningen just nu?</em> med <code>fetching</code>, <code>paused</code> eller <code>idle</code>. Att
-      det är två fält och inte ett är ingen dubblering: en lyckad query kan hämta om i bakgrunden, och en pending query kan stå stilla för att
-      nätverket är borta. Demon nedan börjar därför utan vald användare, så att du får se dem gå isär: innan du klickar står{' '}
-      <code>status: pending</code> bredvid <code>fetchStatus: idle</code>. Det finns ingen data, och ingenting hämtas. Väljer du sedan en användare
-      blir det <code>pending</code> och <code>fetching</code> tillsammans, och har du redan data står <code>success</code> bredvid{' '}
+      <code>useState</code> aldrig kan. Därför är laddning och fel inte något du bygger själv, utan lägen <code>useQuery</code> redan har.{' '}
+      <code>status</code> svarar på frågan <em>hur gick det att få data?</em> med <code>pending</code> (ingen data än), <code>error</code> (hämtningen
+      misslyckades) eller <code>success</code> (datan finns). <code>fetchStatus</code> svarar på <em>kör hämtningen just nu?</em> med{' '}
+      <code>fetching</code>, <code>paused</code> (den vill köra, men nätverket är borta) eller <code>idle</code>. Hooken ger också genvägar till
+      lägena: <code>isPending</code> är samma sak som <code>status === &apos;pending&apos;</code>, och <code>isError</code> och <code>isSuccess</code>{' '}
+      fungerar likadant.
+    </Typography>
+
+    <Typography>
+      Att det är två fält och inte ett är ingen dubblering: en query med data kan hämta om i bakgrunden, och en query utan data kan stå still. Demon
+      nedan börjar därför utan vald användare. En query kan vara avstängd tills den har det den behöver, och här väntar den på ett id. Innan du
+      klickar står därför <code>status: pending</code> bredvid <code>fetchStatus: idle</code>: det finns ingen data, och ingenting hämtas. Väljer du
+      sedan en användare blir det <code>pending</code> och <code>fetching</code> tillsammans, och har du redan data står <code>success</code> bredvid{' '}
       <code>fetching</code>. Tre olika lägen, av två fält som ofta antas säga samma sak.
     </Typography>
 
     <Typography>
-      Den andra halvan är <strong>nyckeln</strong>. Datan identifieras inte av komponenten som råkade hämta den, utan av sin <code>queryKey</code>, en
-      array som fungerar som en adress i cachen. Frågar två komponenter i olika delar av appen efter samma nyckel tittar de på samma post. Nyckeln
-      fungerar samtidigt som en beroendelista: ändras den hämtas det om, precis som en effekt kör om när dess beroenden ändras. Därav regeln att allt
-      som hämtningen beror på ska stå i nyckeln. I demon nedan syns det direkt: byt användare och nyckeln ändras, men dra i latensreglaget och den
-      står still, eftersom svarstiden ändrar <em>när</em> svaret kommer och inte <em>vad</em> det innehåller. Nycklarna skrivs i en liten fabrik i
-      stället för för hand på varje ställe, så att en glömd parameter blir ett typfel i stället för en cachepost som tyst visar fel data.
+      Den andra halvan är <strong>nyckeln</strong>, en array som fungerar som en adress i cachen. Datan identifieras inte av komponenten som råkade
+      hämta den, utan av nyckeln: frågar två komponenter i olika delar av appen efter samma nyckel tittar de på samma query. Byter en komponent nyckel
+      tittar den i stället på en annan query, och finns den inte än hämtas den. Därav regeln att allt som avgör <em>vilken</em> data servern svarar
+      med ska stå i nyckeln. I demon nedan syns det direkt: byt användare och nyckeln ändras, men dra i latensreglaget och den står still, eftersom
+      svarstiden ändrar <em>när</em> svaret kommer och inte vilken användare det handlar om.
+    </Typography>
+
+    <Typography>
+      Nyckeln jämförs på innehåll, inte på referens. En komponent som bygger en ny array vid varje rendering, med samma värden i, frågar efter samma
+      query varje gång, också när arrayen innehåller ett objekt. Där skiljer sig nyckeln från en effekts beroendelista, som jämför referenser och kör
+      om för ett nytt objekt även om innehållet är detsamma. Nycklarna skrivs i en liten fabrik, ett objekt med en funktion per sorts nyckel, i
+      stället för för hand på varje ställe. Då blir en glömd parameter ett typfel i stället för en query som tyst visar fel data.
     </Typography>
 
     <Typography>
       Klickar du tillbaka till en användare du redan hämtat fylls kortet direkt, utan laddningsläge, men ett nytt anrop går ändå i bakgrunden. Det
       syns som den lilla snurran i kortets överkant, och det är därför den står där: utan den vore hämtningen osynlig, eftersom namnet på skärmen inte
-      ändras medan den pågår.
+      ändras medan den pågår. Varför det blir både och förklaras av två klockor.
     </Typography>
 
     <Typography>
-      Att båda sakerna händer samtidigt styrs av <strong>två klockor</strong>, och de talar om olika saker. <code>staleTime</code> gäller{' '}
-      <em>datan du tittar på</em>: hur länge den räknas som färsk. <code>gcTime</code> gäller <em>posten i cachen när ingen tittar</em>: hur länge den
-      ligger kvar innan den kastas bort. De blandas ihop för att båda mäter tid för cachad data, och för att den senare hette <code>cacheTime</code>{' '}
-      förr, ett namn som lät som &quot;så länge datan cachas&quot; utan att betyda det. Den börjar nämligen inte ticka förrän frågan blivit oanvänd.
-      Standarden är <code>staleTime: 0</code> och <code>gcTime: 5 minuter</code>: datan räknas som inaktuell direkt, men posten ligger kvar i fem
-      minuter efter att den sista komponenten som tittade på den försvann. Inaktuell är alltså inte samma sak som borta: inaktuell data visas ändå
-      direkt från cachen medan en ny hämtning går i bakgrunden, och det är därför en vy nästan aldrig visar ett tomt laddningsläge två gånger.
+      <code>staleTime</code> gäller <em>datan du tittar på</em>: hur länge den räknas som färsk. <code>gcTime</code> gäller{' '}
+      <em>en query som ingen tittar på</em>: hur länge den ligger kvar i cachen innan den kastas bort. Förkortningen gc står för garbage collection,
+      alltså städning. De två blandas ihop för att båda mäter tid för cachad data. Dessutom hette <code>gcTime</code> förr <code>cacheTime</code>, ett
+      namn som lät som &quot;så länge datan cachas&quot;. Det betyder det inte, eftersom klockan inte börjar ticka förrän den sista komponenten slutat
+      titta. Standarden är <code>staleTime: 0</code> och <code>gcTime: 5 minuter</code>: datan räknas som inaktuell direkt, men queryn ligger kvar i
+      fem minuter efter att ingen längre tittar. Inaktuell är alltså inte samma sak som borta. Inaktuell data visas ändå direkt från cachen medan en
+      ny hämtning går i bakgrunden, och det är därför en vy nästan aldrig visar ett tomt laddningsläge två gånger.
     </Typography>
 
     <Typography>
-      <code>staleTime: 0</code> låter aggressivt, men betyder inte att varje omrendering hämtar. Inaktuell data utlöser en bakgrundshämtning vid tre
-      tillfällen: när en ny instans av frågan monteras, när fönstret får fokus igen, och när nätverket kommer tillbaka. Det andra är värt att minnas:
+      <code>staleTime: 0</code> låter aggressivt, men betyder inte att varje omrendering hämtar. Inaktuell data hämtas om i bakgrunden vid tre
+      tillfällen: när en komponent börjar titta på queryn, när fönstret får fokus igen, och när nätverket kommer tillbaka. Det första är vad du ser i
+      demon när du klickar tillbaka till en användare, eftersom kortet då börjar titta på den användarens query igen. Det andra är värt att minnas:
       byter du till en annan flik och tillbaka ser du ett anrop du inte själv utlöste, och det är lätt att tro att något är trasigt när det i själva
-      verket är biblioteket som håller din kopia aktuell. I demon nedan kan du dra ner båda klockorna till noll och sedan lämna vyn: då hinner posten
-      städas bort medan du är borta, och när du kommer tillbaka börjar allt om med ett tomt laddningsläge.
+      verket är biblioteket som håller din kopia aktuell.
     </Typography>
 
     <Typography>
-      <strong>En not om versioner.</strong> Biblioteket har bytt namn på saker, och ett av bytena är värt att känna till eftersom det inte syns.{' '}
-      <code>isLoading</code> betydde förr <em>det finns ingen data än</em>. Det heter numera <code>isPending</code>, men <code>isLoading</code> finns
-      kvar, med en ny innebörd: <em>det finns ingen data än och hämtningen kör just nu</em>. Samma namn, olika betydelse i olika versioner, och koden
-      kompilerar i båda fallen. Möter du <code>isLoading</code> i en äldre kodbas betyder det alltså inte det du tror, och inget verktyg säger till. I
-      samma veva försvann <code>onSuccess</code>, <code>onError</code> och <code>onSettled</code> från <code>useQuery</code>, medan de finns kvar på
-      mutationer. Värt att veta är också att biblioteket har ett eget utvecklingsverktyg som visar hela cachen i en panel. Det är så man inspekterar
-      den i praktiken, medan panelen i demon nedan är byggd för hand för att visa just de fält den här modulen handlar om.
+      Den andra demon visar gcTime i arbete. Ställ gcTime på en sekund, tryck på Nollställ cacheposten så att det nya värdet gäller, och tryck sedan
+      på Lämna vyn. Kortet slutar då titta, och klockan börjar ticka. Vänta några sekunder och tryck på Kom tillbaka: queryn har hunnit städas bort,
+      och allt börjar om med ett tomt laddningsläge.
+    </Typography>
+
+    <Typography>
+      <strong>En not om versioner.</strong> I version 5 bytte biblioteket namn på saker, och ett av bytena är värt att känna till eftersom det inte
+      syns. <code>isLoading</code> betydde förr <em>det finns ingen data än</em>. Det heter numera <code>isPending</code>, men <code>isLoading</code>{' '}
+      finns kvar, med en ny innebörd: <em>det finns ingen data än och hämtningen kör just nu</em>. Samma namn, olika betydelse i olika versioner, och
+      koden kompilerar i båda fallen. Möter du <code>isLoading</code> i en äldre kodbas betyder det alltså inte det du tror, och inget verktyg säger
+      till. I samma veva försvann <code>onSuccess</code>, <code>onError</code> och <code>onSettled</code>, funktioner som kördes när en hämtning
+      lyckats, misslyckats eller avslutats, från <code>useQuery</code>. De finns kvar på <code>useMutation</code>, hooken för att skriva till servern.
+      Värt att veta är också att biblioteket har ett eget utvecklingsverktyg, TanStack Query Devtools, som visar hela cachen i en panel. Det är så man
+      inspekterar den i praktiken, medan panelerna i demona nedan är byggda för hand för att visa just de fält den här vyn handlar om.
     </Typography>
   </>
 );
@@ -89,7 +118,7 @@ export const QueryBasicsPage = () => (
       <Stack spacing={4}>
         <Stack spacing={1}>
           <Typography variant='h3' component='h3'>
-            1. Lägena, nyckeln och kedjan
+            1. Lägena och nyckeln
           </Typography>
           <UserQueryDemo />
         </Stack>
@@ -126,7 +155,7 @@ export const QueryBasicsPage = () => (
         fileName: 'src/modules/queryBasics/hooks/queries/useFetchUser.ts',
         code: useFetchUserSource,
         language: 'ts',
-        // Nyckeln, pausningen, anropet till servicen och avstängningen av
+        // Nyckeln, avstängningen utan id, anropet till servicen och avstängningen av
         // omförsöken.
         highlight: ['queryKey: usersKeys.detail', '? skipToken', 'await getUser(', 'retry: false,'],
       },

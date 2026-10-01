@@ -1,9 +1,10 @@
 import type { QuizQuestion } from '../../shared/components/quiz';
 
-// Kunskapskontrollen för modulen om Querys grunder.
+// Kunskapskontrollen för vyn Query: grunder.
 //
-// De tre frågorna ligger på begreppen och inte på API:et: vad isPending säger
-// något om, vad nyckeln identifierar, och varför serverdata inte är state.
+// De fyra frågorna ligger på begreppen och inte på API:et: vad isPending säger
+// något om, vad nyckeln identifierar, varför serverdata inte är state, och vad
+// som händer med inaktuell data som ligger kvar i cachen.
 //
 // Kodfragment markeras med backticks, som i Markdown. Se stateQuestions.ts.
 export const queryBasicsQuestions: QuizQuestion[] = [
@@ -16,18 +17,19 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Att ett nätverksanrop pågår just nu',
         explanation:
-          'Det är `fetchStatus` som svarar på om hämtningen kör. En query kan vara pending utan att hämta, till exempel när nätverket är nere och hämtningen är pausad.',
+          'Det är `fetchStatus` som svarar på om hämtningen kör. En query kan vara pending utan att hämta, till exempel när den är avstängd i väntan på ett id, eller när nätverket är borta och hämtningen står som `paused`.',
       },
       {
         id: 'b',
         text: 'Att hämtningen har misslyckats och försöker igen',
-        explanation: 'Ett misslyckande syns som `isError`, och under omförsöken finns fortfarande ingen data, men pending säger inget om orsaken.',
+        explanation:
+          'Ett misslyckande syns som `isError`. Medan biblioteket gör nya försök står queryn visserligen kvar som pending, men det är för att det inte finns någon data än. Pending säger inget om varför.',
       },
       {
         id: 'c',
         text: 'Att det ännu inte finns någon data att visa',
         explanation:
-          'Rätt. `status` svarar på frågan "har vi data?" och `pending` betyder att svaret är nej. Om hämtningen kör just nu är en annan fråga, och den besvaras av `fetchStatus`.',
+          "Rätt. `isPending` är samma sak som `status === 'pending'`, och pending betyder att det ännu inte finns någon data. Om hämtningen kör just nu är en annan fråga, och den besvaras av `fetchStatus`.",
       },
     ],
   },
@@ -44,9 +46,9 @@ export const queryBasicsQuestions: QuizQuestion[] = [
       },
       {
         id: 'b',
-        text: 'De tittar på samma post i cachen',
+        text: 'De tittar på samma query i cachen',
         explanation:
-          'Rätt. Nyckeln identifierar datan. Var i trädet komponenten sitter spelar ingen roll: samma nyckel är samma post, och vem som helst som frågar efter den får den.',
+          'Rätt. Nyckeln identifierar datan. Var i trädet komponenten sitter spelar ingen roll: samma nyckel är samma query, och vem som helst som frågar efter den får den.',
       },
       {
         id: 'c',

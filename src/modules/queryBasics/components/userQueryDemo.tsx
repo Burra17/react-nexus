@@ -13,9 +13,9 @@ import { useState } from 'react';
 import { useFetchUser } from '../hooks/queries/useFetchUser';
 import { usersKeys } from '../hooks/usersKeys';
 
-// De två användarna är desamma som i kapplöpningsdemon i modul 3. Där hämtades
-// de med ett löfte inne i komponenten och svaren kunde komma i fel ordning. Här
-// går samma hämtning över riktig HTTP, genom servicelagret, med cachen emellan.
+// Två användare räcker för att visa både en ny hämtning och en återkomst till
+// data som redan ligger i cachen. Anropet går över riktig HTTP till den mockade
+// backenden, genom servicen i services/api, och cachen står emellan.
 
 // Stegen är valda så att alla lägen går att se. Noll för att svaret ska komma
 // innan man hinner blinka, 1500 och 3000 för att laddningsläget ska hinna bli
@@ -49,7 +49,7 @@ export const UserQueryDemo = () => {
 
   // De tre lägena, uttryckta som kombinationer av de två fälten och inte som en
   // egen flagga vid sidan om. Det är kombinationerna som är lektionen.
-  const isPaused = isPending && fetchStatus === 'idle';
+  const isWaitingForId = isPending && fetchStatus === 'idle';
   const isFirstLoad = isPending && fetchStatus === 'fetching';
   const isBackgroundFetch = !isPending && fetchStatus === 'fetching';
 
@@ -70,8 +70,8 @@ export const UserQueryDemo = () => {
           value={id}
           onChange={(_event, next: string | null) => {
             // null kommer när man klickar på den redan valda knappen. Då behålls
-            // valet: demon ska gå att komma till ett tomt läge från, men inte
-            // ramla tillbaka dit av ett klick man inte menade.
+            // valet. Läget utan vald användare finns bara i början, och ett klick
+            // som avmarkerar ska inte ta tillbaka dit av misstag.
             if (next !== null) {
               setId(next);
             }
@@ -80,6 +80,11 @@ export const UserQueryDemo = () => {
           <ToggleButton value='ada'>Ada</ToggleButton>
           <ToggleButton value='bo'>Bo</ToggleButton>
         </ToggleButtonGroup>
+
+        <Typography variant='caption' color='textSecondary'>
+          Välj Ada, sedan Bo, sedan Ada igen. De två första klicken visar ett laddningsläge, eftersom ingen av dem finns i cachen än. Det tredje
+          fyller kortet direkt, och texten &quot;hämtar om i bakgrunden&quot; dyker upp ovanför det.
+        </Typography>
       </Stack>
 
       <Stack spacing={1}>
@@ -108,14 +113,21 @@ export const UserQueryDemo = () => {
         </Box>
 
         <Typography variant='caption' color='textSecondary'>
-          Fördröjningen står inte i nyckeln, så ett drag här hämtar inte om. Den gäller nästa anrop.
+          Backenden är en mock som körs i webbläsaren, så svarstiden går att styra. Fördröjningen står inte i nyckeln, så ett drag här hämtar inte om.
+          Den gäller nästa anrop.
         </Typography>
       </Stack>
 
-      <FormControlLabel
-        control={<Switch checked={shouldFail} onChange={(event) => setShouldFail(event.target.checked)} />}
-        label='Låt anropet misslyckas (500 från servern)'
-      />
+      <Stack spacing={0.5}>
+        <FormControlLabel
+          control={<Switch checked={shouldFail} onChange={(event) => setShouldFail(event.target.checked)} />}
+          label='Låt anropet misslyckas (500 från servern)'
+        />
+        <Typography variant='caption' color='textSecondary'>
+          Felflaggan står i nyckeln. Slår du på den byter queryn nyckel och hämtar direkt, och anropet misslyckas. Slår du av den är du tillbaka på
+          den gamla nyckeln: datan visas direkt och hämtas om i bakgrunden.
+        </Typography>
+      </Stack>
 
       <Paper variant='outlined' sx={{ p: 2, minHeight: 172 }}>
         <Stack spacing={1.5}>
@@ -140,8 +152,11 @@ export const UserQueryDemo = () => {
             )}
           </Stack>
 
-          {isPaused && (
-            <Typography color='textSecondary'>Ingen användare vald. Queryn finns, men den kör inte. Se de två fälten i panelen nedan.</Typography>
+          {isWaitingForId && (
+            <Typography color='textSecondary'>
+              Ingen användare vald. Queryn är avstängd tills den har ett id: det finns ingen data, och ingenting hämtas. Se de två fälten i panelen
+              nedan.
+            </Typography>
           )}
 
           {isFirstLoad && (
@@ -159,7 +174,8 @@ export const UserQueryDemo = () => {
           {isError && (
             <Alert severity='error'>
               <Typography variant='body2'>
-                Hämtningen misslyckades, och inget omförsök gjordes: retry är avstängt här, mot standardens tre.
+                Hämtningen misslyckades, och inget nytt försök gjordes, eftersom omförsöken är avstängda här. Standard är tre omförsök efter det
+                första anropet, alltså fyra anrop innan felet visas.
               </Typography>
               <Typography variant='caption' sx={{ fontFamily: 'monospace' }}>
                 {error.message}
@@ -188,16 +204,19 @@ export const UserQueryDemo = () => {
           </Typography>
 
           <StatusRow label='queryKey' value={queryKey} />
-          <StatusRow label='status (har vi data?)' value={status} />
+          <StatusRow label='status (hur gick det?)' value={status} />
           <StatusRow label='fetchStatus (kör den?)' value={fetchStatus} />
           <StatusRow label='isPending' value={String(isPending)} />
           <StatusRow label='isError' value={String(isError)} />
-          <StatusRow label='dataUpdatedAt' value={dataUpdatedAt === 0 ? 'aldrig' : new Date(dataUpdatedAt).toLocaleTimeString('sv-SE')} />
+          <StatusRow
+            label='dataUpdatedAt (när datan kom)'
+            value={dataUpdatedAt === 0 ? 'aldrig' : new Date(dataUpdatedAt).toLocaleTimeString('sv-SE')}
+          />
 
           {/* Raden finns för att reglaget ska gå att jämföra med verkligheten.
               Står det 3000 ovanför medan hämtningen kördes med 800 är det inte
               en bugg. Det är att fördröjningen inte står i nyckeln. */}
-          <StatusRow label='svarstid i senaste anropet' value={data ? `${data.usedDelayMs} ms` : 'inget anrop än'} />
+          <StatusRow label='svarstid för datan som visas' value={data ? `${data.usedDelayMs} ms` : 'ingen data'} />
         </Stack>
       </Paper>
     </Stack>
