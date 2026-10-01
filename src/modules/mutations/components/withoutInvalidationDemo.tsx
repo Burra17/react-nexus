@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useIsMutating } from '@tanstack/react-query';
-import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { useUpdateUserRole } from '../hooks/mutations/useUpdateUserRole';
@@ -63,7 +63,7 @@ export const WithoutInvalidationDemo = () => {
   // omritningen vi är ute efter.
   useIsMutating();
 
-  const requestCount = readUserRequestCount();
+  const requestCount = readRequestCount('utanInvalidering');
 
   return (
     <Stack spacing={3}>

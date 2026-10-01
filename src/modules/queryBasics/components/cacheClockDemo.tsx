@@ -8,9 +8,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
-import { useFetchCachedUser } from '../hooks/queries/useFetchCachedUser';
+import { CACHE_CLOCK_DEMO, useFetchCachedUser } from '../hooks/queries/useFetchCachedUser';
 import { usersKeys } from '../hooks/usersKeys';
 
 // En fast användare, utan väljare. Den första demon handlar om VILKEN data du
@@ -122,7 +122,7 @@ export const CacheClockDemo = () => {
   // getQueryState returnerar undefined när posten är borta. Skillnaden mellan
   // "finns kvar men inaktuell" och "borttagen" är hela lektionen.
   const cacheState = queryClient.getQueryState(usersKeys.clock(USER_ID));
-  const requestCount = readUserRequestCount();
+  const requestCount = readRequestCount(CACHE_CLOCK_DEMO);
 
   const dataUpdatedAt = cacheState?.dataUpdatedAt ?? 0;
   const freshMsLeft = dataUpdatedAt === 0 ? 0 : Math.max(0, dataUpdatedAt + staleTimeMs - now);

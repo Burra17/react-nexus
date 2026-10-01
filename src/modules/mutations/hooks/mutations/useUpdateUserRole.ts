@@ -24,5 +24,5 @@ import { RESPONSE_DELAY_MS } from '../queries/responseDelay';
 // setMutationDefaults och useMutationState, inte för att dela tillstånd.
 export const useUpdateUserRole = () =>
   useMutation({
-    mutationFn: (payload: UpdateUserRolePayload) => updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS }),
+    mutationFn: (payload: UpdateUserRolePayload) => updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS, demo: 'utanInvalidering' }),
   });

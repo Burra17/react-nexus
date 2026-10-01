@@ -17,6 +17,11 @@ type FetchCachedUserArgs = {
 // på när något ser oväntat ut.
 const RESPONSE_DELAY_MS = 600;
 
+// Märkningen anropen bär till den mockade backenden, så att demons räknare bara
+// visar demons egna anrop. Den andra demon på sidan hämtar samma användare från
+// samma sökväg, och utan märkningen hade dess anrop synts i det här talet.
+export const CACHE_CLOCK_DEMO = 'cacheklocka';
+
 // Hämtar en användare med styrbara klockor.
 //
 // Det finns redan en useFetchUser i samma mapp, och den återanvänds med flit
@@ -37,7 +42,7 @@ const RESPONSE_DELAY_MS = 600;
 export const useFetchCachedUser = ({ id, staleTimeMs, gcTimeMs }: FetchCachedUserArgs) =>
   useQuery({
     queryKey: usersKeys.clock(id),
-    queryFn: () => getUser(id, { delayMs: RESPONSE_DELAY_MS }),
+    queryFn: () => getUser(id, { delayMs: RESPONSE_DELAY_MS, demo: CACHE_CLOCK_DEMO }),
     staleTime: staleTimeMs,
     gcTime: gcTimeMs,
     retry: false,

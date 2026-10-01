@@ -38,6 +38,8 @@ const MUTATION_USERS: Record<string, User> = {
 type RequestControls = {
   delayMs: number;
   shouldFail: boolean;
+  // null när anropet inte är märkt med någon demo.
+  demo: string | null;
 };
 
 // Läser demons styrning ur anropets sökparametrar.
@@ -57,6 +59,7 @@ const readControls = (request: Request): RequestControls => {
   return {
     delayMs: Number.isFinite(delayMs) ? delayMs : 0,
     shouldFail: params.get('fail') === '1',
+    demo: params.get('demo'),
   };
 };
 
@@ -64,7 +67,7 @@ const readControls = (request: Request): RequestControls => {
 // felläget i demon inte är en specialkonstruktion.
 const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta användaren just nu.' }, { status: 500 });
 
-// Hur många anrop den mockade backenden faktiskt tagit emot.
+// Hur många anrop den mockade backenden faktiskt tagit emot, per demo.
 //
 // Räknaren finns för de demonstrationer som påstår saker om när ett anrop sker
 // och när det uteblir. Ett sådant påstående måste gå att kontrollera mot något
@@ -75,22 +78,34 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 // Den räknas upp här och ingen annanstans, för att det som räknas ska vara
 // anrop som verkligen nådde backenden, inte hookar som kördes.
 //
-// Varje handler räknar upp den, också skrivningen. Räknaren mäter anrop och
-// inte hämtningar, vilket är vad den alltid utgett sig för att vara. En
-// skrivning som följs av en invalidering kostar ett skrivanrop plus de
-// hämtningar invalideringen utlöser, och räknades bara GET skulle panelen visa
-// ett tal som säger emot Network-fliken.
-let userRequestCount = 0;
+// Varje handler räknar, också skrivningen. Räknaren mäter anrop och inte
+// hämtningar. En skrivning som följs av en invalidering kostar ett skrivanrop
+// plus de hämtningar invalideringen utlöser, och räknades bara GET skulle
+// panelen visa ett tal som säger emot Network-fliken.
+//
+// Talet hålls isär per demo, enligt märkningen i anropets demo-parameter. En
+// enda totalsumma för hela appen räcker inte så fort två demonstrationer står
+// på samma sida och hämtar när sidan öppnas: deras anrop landar i samma tal,
+// och en panel som säger att ingenting hämtats visar ändå tre. Ett anrop utan
+// märkning hör inte till någon panel och räknas inte.
+const requestCounts = new Map<string, number>();
 
-export const readUserRequestCount = () => userRequestCount;
+const countRequest = (demo: string | null) => {
+  if (demo !== null) {
+    requestCounts.set(demo, (requestCounts.get(demo) ?? 0) + 1);
+  }
+};
+
+// Hur många anrop en demo gjort sedan sidladdning.
+export const readRequestCount = (demo: string) => requestCounts.get(demo) ?? 0;
 
 export const handlers = [
   // Listan står före :id-varianten. Ordningen spelar ingen roll för MSW, som
   // matchar på hela sökvägen, men den läses lättare uppifrån och ner.
   http.get('/api/users', async ({ request }) => {
-    userRequestCount += 1;
+    const { delayMs, shouldFail, demo } = readControls(request);
 
-    const { delayMs, shouldFail } = readControls(request);
+    countRequest(demo);
 
     await delay(delayMs);
 
@@ -102,9 +117,9 @@ export const handlers = [
   }),
 
   http.get('/api/users/:id', async ({ request, params }) => {
-    userRequestCount += 1;
+    const { delayMs, shouldFail, demo } = readControls(request);
 
-    const { delayMs, shouldFail } = readControls(request);
+    countRequest(demo);
 
     // Fördröjningen ligger före allt annat: också ett fel ska ta tid att komma
     // fram, annars går felläget inte att se.
@@ -126,9 +141,9 @@ export const handlers = [
   // Läsningen som hör ihop med skrivningen nedan. Egen sökväg, egen datamängd,
   // se MUTATION_USERS.
   http.get('/api/mutations/users', async ({ request }) => {
-    userRequestCount += 1;
+    const { delayMs, shouldFail, demo } = readControls(request);
 
-    const { delayMs, shouldFail } = readControls(request);
+    countRequest(demo);
 
     await delay(delayMs);
 
@@ -147,9 +162,9 @@ export const handlers = [
   // ett misslyckat anrop ska inte ha ändrat något, annars visar demon en
   // rollback av en ändring som blev kvar på servern.
   http.put('/api/mutations/users/:id', async ({ request, params }) => {
-    userRequestCount += 1;
+    const { delayMs, shouldFail, demo } = readControls(request);
 
-    const { delayMs, shouldFail } = readControls(request);
+    countRequest(demo);
 
     await delay(delayMs);
 

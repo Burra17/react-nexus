@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUser } from '../../../../services/api/users';
 import { usersKeys } from '../usersKeys';
+import { INVALIDATION_DEMO } from './requestDemos';
 import { RESPONSE_DELAY_MS } from './responseDelay';
 
 // Hämtar en enskild användare.
@@ -12,6 +13,6 @@ import { RESPONSE_DELAY_MS } from './responseDelay';
 export const useFetchUser = (id: string) =>
   useQuery({
     queryKey: usersKeys.detail(id),
-    queryFn: () => getUser(id, { delayMs: RESPONSE_DELAY_MS }),
+    queryFn: () => getUser(id, { delayMs: RESPONSE_DELAY_MS, demo: INVALIDATION_DEMO }),
     retry: false,
   });
