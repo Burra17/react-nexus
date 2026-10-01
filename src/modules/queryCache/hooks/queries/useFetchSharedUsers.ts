@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUsers } from '../../../../services/api/users';
 import { sharedUsersKeys } from '../usersKeys';
+import { SHARING_DEMO } from './requestDemos';
 import { RESPONSE_DELAY_MS } from './responseDelay';
 
 // Hämtar listan åt delningsdemon.
@@ -32,7 +33,7 @@ const STALE_TIME_MS = 30_000;
 export const useFetchSharedUsers = () =>
   useQuery({
     queryKey: sharedUsersKeys.list(),
-    queryFn: () => getUsers({ delayMs: RESPONSE_DELAY_MS }),
+    queryFn: () => getUsers({ delayMs: RESPONSE_DELAY_MS, demo: SHARING_DEMO }),
     staleTime: STALE_TIME_MS,
     retry: false,
   });

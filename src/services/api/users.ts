@@ -13,10 +13,26 @@ export type User = {
 // Det demon får styra hos den mockade backenden. Fördröjningen och felsvaret är
 // inget ett riktigt API skulle erbjuda. De finns för att laddnings- och
 // felläget ska gå att framkalla på begäran i stället för att vänta på otur.
+//
+// demo säger vilken demonstration anropet hör till. Den mockade backenden
+// räknar anropen per demo, så att två demonstrationer på samma sida inte syns i
+// varandras tal. Sökvägen räcker inte för att hålla isär dem: två demor kan
+// mycket väl hämta samma lista.
 export type UserRequestOptions = {
   delayMs?: number;
   shouldFail?: boolean;
+  demo?: string;
 };
+
+// Gör om styrningen till sökparametrar, så att den syns i Network-fliken.
+//
+// axios utelämnar parametrar som är undefined, så en hämtning utan fördröjning
+// skickar heller ingen delay-parameter.
+export const toControlParams = (options: UserRequestOptions) => ({
+  delay: options.delayMs,
+  fail: options.shouldFail ? 1 : undefined,
+  demo: options.demo,
+});
 
 // Hämtar hela listan med användare.
 //
@@ -28,12 +44,7 @@ export type UserRequestOptions = {
 // av att flera komponenter som frågar efter samma nyckel ger ett enda anrop. Det
 // går svårligen att visa utan något som flera vyer naturligt vill visa samtidigt.
 export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]> => {
-  const response = await axiosClient.get<User[]>('/users', {
-    params: {
-      delay: options.delayMs,
-      fail: options.shouldFail ? 1 : undefined,
-    },
-  });
+  const response = await axiosClient.get<User[]>('/users', { params: toControlParams(options) });
 
   return response.data;
 };
@@ -46,14 +57,7 @@ export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]
 // resurser men här bara skulle packa in ett anrop i ett lager som döljer vad det
 // gör.
 export const getUser = async (id: string, options: UserRequestOptions = {}): Promise<User> => {
-  const response = await axiosClient.get<User>(`/users/${id}`, {
-    // axios utelämnar parametrar som är undefined, så en hämtning utan
-    // fördröjning skickar heller ingen delay-parameter.
-    params: {
-      delay: options.delayMs,
-      fail: options.shouldFail ? 1 : undefined,
-    },
-  });
+  const response = await axiosClient.get<User>(`/users/${id}`, { params: toControlParams(options) });
 
   return response.data;
 };

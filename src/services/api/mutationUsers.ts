@@ -1,5 +1,6 @@
 import { axiosClient } from '../axios/axiosClient';
 import type { User, UserRequestOptions } from './users';
+import { toControlParams } from './users';
 
 // Anropen mot mutationsmodulens egen kopia av användarna.
 //
@@ -11,12 +12,7 @@ import type { User, UserRequestOptions } from './users';
 
 // Hämtar mutationsmodulens användare.
 export const getMutationUsers = async (options: UserRequestOptions = {}): Promise<User[]> => {
-  const response = await axiosClient.get<User[]>('/mutations/users', {
-    params: {
-      delay: options.delayMs,
-      fail: options.shouldFail ? 1 : undefined,
-    },
-  });
+  const response = await axiosClient.get<User[]>('/mutations/users', { params: toControlParams(options) });
 
   return response.data;
 };
@@ -34,16 +30,7 @@ export type UpdateUserRolePayload = {
 // demon om optimistisk uppdatering ska kunna beställa ett fel i stället för att
 // vänta på otur. Samma undantag som för hämtningarna i users.ts.
 export const updateMutationUserRole = async ({ id, role }: UpdateUserRolePayload, options: UserRequestOptions = {}): Promise<User> => {
-  const response = await axiosClient.put<User>(
-    `/mutations/users/${id}`,
-    { role },
-    {
-      params: {
-        delay: options.delayMs,
-        fail: options.shouldFail ? 1 : undefined,
-      },
-    },
-  );
+  const response = await axiosClient.put<User>(`/mutations/users/${id}`, { role }, { params: toControlParams(options) });
 
   return response.data;
 };

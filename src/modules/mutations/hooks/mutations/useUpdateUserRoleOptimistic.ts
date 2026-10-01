@@ -32,7 +32,8 @@ export const useUpdateUserRoleOptimistic = () => {
   const queryKey = mutationUsersKeys.list('optimistisk');
 
   return useMutation({
-    mutationFn: ({ shouldFail, ...payload }: OptimisticRoleVariables) => updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS, shouldFail }),
+    mutationFn: ({ shouldFail, ...payload }: OptimisticRoleVariables) =>
+      updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS, shouldFail, demo: 'optimistisk' }),
 
     onMutate: async ({ id, role }) => {
       // Utan den här raden kan en hämtning som redan är på väg landa EFTER vår

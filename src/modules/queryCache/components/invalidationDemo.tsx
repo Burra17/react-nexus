@@ -4,8 +4,9 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
-import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
+import { INVALIDATION_DEMO } from '../hooks/queries/requestDemos';
 import { useFetchUser } from '../hooks/queries/useFetchUser';
 import { useFetchUsers } from '../hooks/queries/useFetchUsers';
 import { usersKeys } from '../hooks/usersKeys';
@@ -57,7 +58,7 @@ export const InvalidationDemo = () => {
 
   useRerenderOnCacheChange();
 
-  const requestCount = readUserRequestCount();
+  const requestCount = readRequestCount(INVALIDATION_DEMO);
 
   return (
     <Stack spacing={3}>

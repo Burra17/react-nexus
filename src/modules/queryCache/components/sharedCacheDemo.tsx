@@ -3,8 +3,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
+import { SHARING_DEMO } from '../hooks/queries/requestDemos';
 import { sharedUsersKeys } from '../hooks/usersKeys';
 import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { UserListCard } from './userListCard';
@@ -22,7 +23,7 @@ export const SharedCacheDemo = () => {
   // skulle talet stå kvar på det som gällde vid senaste renderingen.
   useRerenderOnCacheChange();
 
-  const requestCount = readUserRequestCount();
+  const requestCount = readRequestCount(SHARING_DEMO);
 
   return (
     <Stack spacing={3}>

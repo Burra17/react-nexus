@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useIsMutating } from '@tanstack/react-query';
-import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { useUpdateUserRoleWithInvalidation } from '../hooks/mutations/useUpdateUserRoleWithInvalidation';
@@ -21,7 +21,7 @@ export const WithInvalidationDemo = () => {
   useRerenderOnCacheChange();
   useIsMutating();
 
-  const requestCount = readUserRequestCount();
+  const requestCount = readRequestCount('medInvalidering');
 
   return (
     <Stack spacing={3}>

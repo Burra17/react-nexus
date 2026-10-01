@@ -168,8 +168,8 @@ export const QueryBasicsPage = () => (
         language: 'ts',
         // Den mockade backenden: hur styrningen läses ur sökparametrarna, var
         // fördröjningen läggs in, och räknaren som gör påståendena om anrop
-        // kontrollerbara.
-        highlight: ['const readControls', 'await delay(delayMs);', 'userRequestCount += 1;'],
+        // kontrollerbara. Den räknar per demo, enligt märkningen i anropet.
+        highlight: ['const readControls', 'await delay(delayMs);', 'const countRequest ='],
       },
     ]}
     quiz={queryBasicsQuestions}

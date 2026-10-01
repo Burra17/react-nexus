@@ -12,6 +12,7 @@ import invalidationDemoSource from '../components/invalidationDemo.tsx?raw';
 import { SharedCacheDemo } from '../components/sharedCacheDemo';
 import sharedCacheDemoSource from '../components/sharedCacheDemo.tsx?raw';
 import userListCardSource from '../components/userListCard.tsx?raw';
+import requestDemosSource from '../hooks/queries/requestDemos.ts?raw';
 import responseDelaySource from '../hooks/queries/responseDelay.ts?raw';
 import useFetchSharedUsersSource from '../hooks/queries/useFetchSharedUsers.ts?raw';
 import useFetchUserSource from '../hooks/queries/useFetchUser.ts?raw';
@@ -141,7 +142,7 @@ export const QueryCachePage = () => (
         language: 'tsx',
         // Korten skapas i en loop och vet inget om varandra. Deduperingen
         // följer av nyckeln, inte av någon samordning här.
-        highlight: ['Array.from({ length: cardCount }', 'const requestCount = readUserRequestCount();'],
+        highlight: ['Array.from({ length: cardCount }', 'const requestCount = readRequestCount(SHARING_DEMO);'],
       },
       {
         // Mätinstrumentet som varje påstående på sidan vilar på. Utan filen ser
@@ -214,6 +215,14 @@ export const QueryCachePage = () => (
         highlight: ['export const RESPONSE_DELAY_MS'],
       },
       {
+        // Märkningen som håller isär sidans två räknare. Hookarna skickar den
+        // och demona läser av den.
+        fileName: 'src/modules/queryCache/hooks/queries/requestDemos.ts',
+        code: requestDemosSource,
+        language: 'ts',
+        highlight: ['export const SHARING_DEMO', 'export const INVALIDATION_DEMO'],
+      },
+      {
         fileName: 'src/modules/queryCache/hooks/usersKeys.ts',
         code: usersKeysSource,
         language: 'ts',
@@ -232,8 +241,8 @@ export const QueryCachePage = () => (
         code: handlersSource,
         language: 'ts',
         // Backendens lista, och räknaren som gör påståendena om anrop
-        // kontrollerbara.
-        highlight: ["http.get('/api/users',", 'userRequestCount += 1;'],
+        // kontrollerbara. Den räknar per demo, enligt märkningen i anropet.
+        highlight: ["http.get('/api/users',", 'const countRequest ='],
       },
     ]}
     quiz={queryCacheQuestions}

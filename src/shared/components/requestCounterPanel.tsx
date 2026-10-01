@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 
 type RequestCounterPanelProps = {
-  // Backendens egen räkning sedan sidladdning. Panelen läser den, den ändrar
-  // den inte.
+  // Backendens egen räkning av den här demons anrop sedan sidladdning. Panelen
+  // läser den, den ändrar den inte.
   total: number;
   // Vad läsaren ska göra med talet i just den här demon.
   caption: string;
@@ -14,13 +14,12 @@ type RequestCounterPanelProps = {
 
 // Visar hur många anrop som gått iväg sedan läsaren själv nollställde.
 //
-// Räknaren i den mockade backenden är en totalsumma som bara växer, men varje
+// Räknaren i den mockade backenden är ett tal per demo som bara växer, men varje
 // påstående demonstrationerna gör handlar om effekten av ETT klick: fyra kort
 // ger ett anrop, ett brett prefix träffar tre poster. En totalsumma tvingar
-// läsaren att subtrahera i huvudet, samtidigt som talet rör sig av annat som
-// händer på sidan. Den avläsningen gick fel två gånger för den som skrev
-// demonstrationerna. Då är det inte rimligt att begära att läsaren ska klara
-// den.
+// läsaren att subtrahera i huvudet. Den avläsningen gick fel två gånger för den
+// som skrev demonstrationerna. Då är det inte rimligt att begära att läsaren
+// ska klara den.
 //
 // "Nollställ" rör därför aldrig backendens räknare. Knappen flyttar bara
 // panelens egen nollpunkt upp till dagens totalsumma, och det som visas är
@@ -29,8 +28,12 @@ type RequestCounterPanelProps = {
 // en funktion som nollade totalsumman skulle en demo kunna radera en annan
 // demos mätning mitt i.
 export const RequestCounterPanel = ({ total, caption }: RequestCounterPanelProps) => {
-  // Startvärdet sätts vid första renderingen, så att panelen börjar på noll
-  // och räknar just den här demons anrop.
+  // Startvärdet sätts vid första renderingen, så att panelen börjar på noll.
+  //
+  // Hämtningar som demon själv gör när sidan öppnas landar strax efter, och de
+  // syns i talet. Det är avsiktligt och sant: de anropen gick verkligen iväg,
+  // och de var demons egna. En annan demos hämtningar syns däremot aldrig här,
+  // eftersom backenden räknar varje demo för sig.
   const [zeroPoint, setZeroPoint] = useState(total);
 
   const sinceReset = total - zeroPoint;

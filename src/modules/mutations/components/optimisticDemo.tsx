@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useIsMutating } from '@tanstack/react-query';
-import { readUserRequestCount } from '../../../services/mocks/handlers';
+import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { useUpdateUserRoleOptimistic } from '../hooks/mutations/useUpdateUserRoleOptimistic';
@@ -36,7 +36,7 @@ export const OptimisticDemo = () => {
   const currentRole = data?.find((user) => user.id === USER_ID)?.role;
   const nextRole = ROLES.find((role) => role !== currentRole) ?? ROLES[0];
 
-  const requestCount = readUserRequestCount();
+  const requestCount = readRequestCount('optimistisk');
 
   return (
     <Stack spacing={3}>

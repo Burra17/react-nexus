@@ -28,7 +28,7 @@ import { RESPONSE_DELAY_MS } from './responseDelay';
 export const useFetchMutationUsers = (demo: MutationDemo) =>
   useQuery({
     queryKey: mutationUsersKeys.list(demo),
-    queryFn: () => getMutationUsers({ delayMs: RESPONSE_DELAY_MS }),
+    queryFn: () => getMutationUsers({ delayMs: RESPONSE_DELAY_MS, demo }),
     staleTime: Infinity,
     retry: false,
   });

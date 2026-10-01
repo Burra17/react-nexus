@@ -26,7 +26,7 @@ export const useUpdateUserRoleWithInvalidation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: UpdateUserRolePayload) => updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS }),
+    mutationFn: (payload: UpdateUserRolePayload) => updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS, demo: 'medInvalidering' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: mutationUsersKeys.list('medInvalidering') }),
   });
 };
