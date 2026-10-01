@@ -36,14 +36,24 @@ export const RequestCounterPanel = ({ total, caption }: RequestCounterPanelProps
   // eftersom backenden räknar varje demo för sig.
   const [zeroPoint, setZeroPoint] = useState(total);
 
+  // Om läsaren nollställt än. Innan dess räknar panelen från när vyn öppnades,
+  // och etiketten säger det. "Sedan du nollställde" hade varit osant tills
+  // knappen tryckts första gången.
+  const [hasReset, setHasReset] = useState(false);
+
   const sinceReset = total - zeroPoint;
+
+  const reset = () => {
+    setZeroPoint(total);
+    setHasReset(true);
+  };
 
   return (
     <Paper variant='outlined' sx={{ p: 2 }}>
       <Stack spacing={1}>
         <Stack direction='row' spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
           <Typography variant='body2' color='textSecondary'>
-            anrop sedan du nollställde
+            {hasReset ? 'anrop sedan du nollställde' : 'anrop sedan vyn öppnades'}
           </Typography>
 
           {/* Talet, totalsumman och knappen står ihop, så att arbetsgången
@@ -60,7 +70,7 @@ export const RequestCounterPanel = ({ total, caption }: RequestCounterPanelProps
               av {total} sedan sidladdning
             </Typography>
 
-            <Button size='small' onClick={() => setZeroPoint(total)}>
+            <Button size='small' onClick={reset}>
               Nollställ räknaren
             </Button>
           </Stack>
