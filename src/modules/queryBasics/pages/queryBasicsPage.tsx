@@ -155,7 +155,7 @@ export const QueryBasicsPage = () => (
         fileName: 'src/modules/queryBasics/hooks/queries/useFetchUser.ts',
         code: useFetchUserSource,
         language: 'ts',
-        // Nyckeln, pausningen, anropet till servicen och avstängningen av
+        // Nyckeln, avstängningen utan id, anropet till servicen och avstängningen av
         // omförsöken.
         highlight: ['queryKey: usersKeys.detail', '? skipToken', 'await getUser(', 'retry: false,'],
       },

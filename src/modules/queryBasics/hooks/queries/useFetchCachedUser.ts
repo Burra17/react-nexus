@@ -25,9 +25,7 @@ export const CACHE_CLOCK_DEMO = 'cacheklocka';
 // Hämtar en användare med styrbara klockor.
 //
 // Det finns redan en useFetchUser i samma mapp, och den återanvänds med flit
-// inte. Skälet är inte att koden skulle bli kortare av en till, för CLAUDE.md
-// bryter ut vid tredje förekomsten och inte andra. Skälet är Kod-delen:
-// useFetchUser visas som ett av den första demons block, mitt i lektionen om
+// inte. Skälet är Kod-delen: useFetchUser visas som ett av den första demons block, mitt i lektionen om
 // queryKey, och två valfria tidsinställningar där hade gjort det blocket svårare
 // att läsa för en sak som inte hör dit.
 //
@@ -37,7 +35,7 @@ export const CACHE_CLOCK_DEMO = 'cacheklocka';
 // Nyckeln kommer från en egen gren i fabriken. Skälet står där: utan den håller
 // den första demon cacheposten vid liv och gcTime hinner aldrig ticka.
 //
-// retry: false av samma skäl som i den första demon: standardens tre försök gör
+// retry: false av samma skäl som i den första demon: standardens tre omförsök gör
 // att ett fel tar flera sekunder att visa sig, och då ser demon hängd ut.
 export const useFetchCachedUser = ({ id, staleTimeMs, gcTimeMs }: FetchCachedUserArgs) =>
   useQuery({

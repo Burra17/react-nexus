@@ -13,9 +13,9 @@ import { useState } from 'react';
 import { useFetchUser } from '../hooks/queries/useFetchUser';
 import { usersKeys } from '../hooks/usersKeys';
 
-// De två användarna är desamma som i kapplöpningsdemon i modul 3. Där hämtades
-// de med ett löfte inne i komponenten och svaren kunde komma i fel ordning. Här
-// går samma hämtning över riktig HTTP, genom servicelagret, med cachen emellan.
+// Två användare räcker för att visa både en ny hämtning och en återkomst till
+// data som redan ligger i cachen. Anropet går över riktig HTTP till den mockade
+// backenden, genom servicen i services/api, och cachen står emellan.
 
 // Stegen är valda så att alla lägen går att se. Noll för att svaret ska komma
 // innan man hinner blinka, 1500 och 3000 för att laddningsläget ska hinna bli
@@ -70,8 +70,8 @@ export const UserQueryDemo = () => {
           value={id}
           onChange={(_event, next: string | null) => {
             // null kommer när man klickar på den redan valda knappen. Då behålls
-            // valet: demon ska gå att komma till ett tomt läge från, men inte
-            // ramla tillbaka dit av ett klick man inte menade.
+            // valet. Läget utan vald användare finns bara i början, och ett klick
+            // som avmarkerar ska inte ta tillbaka dit av misstag.
             if (next !== null) {
               setId(next);
             }

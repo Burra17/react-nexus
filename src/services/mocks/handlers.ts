@@ -86,7 +86,7 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 // Talet hålls isär per demo, enligt märkningen i anropets demo-parameter. En
 // enda totalsumma för hela appen räcker inte så fort två demonstrationer står
 // på samma sida och hämtar när sidan öppnas: deras anrop landar i samma tal,
-// och en panel som säger att ingenting hämtats visar ändå tre. Ett anrop utan
+// och en panel visar anrop som en annan demo gjorde. Ett anrop utan
 // märkning hör inte till någon panel och räknas inte.
 const requestCounts = new Map<string, number>();
 

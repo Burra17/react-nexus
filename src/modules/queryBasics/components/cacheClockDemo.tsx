@@ -21,7 +21,7 @@ const USER_ID = 'ada';
 // De två reglagen har olika lägsta värde, och det är uppmätt och inte tyckt.
 //
 // staleTime börjar på noll eftersom det ÄR standarden: data räknas som inaktuell
-// direkt. Det är en av modulens poänger och måste gå att se.
+// direkt. Det är en av vyns poänger och måste gå att se.
 //
 // gcTime börjar på en sekund. Med noll tas posten bort i samma ögonblick som den
 // sista komponenten slutar titta, också i den lilla lucka StrictMode skapar när
@@ -34,8 +34,9 @@ const GC_TIMES_MS = [1000, 5000, 30000];
 
 const formatSeconds = (ms: number) => `${Math.round(ms / 1000)} s`;
 
-// En rad i panelen. Kopierad från userQueryDemo med flit: det är andra
-// förekomsten, och CLAUDE.md bryter ut vid tredje.
+// En rad i panelen, samma som i den första demon. Den kopieras i stället för
+// att brytas ut: två förekomster är för få för att en gemensam komponent ska
+// löna sig, och varje demofil går då att läsa för sig.
 const StatusRow = ({ label, value }: { label: string; value: string }) => (
   <Stack direction='row' spacing={2} sx={{ justifyContent: 'space-between' }}>
     <Typography variant='body2' color='textSecondary'>
@@ -155,8 +156,8 @@ export const CacheClockDemo = () => {
   //
   // Behövs för att gcTime ska gå att sänka. Biblioteket sätter en posts gcTime
   // till det STÖRSTA värde den någonsin sett, eftersom tiden hör till cacheposten
-  // och inte till hooken som tittar på den. I query-core står det ordagrant som
-  // Math.max(this.gcTime || 0, nytt värde). Utan den här knappen skulle ett drag
+  // och inte till hooken som tittar på den. I bibliotekets källkod står det som
+  // Math.max(gammalt värde, nytt värde). Utan den här knappen skulle ett drag
   // nedåt i reglaget se ut att göra något utan att göra det.
   //
   // removeQueries är inte invalidering, som markerar data som inaktuell och
