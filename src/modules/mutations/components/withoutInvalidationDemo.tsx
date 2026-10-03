@@ -77,13 +77,14 @@ export const WithoutInvalidationDemo = () => {
       <Alert severity='warning'>
         <strong>Den här demon är med flit ofullständig.</strong> Mutationen saknar den rad som talar om för cachen att listan inte längre stämmer.
         Klicka på en knapp: anropet går iväg, servern svarar med den nya rollen, och listan ovanför står kvar på den gamla. Beviset står under
-        knappen, och det är serverns eget svar och inte vad vi hoppades på. Att ladda om sidan hjälper däremot inte: den mockade backenden lever i
-        webbläsarens minne och börjar om från utgångsläget varje gång sidan laddas.
+        knappen, och det är serverns eget svar och inte vad vi hoppades på. Varje knapp har dessutom sin egen mutation: klicka på båda, så står båda
+        svaren kvar, oberoende av varandra. Servern här är en mock som körs i webbläsaren. Laddar du om sidan börjar den om från början, och listan
+        visar då den ursprungliga rollen igen.
       </Alert>
 
       <RequestCounterPanel
         total={requestCount}
-        caption='Nollställ och klicka en gång. Ett anrop går iväg, och inget mer. Utan invalidering finns det ingen hämtning efteråt.'
+        caption='Ettan från början är listans första hämtning. Nollställ och klicka en gång: ett anrop går iväg, och inget mer. Utan invalidering finns det ingen hämtning efteråt.'
       />
     </Stack>
   );

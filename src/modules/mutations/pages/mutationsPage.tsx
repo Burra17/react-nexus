@@ -20,45 +20,70 @@ import { mutationsQuestions } from '../mutationsQuestions';
 const Theory = () => (
   <>
     <Typography>
-      De två föregående modulerna handlade om att hämta. Nu ska något skickas åt andra hållet, och det första som händer är att en bekvämlighet
-      försvinner. En hämtning sköter sig själv: <code>useQuery</code> kör när komponenten monteras, och Query bestämmer när det är dags igen. En
-      skrivning gör ingenting förrän du säger till. Den hör till ett klick, ett formulär, ett beslut, och därför heter hooken <code>useMutation</code>{' '}
-      och ger dig en funktion att anropa i stället för att köra av sig själv. Allt annat i den är sig likt: <code>isPending</code> medan den arbetar,{' '}
-      <code>data</code> när den lyckats, <code>error</code> när den inte gjorde det.
+      Den här vyn handlar om att skriva till servern med biblioteket <strong>TanStack Query</strong>. Appen har en enda <code>QueryClient</code>,
+      skapad en gång och given till hela komponentträdet, och den håller en cache med allt som hämtats. Det som ligger i cachen under en nyckel kallas
+      en <strong>query</strong>: datan, läget den befinner sig i, och funktionen som kan hämta den igen. En komponent läser en query med hooken{' '}
+      <code>useQuery</code>, och når själva klienten med <code>useQueryClient</code>. Det är på klienten funktionerna för att ändra i cachen sitter.
+    </Typography>
+
+    <Typography>
+      En hämtning sköter sig själv: <code>useQuery</code> kör när komponenten monteras, och hämtar om när datan räknas som inaktuell. En skrivning gör
+      ingenting förrän du säger till. Den hör till ett klick, ett formulär, ett beslut, och därför heter hooken <code>useMutation</code> och ger dig
+      en funktion, <code>mutate</code>, att anropa i stället för att köra av sig själv. Lägena känns igen: <code>isPending</code> medan anropet pågår,{' '}
+      <code>data</code> när det lyckats och <code>error</code> när det inte gjorde det, och <code>status</code> går från <code>pending</code> till{' '}
+      <code>success</code> eller <code>error</code>. Ett ord betyder dock olika saker på de två hookarna. På en query är <code>isPending</code> sant
+      så länge det inte finns någon data än, på en mutation så länge anropet pågår.
     </Typography>
 
     <Typography>
       Den verkliga skillnaden märks först efteråt. <strong>En lyckad skrivning säger ingenting till cachen.</strong> Servern har det nya värdet, men
-      listan på skärmen kommer från en post som hämtades för en stund sedan, och ingen har talat om för den att den inte längre stämmer. Det ser ut
-      som en bugg och är det inte. Det följer av att cachen är en kopia av något du inte äger. Antingen talar du om att kopian är inaktuell med{' '}
-      <code>invalidateQueries</code>, och låter Query hämta sanningen, eller så skriver du det nya värdet i kopian själv med <code>setQueryData</code>
-      . Första demon nedan gör ingetdera, med flit, så att du får se vad som faktiskt saknas.
+      listan på skärmen kommer från en query som hämtades för en stund sedan, och ingen har talat om för den att den inte längre stämmer. Det ser ut
+      som en bugg och är det inte. Det följer av att cachen är en kopia av något du inte äger. Antingen markerar du queryn som inaktuell med{' '}
+      <code>invalidateQueries</code>, så att Query hämtar om den, eller så skriver du det nya värdet i cachen själv med <code>setQueryData</code>. Den
+      första demon nedan gör ingetdera, med flit, så att du får se vad som faktiskt saknas. Den andra lägger till invalideringen, och den tredje visar{' '}
+      <code>setQueryData</code> i en variant där värdet skrivs redan innan servern svarat.
     </Typography>
 
     <Typography>
-      <code>useMutation</code> skiljer sig också på en punkt som är lätt att ta för given efter förra modulen: <strong>den har ingen nyckel</strong>.
-      En <code>useQuery</code> identifieras av sin <code>queryKey</code>, och fyra komponenter som frågar efter samma nyckel delar en enda post. Det
-      var hela poängen med cachen. En mutation identifieras inte av någonting. Två komponenter som anropar samma mutationshook får varsitt oberoende
-      tillstånd, och den ena vet inte om att den andra sparar. Det finns en <code>mutationKey</code>, men den delar inte tillstånd; den finns för att
-      kunna sätta standardvärden och för att kunna hitta pågående mutationer utifrån.
+      <code>invalidateQueries</code> returnerar ett löfte som uppfylls när omhämtningen är klar. Returnerar du det från mutationens callback väntar
+      mutationen in hämtningen och står kvar som pending tills listan stämmer. Det är ett vanligt val i en app, eftersom knappen då säger att något
+      pågår ända tills skärmen är rätt. Demona nedan returnerar det inte, med flit: då går mutationen till <code>success</code> i samma ögonblick som
+      servern svarar, och hämtningen efteråt syns för sig. Det är just den ordningen som ska gå att se.
+    </Typography>
+
+    <Typography>
+      <code>useMutation</code> skiljer sig också på en annan punkt: <strong>den har ingen nyckel</strong>. En <code>useQuery</code> identifieras av
+      sin nyckel, och flera komponenter som frågar efter samma nyckel tittar på samma query. En mutation identifieras inte av någonting. Två
+      komponenter som anropar samma mutationshook får varsin mutation med eget tillstånd, och den ena vet inte om att den andra sparar. Det som delas
+      är i så fall ett och samma anrop av hooken: används dess resultat av två knappar, är det en mutation de delar. Det finns en{' '}
+      <code>mutationKey</code>, men den delar inte heller tillstånd. Med den kan du ge alla mutationer med samma nyckel gemensamma
+      standardinställningar, och leta upp pågående mutationer från en annan del av appen.
     </Typography>
 
     <Typography>
       Sedan kommer frågan om väntan. Ett anrop tar tid, och under den tiden kan gränssnittet antingen stå still eller <strong>hoppa i förväg</strong>.
       Att hoppa kallas en optimistisk uppdatering: du skriver det nya värdet i cachen innan servern svarat, i tron att det kommer att gå bra. Mönstret
-      har tre delar, och var och en löser ett eget problem. <code>onMutate</code> kör före anropet, avbryter pågående hämtningar så att ett svar på
-      väg inte skriver över hoppet, sparar undan det som låg i cachen, och skriver dit det nya. Det den returnerar skickas vidare till de andra.{' '}
-      <code>onError</code> använder det sparade för att rulla tillbaka. Utan ögonblicksbilden finns ingenting att rulla tillbaka till. Och{' '}
-      <code>onSettled</code> kör oavsett hur det gick och hämtar sanningen från servern.
+      använder tre av mutationens callbacks, och var och en löser ett eget problem. <code>onMutate</code> kör innan anropet skickas. Den avbryter
+      hämtningar av listan som redan är på väg, till exempel en som startade när fönstret fick fokus, så att ett gammalt svar inte skriver över
+      hoppet. Sedan sparar den undan det som låg i cachen, en så kallad ögonblicksbild, och skriver dit det nya värdet. Ögonblicksbilden returneras,
+      och Query skickar den vidare till de två andra. <code>onError</code> använder den för att rulla tillbaka om anropet misslyckas.{' '}
+      <code>onSettled</code> kör oavsett hur det gick, och invaliderar listan så att den hämtas om.
     </Typography>
 
     <Typography>
-      Att invalideringen ligger just i <code>onSettled</code> och inte i <code>onSuccess</code> är den detalj som skiljer ett fungerande mönster från
-      ett som nästan fungerar. Efter ett misslyckat hopp står cachen på ett värde som klienten skrivit och sedan rullat tillbaka med egen kod, ett
-      värde som aldrig har kontrollerats mot servern. <code>onSuccess</code> hoppar över precis det fallet, alltså det enda där kontrollen verkligen
-      behövs. En versionsnot på köpet: <code>onSuccess</code> och <code>onError</code> togs bort från <code>useQuery</code> i version 5 men finns kvar
-      på <code>useMutation</code>. En kodbas på version 4 ser därför likadan ut på skrivsidan och helt annorlunda på läsidan, vilket är värt att veta
-      innan man drar slutsatser om vilken version man har framför sig.
+      Att invalideringen ligger i <code>onSettled</code> och inte i <code>onSuccess</code> är den detalj som skiljer ett fungerande mönster från ett
+      som nästan fungerar. Den andra demon klarar sig med <code>onSuccess</code>, eftersom den aldrig skriver i cachen själv: går anropet fel står
+      listan orörd och är lika pålitlig som innan. Den optimistiska demon har däremot skrivit i cachen, och efter båda utfallen står där något
+      klienten bestämt och inte servern. Vid ett lyckat anrop är det klientens gissning om vad servern sparade. Vid ett misslyckat är det
+      ögonblicksbilden, och den kan vara äldre än det servern har nu: <code>onMutate</code> kan ha avbrutit en hämtning som var på väg med nyare data,
+      och någon annan kan ha ändrat under tiden. Därför hämtas listan om i båda fallen.
+    </Typography>
+
+    <Typography>
+      <strong>En not om versioner.</strong> I version 5 försvann <code>onSuccess</code>, <code>onError</code> och <code>onSettled</code> från{' '}
+      <code>useQuery</code>, men de finns kvar på <code>useMutation</code>. Skrivsidan bytte också namn: det som nu heter <code>isPending</code> på en
+      mutation hette <code>isLoading</code> i version 4. En äldre kodbas känns alltså igen på callbacks i sina queries och på <code>isLoading</code> i
+      sina mutationer.
     </Typography>
   </>
 );
@@ -118,7 +143,7 @@ export const MutationsPage = () => (
         code: useUpdateUserRoleWithInvalidationSource,
         language: 'ts',
         // Raden som saknades i förra filen.
-        highlight: ['onSuccess: () => queryClient.invalidateQueries('],
+        highlight: ['void queryClient.invalidateQueries({ queryKey: mutationUsersKeys'],
       },
       {
         fileName: 'src/modules/mutations/hooks/mutations/useUpdateUserRoleOptimistic.ts',
@@ -130,7 +155,7 @@ export const MutationsPage = () => (
           'await queryClient.cancelQueries({ queryKey });',
           'const previousUsers = queryClient.getQueryData<User[]>(queryKey);',
           'queryClient.setQueryData(queryKey, onMutateResult.previousUsers);',
-          'onSettled: () => queryClient.invalidateQueries({ queryKey }),',
+          'void queryClient.invalidateQueries({ queryKey });',
         ],
       },
       {

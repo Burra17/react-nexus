@@ -24,7 +24,7 @@ const USER_NAME = 'Cleo';
 const ROLES = ['Teknisk ledare', 'Lösningsarkitekt'];
 
 export const OptimisticDemo = () => {
-  const { mutate, isPending, isError } = useUpdateUserRoleOptimistic();
+  const { mutate, isPending, isError, isSuccess } = useUpdateUserRoleOptimistic();
 
   // Samma nyckel som listan nedan använder, så det här kostar ingen extra
   // hämtning. Det är själva poängen med en delad cache.
@@ -56,6 +56,11 @@ export const OptimisticDemo = () => {
         </Button>
       </Stack>
 
+      <Typography variant='caption' color='textSecondary'>
+        Knapparna växlar mellan två roller. Så fort cachen skrivits om visar de nästa roll, och redan det visar att cachen ändrats innan servern
+        svarat.
+      </Typography>
+
       {/* Texten och inte bara en röd färg. Utfallet är det demon handlar om,
           och det ska gå att läsa. */}
       {isPending && (
@@ -64,21 +69,28 @@ export const OptimisticDemo = () => {
         </Typography>
       )}
 
+      {isSuccess && (
+        <Typography variant='body2' color='textSecondary'>
+          Servern bekräftade ändringen. Snurran till höger om listans rubrik visar hämtningen från onSettled.
+        </Typography>
+      )}
+
       {isError && (
         <Typography variant='body2' color='error'>
-          Sparningen misslyckades. Listan rullades tillbaka till det som stod där innan.
+          Sparningen misslyckades. Listan rullades tillbaka till det som stod där innan, och snurran till höger om listans rubrik visar att den hämtas
+          om.
         </Typography>
       )}
 
       <Alert severity='info'>
-        <strong>Titta på listan direkt när du klickar.</strong> Rollen byts innan anropet hunnit fram. Det är cachen som skrivits i förväg, inte ett
-        svar från servern. Med den vänstra knappen står värdet kvar. Med den högra rullas det tillbaka när felet kommer, och först därefter hämtas
-        listan om för att kontrollera vad som faktiskt gäller.
+        <strong>Titta på listan direkt när du klickar.</strong> Rollen byts innan anropet ens skickats. Det är cachen som skrivits i förväg, inte ett
+        svar från servern. Med den vänstra knappen står värdet kvar. Med den högra rullas det tillbaka när felet kommer. I båda fallen hämtas listan
+        därefter om, för att kontrollera vad som faktiskt gäller.
       </Alert>
 
       <RequestCounterPanel
         total={requestCount}
-        caption='Nollställ före varje knapp. Båda kostar två anrop: skrivningen och hämtningen från onSettled. Att den misslyckade också hämtar om är hela skillnaden mot onSuccess.'
+        caption='Nollställ före varje knapp. Båda kostar två anrop: skrivningen och hämtningen från onSettled. Här ändrar omhämtningen sällan något på skärmen, eftersom ingen annan ändrar listan under tiden. I en riktig app är det den som fångar en ändring någon annan hunnit göra.'
       />
     </Stack>
   );

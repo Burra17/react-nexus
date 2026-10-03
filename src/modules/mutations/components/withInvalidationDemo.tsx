@@ -52,9 +52,11 @@ export const WithInvalidationDemo = () => {
       )}
 
       <Alert severity='info'>
-        <strong>Ordningen är det som lärs ut här.</strong> Klicka och följ listan ovanför: den står stilla medan anropet är på väg, snurran tänds när
-        invalideringen utlöst en hämtning, och först när den kommit tillbaka byts rollen. Vyn uppdateras alltså inte av att mutationen lyckades. Den
-        uppdateras av hämtningen invalideringen orsakade.
+        <strong>Ordningen är det som lärs ut här.</strong> Klicka och följ listan ovanför. Den står stilla medan anropet är på väg. När servern svarat
+        dyker svaret upp under knapparna, och snurran till höger om listans rubrik tänds: invalideringen har utlöst en hämtning. Först när den kommit
+        tillbaka byts rollen. Vyn uppdateras alltså inte av att mutationen lyckades, utan av hämtningen invalideringen orsakade. Båda knapparna
+        använder samma anrop av hooken, alltså en och samma mutation, och därför är båda inaktiva medan den ena sparar. Listan hämtas från samma
+        server som de andra demonas, så har du sparat något i den första demon syns det också här när listan hämtas om.
       </Alert>
 
       <RequestCounterPanel
