@@ -67,7 +67,7 @@ export const RequestCounterPanel = ({ total, caption }: RequestCounterPanelProps
             </Typography>
 
             <Typography variant='caption' color='textSecondary'>
-              av {total} sedan sidladdning
+              av {total} i den här demon sedan sidladdning
             </Typography>
 
             <Button size='small' onClick={reset}>

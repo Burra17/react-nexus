@@ -30,7 +30,7 @@ export const RoleList = ({ demo, ownedUserId }: RoleListProps) => {
       <Stack spacing={1}>
         <Stack direction='row' spacing={1} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant='body2' sx={{ fontWeight: 600 }}>
-            Vad listan i cachen säger
+            Vad den här demons lista i cachen säger
           </Typography>
 
           {/* Snurran visar en hämtning i bakgrunden. Utan den är en invalidering

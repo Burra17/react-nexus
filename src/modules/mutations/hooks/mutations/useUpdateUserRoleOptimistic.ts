@@ -66,10 +66,16 @@ export const useUpdateUserRoleOptimistic = () => {
       }
     },
 
-    // Här, och inte i onSuccess. Efter ett misslyckat försök står cachen på
-    // något klienten själv skrivit och sedan rullat tillbaka, ett värde som
-    // aldrig kontrollerats mot servern. onSuccess hade hoppat över just det
-    // fallet, alltså det enda fall där cachen faktiskt behöver kontrolleras.
-    onSettled: () => queryClient.invalidateQueries({ queryKey }),
+    // Här, och inte i onSuccess. Efter båda utfallen står i cachen något
+    // klienten skrivit: gissningen vid ett lyckat anrop, ögonblicksbilden vid
+    // ett misslyckat. Ögonblicksbilden kan vara äldre än det servern har,
+    // eftersom onMutate kan ha avbrutit en hämtning med nyare data. Listan
+    // hämtas därför om i båda fallen.
+    //
+    // Löftet returneras inte, av samma skäl som i den andra demon: mutationen
+    // ska lämna pending när servern svarat, så att omhämtningen syns för sig.
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey });
+    },
   });
 };

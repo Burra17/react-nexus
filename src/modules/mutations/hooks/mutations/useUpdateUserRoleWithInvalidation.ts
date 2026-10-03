@@ -27,6 +27,12 @@ export const useUpdateUserRoleWithInvalidation = () => {
 
   return useMutation({
     mutationFn: (payload: UpdateUserRolePayload) => updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS, demo: 'medInvalidering' }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: mutationUsersKeys.list('medInvalidering') }),
+    // Löftet från invalidateQueries returneras inte, med flit. Då går
+    // mutationen till success när servern svarat, och omhämtningen syns för
+    // sig i listan. Returnerades löftet skulle mutationen vänta in hämtningen
+    // och stå kvar som pending tills listan stämmer.
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: mutationUsersKeys.list('medInvalidering') });
+    },
   });
 };
