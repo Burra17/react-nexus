@@ -18,6 +18,9 @@ const ROLES = ['Testare', 'Produktägare'];
 export const WithInvalidationDemo = () => {
   const { mutate, isPending, data, variables } = useUpdateUserRoleWithInvalidation();
 
+  // Mätutrustning, inte en del av mönstret. Räknarpanelen läser ett tal
+  // utanför React, och de två raderna ritar om komponenten när något händer i
+  // cachen eller med en mutation, så att talet visar nuet.
   useRerenderOnCacheChange();
   useIsMutating();
 
@@ -28,10 +31,11 @@ export const WithInvalidationDemo = () => {
       <RoleList demo='medInvalidering' ownedUserId={USER_ID} />
 
       <Stack direction='row' sx={{ flexWrap: 'wrap', gap: 2 }}>
-        {/* En mutation delas här, till skillnad från i del 1. Två knappar mot
-            samma hook betyder att båda blir inaktiva medan någon av dem
-            sparar, vilket är vad man oftast vill ha, och skälet till att
-            skillnaden mot del 1 är värd att se.
+        {/* Här anropas hooken en gång, högst upp i komponenten, och båda
+            knapparna använder samma resultat. Det är alltså en och samma
+            mutation, till skillnad från den första demon där varje knapp
+            anropar hooken själv. Därför blir båda inaktiva medan någon av dem
+            sparar, vilket är vad man oftast vill ha.
 
             Att BÅDA blir inaktiva men bara EN säger "Sparar …" är avsiktligt.
             Delat tillstånd betyder inte att man tappar reda på vad som är på

@@ -30,6 +30,8 @@ export const OptimisticDemo = () => {
   // hämtning. Det är själva poängen med en delad cache.
   const { data } = useFetchMutationUsers('optimistisk');
 
+  // Mätutrustning, inte en del av mönstret, av samma skäl som i den andra
+  // demon: räknarpanelen läser ett tal utanför React och behöver ritas om.
   useRerenderOnCacheChange();
   useIsMutating();
 

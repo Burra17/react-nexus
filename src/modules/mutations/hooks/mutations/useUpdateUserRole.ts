@@ -9,19 +9,19 @@ import { RESPONSE_DELAY_MS } from '../queries/responseDelay';
 // anropet syns i Network-fliken, mutationen går till success, och vyn står
 // kvar och visar den gamla rollen.
 //
-// Skälet är pedagogiskt, och samma som bakom raceConditionDemo i modul 3: utan
-// den här hooken står invalideringen i nästa demo som en rad man skriver för
-// att alla andra gör det. Med den är den ett svar på något läsaren precis sett
-// gå fel.
+// Skälet är pedagogiskt: utan den här hooken står invalideringen i nästa demo
+// som en rad man skriver för att alla andra gör det. Med den är den ett svar
+// på något läsaren precis sett gå fel.
 //
 // Det som saknas är en enda rad, och den står i useUpdateUserRoleWithInvalidation.
 //
 // Notera också vad hooken INTE har: någon nyckel. En useQuery identifieras av
-// sin queryKey och delas av alla som frågar efter samma. Det var hela modul 8.
-// En useMutation har ingen. Två komponenter som anropar den här hooken får
-// varsitt oberoende tillstånd, och bara den man klickar på blir isPending.
-// mutationKey finns som valfri inställning, men den är till för
-// setMutationDefaults och useMutationState, inte för att dela tillstånd.
+// sin queryKey, och alla som frågar efter samma nyckel tittar på samma query.
+// En useMutation har ingen. Varje anrop av den här hooken ger en egen mutation
+// med eget tillstånd, och bara den man klickar på blir isPending. mutationKey
+// finns som valfri inställning, men den är till för gemensamma
+// standardinställningar (setMutationDefaults) och för att hitta pågående
+// mutationer (useMutationState), inte för att dela tillstånd.
 export const useUpdateUserRole = () =>
   useMutation({
     mutationFn: (payload: UpdateUserRolePayload) => updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS, demo: 'utanInvalidering' }),

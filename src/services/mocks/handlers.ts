@@ -9,9 +9,10 @@ import type { User } from '../api/users';
 // lämna ifrån sig ett löst löfte inne i koden. Det är därför anropen syns i
 // webbläsarens Network-flik och går att räkna.
 //
-// Fem poster och inte två. De demonstrationer som hämtar en enskild användare
-// klarar sig på två, men en lista på två poster ser inte ut som en lista, och
-// då blir det svårt att se att det är samma lista som visas på flera ställen.
+// Fem användare och inte två. De demonstrationer som hämtar en enskild
+// användare klarar sig på två, men en lista på två ser inte ut som en lista,
+// och då blir det svårt att se att det är samma lista som visas på flera
+// ställen. Datamängden som får skrivas i, längre ner, har bara tre.
 const USERS: Record<string, User> = {
   ada: { id: 'ada', name: 'Ada Lovelace', role: 'Analytiker', email: 'ada@example.com' },
   bo: { id: 'bo', name: 'Bo Nilsson', role: 'Systemarkitekt', email: 'bo@example.com' },
@@ -20,7 +21,7 @@ const USERS: Record<string, User> = {
   elin: { id: 'elin', name: 'Elin Kvist', role: 'Produktägare', email: 'elin@example.com' },
 };
 
-// En egen kopia av datamängden, och den enda som får skrivas i.
+// En separat datamängd, och den enda som får skrivas i.
 //
 // Skrivningar hör hemma i en vy som demonstrerar dem, och bara där. Gick de mot
 // USERS ovan skulle en ändrad roll ligga kvar och möta läsaren i varje annan vy

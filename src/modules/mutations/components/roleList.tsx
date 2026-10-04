@@ -9,19 +9,20 @@ import type { MutationDemo } from '../hooks/mutationUsersKeys';
 type RoleListProps = {
   demo: MutationDemo;
   // Vilken av användarna den här demonstrationen får ändra på. De andra två
-  // står med för att det ska synas att en mutation ändrar en post och inte
-  // listan.
+  // står med för att det ska synas att en mutation ändrar en enda användare,
+  // inte hela listan.
   ownedUserId: string;
 };
 
 // Listan som varje demonstration skriver mot.
 //
 // Alla tre demonstrationer hämtar samma lista från samma sökväg, men var och en
-// under sin egen nyckel (se mutationUsersKeys). Delade de cachepost skulle den
+// under sin egen nyckel (se mutationUsersKeys). Delade de query skulle den
 // första demons frusna vy tina så fort den andra invaliderade.
 //
-// Varje demonstration äger dessutom sin egen användare, så att en rolländring i
-// en del inte dyker upp i en annan nästa gång dess lista hämtas om.
+// Varje demonstration äger dessutom sin egen användare och ändrar bara den.
+// Servern är däremot gemensam: en ändring i en demo syns i en annans lista
+// nästa gång den hämtas om. Texten i den andra demon säger det.
 export const RoleList = ({ demo, ownedUserId }: RoleListProps) => {
   const { data, isPending, isError, error, fetchStatus } = useFetchMutationUsers(demo);
 
@@ -38,6 +39,9 @@ export const RoleList = ({ demo, ownedUserId }: RoleListProps) => {
           {fetchStatus === 'fetching' && <CircularProgress size={14} />}
         </Stack>
 
+        {/* På en query är isPending sant bara innan datan finns första gången.
+            Senare hämtningar syns i fetchStatus, och därför har snurran ovan
+            ett eget villkor. */}
         {isPending && <Typography color='textSecondary'>Hämtar …</Typography>}
 
         {isError && (

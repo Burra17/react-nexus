@@ -25,7 +25,8 @@ export type OptimisticRoleVariables = UpdateUserRolePayload & {
 // att rulla tillbaka TILL. Det är hela skälet till att onMutate returnerar
 // något.
 //
-// onSettled kör oavsett hur det gick, och hämtar sanningen från servern.
+// onSettled kör oavsett hur det gick, och invaliderar listan så att den hämtas
+// om.
 export const useUpdateUserRoleOptimistic = () => {
   const queryClient = useQueryClient();
 
@@ -36,8 +37,9 @@ export const useUpdateUserRoleOptimistic = () => {
       updateMutationUserRole(payload, { delayMs: RESPONSE_DELAY_MS, shouldFail, demo: 'optimistisk' }),
 
     onMutate: async ({ id, role }) => {
-      // Utan den här raden kan en hämtning som redan är på väg landa EFTER vår
-      // optimistiska skrivning och skriva över den med det gamla värdet. Att
+      // Utan den här raden kan en hämtning som redan är på väg, till exempel en
+      // som startade när fönstret fick fokus, landa EFTER vår optimistiska
+      // skrivning och skriva över den med det gamla värdet. Att
       // avbryta den är inte en försiktighetsåtgärd, det är vad som gör
       // ordningen förutsägbar.
       await queryClient.cancelQueries({ queryKey });
@@ -46,18 +48,19 @@ export const useUpdateUserRoleOptimistic = () => {
 
       queryClient.setQueryData<User[]>(queryKey, (current) => current?.map((user) => (user.id === id ? { ...user, role } : user)));
 
-      // Returvärdet är ögonblicksbilden. Query skickar det vidare som TREDJE
-      // argument till onSuccess, onError och onSettled.
+      // Returvärdet är ögonblicksbilden. Query skickar det vidare som tredje
+      // argument till onSuccess och onError, och som fjärde till onSettled,
+      // där felet står först.
       return { previousUsers };
     },
 
     // Tredje argumentet är det onMutate returnerade. Dokumentationen kallar det
-    // numera onMutateResult; äldre material och v4-kod kallar samma värde för
-    // context. Det är inte bara ett namnbyte att hålla reda på: i v5 finns nu
-    // ETT FJÄRDE argument som faktiskt heter context, och det är något helt
-    // annat: { client, meta, mutationKey }. Läser man ett gammalt exempel och
-    // tar fjärde platsen i tron att det är ögonblicksbilden får man tyst fel
-    // värde.
+    // numera onMutateResult; äldre material och kod från version 4 kallar samma
+    // värde för context. Det är inte bara ett namnbyte att hålla reda på: i
+    // version 5 är det FJÄRDE argumentet något som faktiskt heter context, och
+    // det är något helt annat: { client, meta, mutationKey }. Läser man ett
+    // gammalt exempel och tar fjärde platsen i tron att det är ögonblicksbilden
+    // får man tyst fel värde.
     onError: (_error, _variables, onMutateResult) => {
       // Villkoret finns för att en rollback till undefined vore värre än ingen
       // rollback: den hade tömt listan i stället för att återställa den.
