@@ -116,7 +116,7 @@ export const MutationsPage = () => (
         </Stack>
       </Stack>
     }
-    // Ordningen följer sidans tre delar: varje demo står direkt före sin egen
+    // Ordningen följer sidans tre demor: varje demo står direkt före sin egen
     // mutationshook, så att paret går att läsa ihop. Det som delas av alla tre
     // står sist.
     sources={[
@@ -139,11 +139,26 @@ export const MutationsPage = () => (
         highlight: ['mutationFn: (payload: UpdateUserRolePayload)'],
       },
       {
+        fileName: 'src/modules/mutations/components/withInvalidationDemo.tsx',
+        code: withInvalidationDemoSource,
+        language: 'tsx',
+        // Ett anrop av hooken som båda knapparna använder, till skillnad från
+        // den första demon: båda blir inaktiva medan någon av dem sparar.
+        highlight: ['const { mutate, isPending, data, variables } = useUpdateUserRoleWithInvalidation();', 'variables?.role === role'],
+      },
+      {
         fileName: 'src/modules/mutations/hooks/mutations/useUpdateUserRoleWithInvalidation.ts',
         code: useUpdateUserRoleWithInvalidationSource,
         language: 'ts',
-        // Raden som saknades i förra filen.
+        // Raden som saknades i den första demons hook.
         highlight: ['void queryClient.invalidateQueries({ queryKey: mutationUsersKeys'],
+      },
+      {
+        fileName: 'src/modules/mutations/components/optimisticDemo.tsx',
+        code: optimisticDemoSource,
+        language: 'tsx',
+        // Samma ändring, två utfall. Skillnaden står i en enda flagga.
+        highlight: ['role: nextRole, shouldFail: false', 'role: nextRole, shouldFail: true'],
       },
       {
         fileName: 'src/modules/mutations/hooks/mutations/useUpdateUserRoleOptimistic.ts',
@@ -159,19 +174,11 @@ export const MutationsPage = () => (
         ],
       },
       {
-        fileName: 'src/modules/mutations/components/withInvalidationDemo.tsx',
-        code: withInvalidationDemoSource,
+        fileName: 'src/modules/mutations/components/roleList.tsx',
+        code: roleListSource,
         language: 'tsx',
-        // En delad mutation, till skillnad från del 1: båda knapparna blir
-        // inaktiva medan någon av dem sparar.
-        highlight: ['const { mutate, isPending, data, variables } = useUpdateUserRoleWithInvalidation();', 'variables?.role === role'],
-      },
-      {
-        fileName: 'src/modules/mutations/components/optimisticDemo.tsx',
-        code: optimisticDemoSource,
-        language: 'tsx',
-        // Samma ändring, två utfall. Skillnaden står i en enda flagga.
-        highlight: ['role: nextRole, shouldFail: false', 'role: nextRole, shouldFail: true'],
+        // Samma lista i alla tre delarna, men under varsin nyckel.
+        highlight: ['useFetchMutationUsers(demo)'],
       },
       {
         fileName: 'src/modules/mutations/hooks/queries/useFetchMutationUsers.ts',
@@ -180,13 +187,6 @@ export const MutationsPage = () => (
         // staleTime: Infinity är inte en optimering här utan det som gör
         // demonstrationerna mätbara.
         highlight: ['staleTime: Infinity,'],
-      },
-      {
-        fileName: 'src/modules/mutations/components/roleList.tsx',
-        code: roleListSource,
-        language: 'tsx',
-        // Samma lista i alla tre delarna, men under varsin nyckel.
-        highlight: ['useFetchMutationUsers(demo)'],
       },
       {
         fileName: 'src/modules/mutations/hooks/mutationUsersKeys.ts',

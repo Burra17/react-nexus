@@ -9,7 +9,7 @@ import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCac
 import { useUpdateUserRole } from '../hooks/mutations/useUpdateUserRole';
 import { RoleList } from './roleList';
 
-// Demonstrationen äger Ada. De andra två delarna äger Bo och Cleo.
+// Demonstrationen äger Ada. De andra två demona äger Bo och Cleo.
 const USER_ID = 'ada';
 const USER_NAME = 'Ada';
 
@@ -51,12 +51,15 @@ const RoleButton = ({ role }: RoleButtonProps) => {
 };
 
 export const WithoutInvalidationDemo = () => {
+  // Mätutrustning, inte en del av mönstret. Räknarpanelen läser ett tal
+  // utanför React, och prenumerationen ritar om komponenten när något ändras i
+  // query-cachen, så att talet visar nuet.
   useRerenderOnCacheChange();
 
   // Cacheprenumerationen ovan räcker inte i just den här demon, och skälet är
   // demonstrationens egen poäng: mutationen rör aldrig cachen, så ingenting
   // händer där som kan utlösa en omritning. Utan raden nedan skulle räknaren
-  // stå kvar på noll efter ett klick och säga emot Network-fliken.
+  // stå still efter ett klick och säga emot Network-fliken.
   //
   // useIsMutating räknar pågående mutationer, och antalet ändras både när en
   // startar och när den blir klar. Returvärdet används inte, det är
