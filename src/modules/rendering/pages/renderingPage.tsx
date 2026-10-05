@@ -97,14 +97,15 @@ export const RenderingPage = () => (
         code: renderTriggerSource,
         language: 'tsx',
         // Objektet som ligger still, memo-inpackningen, och raden där ett nytt
-        // objekt skapas vid varje render.
+        // objekt skapas vid varje ritning.
         highlight: ['const stableSettings =', 'const MemoChild = memo(Child);', 'const settings = newObjectEachRender'],
       },
       {
         fileName: 'src/modules/rendering/components/domUnchangedDemo.tsx',
         code: domUnchangedSource,
         language: 'tsx',
-        // Textfältet React aldrig rör vid en omrendering.
+        // Textfältet som React behåller mellan ritningarna. Det saknar value,
+        // och det är det som gör det okontrollerat.
         highlight: ['<TextField'],
       },
       {

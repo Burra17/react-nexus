@@ -19,15 +19,14 @@ type ChildProps = {
 type LastAction = 'click' | 'toggle' | null;
 
 // Samma objekt varje gång. Det ligger utanför komponenten och skapas därför en
-// gång när filen laddas, inte om vid varje render.
+// gång när filen laddas, inte på nytt vid varje ritning.
 const stableSettings = { label: 'kort' };
 
 // Ett barn. De två nedan är samma komponent. Det enda som skiljer är memo.
 //
-// settings läses aldrig här. Den finns för att vara en prop att jämföra, och
-// vad den innehåller står hos föräldern: båda barnen får samma objekt. Skrevs
-// det ut i varje kort skulle två identiska rader se ut som två uppgifter, och
-// dra uppmärksamhet från det enda som faktiskt skiljer korten: räknaren.
+// settings läses aldrig här, men den är ändå en prop, och memo jämför alla
+// props som barnet får, också dem det aldrig läser. Det räcker alltså att
+// föräldern skickar ett nytt objekt för att memo ska rita om barnet.
 const Child = ({ title }: ChildProps) => (
   <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
     <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
@@ -35,8 +34,9 @@ const Child = ({ title }: ChildProps) => (
   </Paper>
 );
 
-// memo hoppar över barnet om alla props är lika som förra gången.
-// Jämförelsen sker på referens, inte på innehåll.
+// memo ger en ny komponent som hoppar över ritningen när varje prop är lika
+// med förra gången. Varje prop jämförs för sig med ===, så ett objekt jämförs
+// på referens och inte på innehåll.
 const MemoChild = memo(Child);
 
 export const RenderTriggerDemo = () => {
@@ -44,7 +44,7 @@ export const RenderTriggerDemo = () => {
   const [newObjectEachRender, setNewObjectEachRender] = useState(false);
   const [lastAction, setLastAction] = useState<LastAction>(null);
 
-  // Med reglaget på skapas ett nytt objekt varje gång komponenten körs.
+  // Med reglaget på skapas ett nytt objekt varje gång komponenten ritas.
   // Innehållet är identiskt, men referensen är ny, och det är referensen
   // memo tittar på.
   const settings = newObjectEachRender ? { label: 'kort' } : stableSettings;
@@ -71,8 +71,8 @@ export const RenderTriggerDemo = () => {
         Ändra förälderns state
       </Button>
 
-      {/* Sidans enda not om StrictMode sitter här. Barnen nedan får den inte:
-          memo-barnets siffra står still, och då hade noten sagt emot demon. */}
+      {/* Noten om utvecklingsläget står bara under förälderns räknare. Under
+          memo-barnet, som ofta står still, hade "ökar med två" inte stämt. */}
       <RenderCounter showStrictModeNote />
 
       <FormControlLabel
