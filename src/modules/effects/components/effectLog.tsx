@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { monoFontFamily } from '../../../styles/theme';
 
 // Vad raden beskriver.
@@ -59,10 +59,15 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
 
   // Rullar till botten när en rad tillkommit.
   //
-  // Det här är en effekt av rätt sort: den synkroniserar med något utanför
-  // React, nämligen webbläsarens rullningsläge, och det går inte att göra under
-  // renderingen, eftersom listan inte har sin nya höjd förrän den ritats.
-  useEffect(() => {
+  // Det här är en effekt av rätt sort: den rör något utanför React, nämligen
+  // webbläsarens rullningsläge, och det går inte att göra under ritningen,
+  // eftersom listan inte har sin nya höjd förrän den finns i DOM:en.
+  //
+  // useLayoutEffect och inte useEffect, eftersom den mäter höjden och rullar
+  // före målningen. Svaren i demo 3 kommer från en timer och inte från ett
+  // klick, och med useEffect hade webbläsaren då i regel hunnit måla den nya
+  // raden utanför synfältet innan listan rullades ner.
+  useLayoutEffect(() => {
     const container = scrollRef.current;
     if (!container || entries.length === 0) {
       return;
@@ -86,7 +91,7 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
 
       {entries.length === 0 ? (
         <Typography variant='body2' color='textSecondary'>
-          Tom. Montera anslutningen nedan, så skrivs de första raderna här.
+          Tom. Raderna skrivs här när effekten körs.
         </Typography>
       ) : (
         <Box ref={scrollRef} sx={{ maxHeight: 200, overflowY: 'auto' }}>

@@ -133,7 +133,7 @@ const FixedUserCard = ({ userId, onLog }: UserCardProps) => {
     });
 
     return () => {
-      onLog('CLEANUP', `Slutar lyssna på svaret för ${USERS[userId].name}`);
+      onLog('CLEANUP', `Städar efter hämtningen av ${USERS[userId].name}. Ett svar som kommer efter det här kastas`);
       ignore = true;
     };
   }, [userId, onLog]);
@@ -142,7 +142,10 @@ const FixedUserCard = ({ userId, onLog }: UserCardProps) => {
 };
 
 export const RaceConditionDemo = () => {
-  const [userId, setUserId] = useState<UserId>('ada');
+  // Bo är vald från början, så att Ada och sedan Bo startar en långsam hämtning
+  // följd av en snabb redan första gången instruktionen följs. Efteråt är Bo
+  // vald igen, och samma klick fungerar nästa gång också.
+  const [userId, setUserId] = useState<UserId>('bo');
   const [isFixed, setIsFixed] = useState(false);
   const [entries, setEntries] = useState<LogEntry[]>([]);
 
@@ -167,10 +170,6 @@ export const RaceConditionDemo = () => {
 
   return (
     <Stack spacing={2}>
-      <Typography variant='body2' color='textSecondary'>
-        Klicka på Ada och sedan snabbt på Bo. Adas svar dröjer 1800 ms och Bos 300 ms, så Bos hinner fram först och Adas kommer efteråt.
-      </Typography>
-
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'center' } }}>
         <Stack direction='row' spacing={1}>
           <Button variant={userId === 'ada' ? 'contained' : 'outlined'} onClick={() => setUserId('ada')}>
@@ -201,15 +200,16 @@ export const RaceConditionDemo = () => {
       <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
-            Loggen börjar med två hämtningar av samma person. Det är StrictMode som monterar om komponenten en gång i utvecklingsläge, precis som i
-            demo 1. Utan städning slår båda svaren igenom till state. Med städningen påslagen kastas det första, som en kapplöpning i miniatyr redan
-            innan du hunnit klicka.
+            Loggen började med två hämtningar av Bo, eftersom appen körs i utvecklingsläge, där StrictMode monterar om komponenten en gång direkt, som
+            i demo 1. Utan städning skrev båda svaren till state. Med städningen på kastas det första, en liten kapplöpning som React själv
+            framkallar, och fel person visas aldrig: loggen skriver IGNORED när ett gammalt svar kastas. Slår du av städningen kan loggen börja med en
+            CLEANUP-rad. Den kommer från varianten med städning, som städar en sista gång när växeln tar bort den.
           </>
         ) : (
           <>
-            Loggen börjar med en enda hämtning. Kör du appen lokalt börjar den med två, eftersom StrictMode monterar om komponenten en gång i
-            utvecklingsläge. Utan städning slår båda svaren igenom till state. Det är en kapplöpning i miniatyr, framkallad av React självt. Här får
-            du framkalla den med knapparna ovan i stället.
+            Loggen började med en hämtning av Bo. I utvecklingsläge börjar den med två, eftersom StrictMode då monterar om komponenten en gång direkt.
+            Med städningen på visas aldrig fel person, utan loggen skriver IGNORED när ett gammalt svar kastas. Slår du av städningen kan loggen börja
+            med en CLEANUP-rad. Den kommer från varianten med städning, som städar en sista gång när växeln tar bort den.
           </>
         )}
       </Typography>
