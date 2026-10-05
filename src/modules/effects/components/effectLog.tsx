@@ -12,12 +12,14 @@ import { monoFontFamily } from '../../../styles/theme';
 // RESOLVE och IGNORED hör till hämtningen: ett svar som kom tillbaka, och ett
 // svar som städningen hann märka som inaktuellt innan det fick skriva något.
 //
-// Engelska termer i en svensk app, med flit. De står ordagrant så i react.dev,
-// och den som slår upp konceptet vidare ska känna igen orden.
+// Engelska termer i en svensk app, med flit. Setup och cleanup är orden
+// react.dev använder, och den som slår upp konceptet vidare ska känna igen
+// dem. RESOLVE och IGNORED är appens egna, skrivna i samma stil.
 //
-// En ren union och ingen as const-array: filen exporterar en komponent, och
-// Fast Refresh slutar fungera för en fil som också exporterar värden. En
-// typ-export räknas inte, eftersom den försvinner vid kompileringen.
+// En ren union och ingen lista med värden: filen exporterar en komponent, och
+// en fil som också exporterar värden laddar om hela sidan när den ändras, i
+// stället för att bara byta ut komponenten. En typ räknas inte, eftersom den
+// försvinner när koden byggs.
 export type LogKind = 'SETUP' | 'CLEANUP' | 'RESOLVE' | 'IGNORED';
 
 export type LogEntry = {
@@ -63,6 +65,9 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
   // webbläsarens rullningsläge, och det går inte att göra under ritningen,
   // eftersom listan inte har sin nya höjd förrän den finns i DOM:en.
   //
+  // Effekten läser bara entries.length, och därför är det det som står i
+  // beroendelistan. Antalet rader är det enda som avgör om listan ska rullas.
+  //
   // useLayoutEffect och inte useEffect, eftersom den mäter höjden och rullar
   // före målningen. Svaren i demo 3 kommer från en timer och inte från ett
   // klick, och med useEffect hade webbläsaren då i regel hunnit måla den nya
@@ -78,8 +83,8 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
 
   return (
     <Paper variant='outlined' sx={{ p: 2 }}>
-      {/* justifyContent och alignItems går via sx. MUI v9 tog bort systemprops
-          från Stack, så de fungerar inte längre som egna props. */}
+      {/* justifyContent och alignItems skrivs i sx, MUI:s sätt att ge en
+          komponent stil. */}
       <Stack direction='row' sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
         <Typography variant='h3' component='h4'>
           Logg
@@ -97,7 +102,7 @@ export const EffectLog = ({ entries, onClear }: EffectLogProps) => {
         <Box ref={scrollRef} sx={{ maxHeight: 200, overflowY: 'auto' }}>
           {/* En ordnad lista, så att en skärmläsare säger hur många händelser
               som skett och i vilken ordning. Punkterna tas bort visuellt:
-              raderna är redan numrerade med effektens eget löpnummer. */}
+              varje rad har redan sitt eget nummer i loggen. */}
           <Box component='ol' sx={{ m: 0, p: 0, listStyle: 'none', fontFamily: monoFontFamily, fontSize: '0.875rem' }}>
             {entries.map((entry) => (
               <Box component='li' key={entry.id} sx={{ display: 'flex', gap: 1, py: 0.25 }}>

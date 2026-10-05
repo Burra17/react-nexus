@@ -141,7 +141,7 @@ export const EffectsPage = () => (
         code: unnecessaryEffectSource,
         language: 'tsx',
         // De två raderna som är hela jämförelsen: värdet i state mot värdet
-        // framräknat under renderingen.
+        // framräknat under ritningen.
         highlight: ['// FEL:', '// RÄTT:'],
       },
       {

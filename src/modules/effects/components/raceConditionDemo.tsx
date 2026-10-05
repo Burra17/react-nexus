@@ -10,9 +10,9 @@ import { EffectLog, type LogEntry, type LogKind } from './effectLog';
 
 // AVSIKTLIGT FELAKTIG KOD I DEN HÄR FILEN.
 //
-// CLAUDE.md förbjuder datahämtning med useEffect: all serverdata ska gå genom
-// TanStack Query. Undantaget gäller en vy vars syfte är att visa vad mönstret
-// gör fel, och det är precis vad BuggyUserCard nedan finns till för.
+// Hämta inte data med en egen effekt i en riktig app, utan med ett bibliotek
+// som TanStack Query. Här görs det ändå, eftersom poängen är att visa vad
+// mönstret gör fel, och det är precis vad BuggyUserCard nedan finns till för.
 //
 // Felet den demonstrerar är en kapplöpning: två hämtningar startas efter
 // varandra, svaren kommer i omvänd ordning, och det gamla svaret skriver över
@@ -39,12 +39,11 @@ const USERS: Record<UserId, User> = {
   bo: { id: 'bo', name: 'Bo Nilsson', role: 'Systemarkitekt', delayMs: 300 },
 };
 
-// Den fejkade hämtningen. Ingen HTTP, ingen mockserver, bara ett löfte som
-// löser ut efter användarens egen fördröjning.
+// Den låtsade hämtningen. Inget anrop över nätet, bara ett löfte (Promise)
+// som löser ut efter användarens egen fördröjning, med hjälp av en timer.
 //
-// Den ligger i den här filen med flit. Servicelagret skapas först i
-// Query-modulerna när något faktiskt behöver det, och en demo vars halva
-// förklaring ligger i en annan fil visar inte mekanismen, den gömmer den.
+// Den ligger i den här filen med flit. En demo vars halva förklaring ligger i
+// en annan fil visar inte mekanismen, den gömmer den.
 const fetchUser = (userId: UserId): Promise<User> =>
   new Promise((resolve) => {
     const user = USERS[userId];
@@ -149,8 +148,8 @@ export const RaceConditionDemo = () => {
   const [isFixed, setIsFixed] = useState(false);
   const [entries, setEntries] = useState<LogEntry[]>([]);
 
-  // Samma funktion mellan renderingarna, av samma skäl som i demo 1: den står
-  // i effektens beroendelista, och en ny funktion vid varje render hade startat
+  // Samma funktion mellan ritningarna, av samma skäl som i demo 1: den står
+  // i effektens beroendelista, och en ny funktion vid varje ritning hade startat
   // om hämtningen i all oändlighet.
   const addEntry = useCallback((kind: LogKind, message: string) => {
     setEntries((previous) => [...previous, { id: previous.length + 1, kind, message }]);
@@ -194,9 +193,11 @@ export const RaceConditionDemo = () => {
           något man ser i loggen efteråt, inte om något man ska göra.
 
           Två versioner, eftersom StrictMode bara monterar om i utvecklingsläge.
-          Lokalt startar monteringen två hämtningar, i ett byggt projekt en. Den
-          som läser måste få veta vilket av fallen hon tittar på. Annars
-          beskriver noten en logg som inte står på skärmen. */}
+          import.meta.env.DEV är sant just då: Vite, verktyget som bygger appen,
+          sätter det när appen körs direkt från källkoden.
+          Där startar monteringen två hämtningar, i den publicerade versionen
+          en. Läsaren måste få veta vilket av fallen som står på skärmen.
+          Annars beskriver noten en logg som inte finns där. */}
       <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>

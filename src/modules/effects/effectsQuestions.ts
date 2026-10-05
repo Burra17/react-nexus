@@ -1,18 +1,19 @@
 import type { QuizQuestion } from '../../shared/components/quiz';
 
-// Kunskapskontrollen för modulen om effekter.
+// Kunskapskontrollen för sidan om effekter.
 //
 // Tre frågor som träffar varsin poäng: ordningen mellan städning och
 // uppsättning när ett beroende ändras, vad en effekt kostar när den sätter ett
 // värde som gick att räkna fram, och vad städningen faktiskt hindrar när ett
 // gammalt svar kommer tillbaka.
 //
-// Kodfragment markeras med backticks, som i Markdown. Se stateQuestions.ts.
+// Kodfragment markeras med backticks, som i Markdown. Quiz-komponenten gör dem
+// till code-element, så texten här förblir ren data utan JSX.
 export const effectsQuestions: QuizQuestion[] = [
   {
     id: 'stadning-fore-ny-uppsattning',
     question:
-      'En effekt ansluter till en kanal och returnerar en städfunktion. Beroendelistan är `[channel]`. Du byter kanal från "allmänt" till "teknik". Vad händer?',
+      'En effekt ansluter till en kanal och returnerar en städfunktion. Beroendelistan är `[channel, onLog]`, där `onLog` är samma funktion vid varje ritning. Du byter kanal från "allmänt" till "teknik". Vad händer?',
     correct: 'c',
     options: [
       {
@@ -28,29 +29,29 @@ export const effectsQuestions: QuizQuestion[] = [
       },
       {
         id: 'c',
-        text: 'Städningen för "allmänt" körs först, sedan körs effekten med "teknik"',
+        text: 'Efter den nya ritningen körs städningen för "allmänt", och sedan effekten med "teknik"',
         explanation:
-          'React städar efter den gamla körningen innan den startar den nya. Städfunktionen ser värdena från sin egen körning, alltså "allmänt", inte kanalen som just valts.',
+          'Komponenten ritas först om med det nya värdet. Därefter städar React efter den gamla körningen och startar den nya. Städfunktionen ser värdena från sin egen körning, alltså "allmänt", inte kanalen som just valts.',
       },
     ],
   },
   {
     id: 'harlett-varde-i-state',
     question:
-      'En komponent får `firstName` och `lastName` som props, håller `fullName` i state och sätter det i en effekt. Vad kostar det jämfört med att räkna fram värdet under renderingen?',
+      'En komponent får `firstName` och `lastName` som props, håller `fullName` i state och sätter det i en effekt. Vad kostar det jämfört med att räkna fram värdet under ritningen?',
     correct: 'a',
     options: [
       {
         id: 'a',
-        text: 'En extra omritning varje gång namnet ändras',
+        text: 'En extra ritning varje gång namnet ändras',
         explanation:
-          'Komponenten ritas om för de nya propsen, effekten körs efteråt och sätter state, och den uppdateringen kräver en omritning till. Räknas värdet fram under renderingen finns ingenting att synkronisera.',
+          'Komponenten ritas om för de nya propsen, effekten körs efteråt och sätter state, och den uppdateringen kräver en ritning till. Räknas värdet fram under ritningen finns ingenting att hålla i takt.',
       },
       {
         id: 'b',
         text: 'Ingenting, eftersom React slår ihop den uppdateringen med den som kom från propsen',
         explanation:
-          'Batchning slår ihop uppdateringar som sker under samma händelse. Effekten körs först efter att renderingen är klar och skärmen uppdaterad, så det finns ingenting kvar att slå ihop den med.',
+          'React slår ihop uppdateringar som görs i samma händelse till en enda ritning, det som kallas batchning. Effekten körs först när ritningen är klar, så dess uppdatering kommer för sent för att slås ihop och ger en ritning till.',
       },
       {
         id: 'c',
@@ -70,7 +71,7 @@ export const effectsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Den avbryter den första hämtningen, så att svaret aldrig kommer',
         explanation:
-          'Ett anrop som redan lämnat klienten går inte att ta tillbaka med en variabel. Svaret kommer fram precis som vanligt. Flaggan avgör bara vad som händer sedan. Vill man verkligen avbryta krävs `AbortController`.',
+          'Ett anrop som redan skickats går inte att ta tillbaka med en variabel. Svaret kommer fram precis som vanligt, och flaggan avgör bara vad som händer sedan. Vill man verkligen avbryta anropet används webbläsarens `AbortController`.',
       },
       {
         id: 'b',
@@ -82,7 +83,7 @@ export const effectsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Ingenting, eftersom React själv håller ordning på vilket svar som är det senaste',
         explanation:
-          'React vet ingenting om dina löften. Utan flaggan skriver varje svar till state i den ordning det råkar komma fram, och ett långsamt svar vinner över ett snabbt bara för att det kom sist.',
+          'React håller inte ordning på dina hämtningar. Utan flaggan skriver varje svar till state i den ordning det råkar komma fram, och ett långsamt svar vinner över ett snabbt bara för att det kom sist.',
       },
     ],
   },
