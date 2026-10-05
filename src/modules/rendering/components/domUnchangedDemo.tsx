@@ -15,16 +15,19 @@ export const DomUnchangedDemo = () => {
 
   return (
     <Stack spacing={2}>
-      <Typography color='textSecondary'>
-        Skriv något i fältet och ställ markören mitt i texten. Räkna sedan upp så många gånger du vill. Komponenten renderas om vid varje klick, men
-        texten och markören står kvar.
-      </Typography>
-
       <TextField label='Skriv något här' size='small' sx={{ alignSelf: 'flex-start', minWidth: 280 }} />
 
       <Button variant='outlined' onClick={() => setCount(count + 1)} sx={{ alignSelf: 'flex-start' }}>
-        Rendera om ({count})
+        Räkna upp ({count})
       </Button>
+
+      {count > 0 && (
+        <Typography color='textSecondary'>
+          Varje tryck ändrade state, och komponenten ritades om. React ändrade bara det som skilde sig från den förra beskrivningen, som talen i
+          knappen och i räknaren. Fältet fanns kvar i varje beskrivning, så React behöll samma element i DOM:en i stället för att bygga ett nytt, och
+          därför står det du skrev kvar.
+        </Typography>
+      )}
 
       <RenderCounter />
     </Stack>

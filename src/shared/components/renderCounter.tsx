@@ -52,16 +52,16 @@ export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps
         (import.meta.env.DEV ? (
           <>
             {' '}
-            Varje ritning räknas två gånger här, eftersom appen körs i utvecklingsläge, direkt från källkoden. Där ritar Reacts StrictMode, ett
-            hjälpmedel som bara finns i utvecklingsläget, varje komponent en extra gång för att avslöja komponenter som gör något annat än att räkna
-            fram vad som ska synas. I den publicerade versionen räknas varje ritning en gång.
+            Räknaren ökar här med två i stället för ett, eftersom appen körs i utvecklingsläge, direkt från källkoden. Där ritar Reacts StrictMode,
+            ett hjälpmedel som bara finns i utvecklingsläget, varje komponent en extra gång för att avslöja komponenter som gör något annat än att
+            räkna fram vad som ska synas, och räknaren räknar båda ritningarna. I den publicerade versionen ritas varje komponent en gång.
           </>
         ) : (
           <>
             {' '}
-            Varje ritning räknas en gång. Startar du appen i utvecklingsläge, direkt från källkoden i stället för från den publicerade versionen,
-            räknas varje ritning två gånger. Där ritar Reacts StrictMode, ett hjälpmedel som bara finns i utvecklingsläget, varje komponent en extra
-            gång för att avslöja komponenter som gör något annat än att räkna fram vad som ska synas.
+            Varje ritning räknas en gång. Startar du appen i utvecklingsläge, direkt från källkoden i stället för från den publicerade versionen, ökar
+            räknaren med två i stället för ett. Där ritar Reacts StrictMode, ett hjälpmedel som bara finns i utvecklingsläget, varje komponent en
+            extra gång för att avslöja komponenter som gör något annat än att räkna fram vad som ska synas, och räknaren räknar båda ritningarna.
           </>
         ))}
     </Typography>
