@@ -31,7 +31,7 @@ export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps
 
   return (
     <Typography variant='body2' color='textSecondary'>
-      Ritad om <strong>{renderCount}</strong> gånger.
+      Ritningar: <strong>{renderCount}</strong>.
       {/* Två versioner av samma not, och skillnaden är vilken mening som står
           först. StrictMode monterar bara om komponenter i utvecklingsläge, så
           siffran ökar med två lokalt och med ett i ett byggt projekt.
@@ -47,15 +47,16 @@ export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps
         (import.meta.env.DEV ? (
           <>
             {' '}
-            Varje ritning räknas två gånger här, inte en: StrictMode ritar varje komponent en extra gång i utvecklingsläge, för att avslöja
-            komponenter som gör något annat än att räkna fram vad som ska synas. I ett byggt projekt räknas varje ritning en gång.
+            Varje ritning räknas två gånger här, eftersom appen körs i utvecklingsläge, direkt från källkoden. Där ritar Reacts StrictMode, ett
+            hjälpmedel som bara finns i utvecklingsläget, varje komponent en extra gång för att avslöja komponenter som gör något annat än att räkna
+            fram vad som ska synas. I den publicerade versionen räknas varje ritning en gång.
           </>
         ) : (
           <>
             {' '}
-            Varje ritning räknas en gång. Kör du koden på din egen dator i utvecklingsläge räknas den två gånger: StrictMode ritar då varje komponent
-            en extra gång, för att avslöja komponenter som gör något annat än att räkna fram vad som ska synas. Det är ett utvecklingsverktyg och
-            finns inte i ett byggt projekt som det här.
+            Varje ritning räknas en gång. Startar du appen i utvecklingsläge, direkt från källkoden i stället för från den publicerade versionen,
+            räknas varje ritning två gånger. Där ritar Reacts StrictMode, ett hjälpmedel som bara finns i utvecklingsläget, varje komponent en extra
+            gång för att avslöja komponenter som gör något annat än att räkna fram vad som ska synas.
           </>
         ))}
     </Typography>
