@@ -22,7 +22,7 @@ const MIN_NAME_LENGTH = 2;
 const MODES = [
   { value: 'onSubmit', label: 'onSubmit', hint: 'Standard. Felen dyker upp först när du skickar.' },
   { value: 'onBlur', label: 'onBlur', hint: 'Felet dyker upp när du lämnar fältet.' },
-  { value: 'onChange', label: 'onChange', hint: 'Felet dyker upp medan du skriver.' },
+  { value: 'onChange', label: 'onChange', hint: 'Felet dyker upp medan du skriver, i det fält du skriver i.' },
 ] as const;
 
 type ValidationMode = (typeof MODES)[number]['value'];
@@ -94,7 +94,7 @@ export const ValidationDemo = () => {
     <Stack spacing={2}>
       <Stack spacing={1}>
         <Typography id='mode-etikett' variant='body2' color='textSecondary'>
-          mode: när valideringen körs
+          Läge, alltså inställningen mode till useForm: när valideringen körs
         </Typography>
 
         <ToggleButtonGroup
@@ -136,10 +136,10 @@ export const ValidationDemo = () => {
       </Paper>
 
       <Alert severity='info'>
-        <strong>Prova att skicka ett tomt formulär i läget onSubmit.</strong> Felen dyker upp först då. Men rätta sedan namnet och titta på
-        felmeddelandet medan du skriver. Det försvinner tecken för tecken, trots att läget heter onSubmit. Efter den första inskickningen växlar
-        biblioteket till att omvärdera det fält som fallerade vid varje ändring, och det är den detaljen som gör standardläget användbart i stället
-        för envist.
+        <strong>I läget onSubmit dyker felen upp först när du skickar</strong>, och markören flyttas till det första fältet med fel. Skriv sedan i
+        namnfältet och titta på meddelandet. Vid första bokstaven byts det mot regeln om minst två tecken, och vid den andra försvinner det, trots att
+        läget heter onSubmit. Efter den första inskickningen validerar biblioteket varje fält du ändrar vid varje ändring, också fält som var giltiga
+        när du skickade. Utan det skulle felet stå kvar tills du skickade igen.
       </Alert>
     </Stack>
   );

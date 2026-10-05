@@ -21,9 +21,9 @@ export const ControlledVsUncontrolledDemo = () => (
         sant. Jämförelsen är mot den vanligaste koden, inte mot den bästa. */}
     <Alert severity='info'>
       <strong>Jämförelsen är mot den kod man oftast skriver, inte mot den bästa möjliga.</strong> Det kontrollerade formuläret har all sin state i
-      formulärkomponenten, så ett tangenttryck i ett fält ritar om båda. Flyttar man ner varje fälts state i en egen komponent ritas bara det fält man
-      skriver i om, och skillnaden krymper betydligt. Till noll kommer den aldrig, och det är det, inte antalet, som är den verkliga skillnaden mot
-      okontrollerat.
+      formulärkomponenten, så ett tangenttryck i ett fält ritar om hela formuläret, med båda fälten. Flyttar man ner varje fälts state i en egen
+      komponent ritas bara det fält man skriver i om, och skillnaden krymper betydligt. Men något ritas fortfarande om vid varje tangenttryck, medan
+      det okontrollerade formuläret inte ritas om alls. Det är den verkliga skillnaden, inte hur stort talet blir.
     </Alert>
   </Stack>
 );

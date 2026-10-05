@@ -47,14 +47,15 @@ export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps
         (import.meta.env.DEV ? (
           <>
             {' '}
-            Siffran ökar med två per klick, inte med ett: StrictMode ritar varje komponent en extra gång i utvecklingsläge, för att avslöja
-            renderingskod som inte är ren. I ett byggt projekt ökar den med ett.
+            Varje ritning räknas två gånger här, inte en: StrictMode ritar varje komponent en extra gång i utvecklingsläge, för att avslöja
+            komponenter som gör något annat än att räkna fram vad som ska synas. I ett byggt projekt räknas varje ritning en gång.
           </>
         ) : (
           <>
             {' '}
-            Siffran ökar med ett per klick. Kör du appen lokalt ökar den med två: StrictMode ritar då varje komponent en extra gång, för att avslöja
-            renderingskod som inte är ren. Det är ett utvecklingsverktyg och finns inte i ett byggt projekt som det här.
+            Varje ritning räknas en gång. Kör du koden på din egen dator i utvecklingsläge räknas den två gånger: StrictMode ritar då varje komponent
+            en extra gång, för att avslöja komponenter som gör något annat än att räkna fram vad som ska synas. Det är ett utvecklingsverktyg och
+            finns inte i ett byggt projekt som det här.
           </>
         ))}
     </Typography>

@@ -1,5 +1,5 @@
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -59,23 +59,26 @@ export const HookFormDemo = () => {
         <TextField label='Namn' size='small' {...register('name')} />
         <TextField label='E-post' size='small' {...register('email')} />
 
-        {/* Select går inte samma väg, och det är inte en brist i MUI.
-            En Select har inget textfält att läsa ett värde ur. Den visar en
-            lista och håller sitt val själv, alltså måste något styra den.
-            Controller är bryggan: den prenumererar på fältet och ger dig
-            value och onChange att koppla in, medan resten av formuläret
-            förblir okontrollerat. */}
+        {/* Autocomplete går inte samma väg. Den skickar det valda värdet som
+            andra argument till onChange, inte i event.target där register
+            läser. Kopplad med register visar fältet ditt val medan formuläret
+            behåller startvärdet, utan någon varning.
+
+            Controller är bryggan. Den ger dig value och onChange att koppla
+            in, och gör just det här fältet kontrollerat medan resten av
+            formuläret förblir okontrollerat. */}
         <Controller
           control={control}
           name='role'
           render={({ field }) => (
-            <TextField select label='Roll' size='small' {...field}>
-              {ROLES.map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Autocomplete
+              options={ROLES}
+              value={field.value}
+              onChange={(_event, role) => field.onChange(role)}
+              onBlur={field.onBlur}
+              disableClearable
+              renderInput={(params) => <TextField {...params} label='Roll' size='small' inputRef={field.ref} />}
+            />
           )}
         />
 
@@ -105,9 +108,11 @@ export const HookFormDemo = () => {
             sedan aldrig mer. Utan den här raden ser det ut som att
             påståendet ovan är fel. */}
         <Typography variant='caption' color='textSecondary'>
-          Räknaren tickar en gång vid det första tecknet. Det är <code>isDirty</code> ovanför som slår om från falskt till sant.{' '}
-          <code>formState</code> är en proxy som bara ritar om de komponenter som faktiskt läser ett fält ur den. Skriv vidare: siffran står still,
-          hur många tecken du än skriver.
+          <code>isDirty</code> säger om något fält skiljer sig från startvärdena, och <code>submitCount</code> räknar inskickningarna. Formuläret
+          läser båda ur <code>formState</code>, och biblioteket ritar om det bara när någon av dem ändras. Därför ökar räknaren vid första tecknet,
+          när <code>isDirty</code> slår om till <code>true</code>, och igen om du raderar namnet så att inget längre skiljer sig från startvärdena,
+          men inte för tecknen däremellan. Rollfältet är kopplat med <code>Controller</code>, som ritar om sitt eget fält när du väljer. Formuläret
+          ritas om bara om valet ändrar <code>isDirty</code>.
         </Typography>
       </Stack>
     </Paper>
