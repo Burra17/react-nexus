@@ -2,26 +2,31 @@ import Typography from '@mui/material/Typography';
 import { useRef } from 'react';
 
 type RenderCounterProps = {
-  // Noten om StrictMode stämmer bara på en räknare som faktiskt ritas om vid
-  // varje klick. I ett barn som memo hoppar över står siffran still, och då
-  // säger noten emot det demon visar. Därför är den av tills någon ber om den:
-  // ett påstående som kan bli fel ska kräva ett aktivt val.
-  //
-  // Noten finns i två versioner, eftersom StrictMode bara dubblerar
-  // renderingarna i utvecklingsläge. Se kommentaren vid villkoret nedan.
+  // Visar noten om utvecklingsläge och StrictMode under siffran. Den är av som
+  // standard, eftersom en demo med flera räknare bara behöver förklara det en
+  // gång. Samma långa text under varje räknare blir text som läsaren slutar
+  // läsa.
   showStrictModeNote?: boolean;
 };
 
-// Räknar hur många gånger den har ritats om.
+// Visar hur många gånger komponenten har ritats, den första ritningen
+// medräknad. Räknaren läggs i den komponent den ska mäta, så den ritas varje
+// gång den komponenten ritas. Koden är med så att det går att se hur siffran
+// räknas, och därmed vad den går att lita på.
 //
-// En ref kommer ihåg ett värde mellan ritningarna utan att be om en ny ritning.
-// Hade siffran legat i state hade komponenten ritat om sig själv i all
-// oändlighet: rita om, räkna upp, rita om igen.
+// Siffran ligger i en ref. En ref är ett värde som React sparar åt
+// komponenten mellan ritningarna, precis som state, men att ändra den ritar
+// inte om något. Hade siffran legat i state hade varje uppräkning utlöst en ny
+// ritning, som räknat upp igen, i all oändlighet.
 //
-// ESLint stoppar normalt det som står nedan, och har rätt i vanlig kod: rör man
-// en ref mitt under ritningen kan värdet bli fel när React avbryter och börjar
-// om. Här är siffran hela poängen, så undantaget görs medvetet. Skriv inte så
-// här i kod som ska göra något på riktigt.
+// ESLint, verktyget som granskar koden efter vanliga fel, stoppar normalt
+// raderna nedan, och har rätt i vanlig kod. En komponent ska bara räkna fram
+// vad som ska synas, och att ändra en ref under ritningen är något annat.
+// React kan dessutom rita en komponent mer än en gång innan resultatet visas,
+// till exempel i StrictMode, och då räknas varje sådan ritning. Här är just
+// det poängen, så undantaget görs medvetet. I kod som ska göra något på
+// riktigt hör en ändring av en ref hemma i en klickhanterare, inte i själva
+// ritningen.
 export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps) => {
   /* eslint-disable react-hooks/refs -- siffran är själva demonstrationen */
   const renders = useRef(0);
@@ -32,17 +37,17 @@ export const RenderCounter = ({ showStrictModeNote = false }: RenderCounterProps
   return (
     <Typography variant='body2' color='textSecondary'>
       Ritningar: <strong>{renderCount}</strong>.
-      {/* Två versioner av samma not, och skillnaden är vilken mening som står
-          först. StrictMode monterar bara om komponenter i utvecklingsläge, så
-          siffran ökar med två lokalt och med ett i ett byggt projekt.
+      {/* Noten finns i två versioner, eftersom StrictMode bara ritar varje
+          komponent en extra gång i utvecklingsläge. import.meta.env.DEV är
+          sant just då: Vite, verktyget som bygger appen, sätter det när appen
+          körs direkt från källkoden.
 
-          Läsaren ska alltid mötas av det som faktiskt händer framför henne.
-          Står fel mening först är det texten hon slutar lita på, inte sin egen
-          räkning. Och då är noten värre än ingen not alls.
-
-          Båda meningarna står kvar i båda versionerna: att lägena skiljer sig
-          är en lärdom i sig, och den försvinner om man bara visar den som
-          gäller just nu. */}
+          Versionerna skiljer sig i vilken mening som står först, så att
+          läsaren alltid möts av det som händer på skärmen framför sig. Står
+          fel mening först är det texten läsaren slutar lita på, inte sin egen
+          räkning, och då är noten värre än ingen not alls. Båda meningarna
+          står kvar i båda versionerna, eftersom att lägena skiljer sig är en
+          lärdom i sig. */}
       {showStrictModeNote &&
         (import.meta.env.DEV ? (
           <>
