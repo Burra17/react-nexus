@@ -11,38 +11,49 @@ import snapshotSource from '../components/snapshotDemo.tsx?raw';
 const Theory = () => (
   <>
     <Typography>
-      I vanliga JavaScript-variabler försvinner data så fort en funktion körs om. State är komponentens eget minne. När du använder{' '}
-      <code>const [count, setCount] = useState(0)</code> ber du React att spara ett värde och komma ihåg det, även när komponenten ritas om.
+      En komponent i React är en funktion som returnerar det som ska synas. Varje gång React <em>ritar</em> komponenten, på engelska <em>render</em>,
+      anropar den funktionen på nytt, och allt som skapas inuti den skapas på nytt: variabler, beräkningar och klickhanterare. En vanlig variabel
+      börjar därför om från början vid varje ritning. <strong>State är komponentens minne mellan ritningarna.</strong> Med{' '}
+      <code>const [count, setCount] = useState(0)</code> ber du React spara ett värde åt komponenten. Du får tillbaka ett par: <code>count</code>,
+      värdet för den här ritningen, och <code>setCount</code>, funktionen som ber om ett nytt värde. Nollan är bara startvärdet, som används första
+      gången. Varje komponent på sidan har sitt eget state, också när två komponenter ser likadana ut.
     </Typography>
 
     <Typography>
-      Det absolut viktigaste att förstå med state är att det fungerar som en ögonblicksbild, ett foto. När React ritar upp din vy låser den värdet för
-      just den ritningen. Om <code>count</code> är 0, är den 0 under exakt hela det rendret.
+      Det viktigaste att förstå är att <code>count</code> är en <strong>ögonblicksbild</strong>. När React anropar komponenten får <code>count</code>{' '}
+      värdet för just den ritningen, och klickhanterarna som skapas i samma anrop ser det värdet, också när de körs senare. Var <code>count</code> 0
+      när knappen ritades är <code>count</code> 0 i dess klickhanterare, vad som än händer där inne. Det finns alltså två saker: värdet som React
+      sparar, och kopian i ögonblicksbilden.
     </Typography>
 
     <Typography>
-      När du anropar <code>setCount(count + 1)</code> ändrar du alltså inte variabeln <code>count</code> magiskt på stället. I stället lägger du en
-      beställning hos React: &quot;nästa gång du ritar om vyn, låt värdet vara 1&quot;.
+      Därför ändrar <code>setCount(count + 1)</code> inte <code>count</code> på stället. Anropet lägger en beställning hos React, som ställer den i en
+      kö och sedan ritar om komponenten. Det är anropet till <code>setCount</code> som utlöser ritningen, och först i nästa ritning har{' '}
+      <code>count</code> det nya värdet. Säger beställningen samma värde som redan står där hoppar React över ritningen, eftersom ingenting skulle
+      ändras.
     </Typography>
 
     <Typography>
-      Eftersom state är en ögonblicksbild kan du inte anropa <code>setCount(count + 1)</code> tre gånger på rad och förvänta dig att siffran ökar med
-      tre. Eftersom <code>count</code> är 0 i det nuvarande fotot säger alla tre anropen exakt samma sak: &quot;sätt nästa värde till 0 + 1&quot;. Att
-      React dessutom samlar ihop alla dessa beställningar och bara gör en enda omrendering kallas för <strong>batching</strong>.
+      Anropar du <code>setCount(count + 1)</code> tre gånger i samma klickhanterare blir resultatet 1 och inte 3. <code>count</code> är 0 i
+      ögonblicksbilden, så alla tre beställer samma sak: sätt värdet till 0 + 1. Det beror på ögonblicksbilden och hade blivit 1 även om React ritat
+      om efter varje anrop. En annan sak är att React väntar tills klickhanteraren är klar och sedan ritar om en enda gång för alla beställningarna.
+      Det kallas <strong>batchning</strong> och finns för att slippa ritningar som ingen hinner se. Batchningen avgör hur många ritningar det blir,
+      inte vilket värde som hamnar i <code>count</code>.
     </Typography>
 
     <Typography>
-      <strong>Regeln att ta med sig:</strong> om ditt nya värde beror på det gamla, som när du plussar på en räknare, skicka in en funktion i stället:{' '}
-      <code>setCount(c =&gt; c + 1)</code>. Den kallas en <em>updater function</em>, och med den utgår React från det senaste värdet i kön i stället
-      för från värdet i den frysta ögonblicksbilden. Det spelar roll när du gör <strong>flera uppdateringar i samma händelse</strong>. För ett enstaka
-      klick gör det ingen skillnad, eftersom React ser till att värdet hunnit uppdateras innan nästa klick. Många skriver ändå alltid funktionsformen,
-      för att slippa hålla reda på när det spelar roll.
+      Beror det nya värdet på det gamla kan du skicka in en funktion i stället: <code>setCount((c) =&gt; c + 1)</code>. En sådan funktion kallas på
+      engelska <em>updater function</em>. React ställer den i kön och anropar den med det senaste värdet, <code>c</code>, alltså resultatet av
+      beställningarna före den. Tre anrop ger då 3. Skillnaden syns när flera beställningar görs innan nästa ritning, som i en och samma
+      klickhanterare. Gör varje klick bara en beställning spelar formen ingen roll, eftersom React ritar om mellan två klick och nästa klick får en ny
+      ögonblicksbild. Undantaget är kod som körs senare, till exempel efter en <code>setTimeout</code>, som fortfarande ser den ögonblicksbild den
+      skapades i. Därför skriver många alltid funktionen när värdet beror på det gamla.
     </Typography>
 
     <Typography variant='body2' color='textSecondary'>
-      Bra att känna till i äldre kodbaser: före React 18 samlades bara beställningar som gjordes inuti en klickhanterare ihop. En uppdatering inne i
-      ett <code>.then()</code> ritade om vyn för sig. Sedan React 18 samlas de ihop oavsett var de görs, men fortfarande bara inom samma händelse. Två
-      separata klick slås aldrig ihop.
+      Bra att känna till i äldre kodbaser: före React 18 batchades bara beställningar som gjordes direkt i en klickhanterare. Beställningar i kod som
+      kördes senare, efter ett <code>await</code> eller i en <code>.then()</code>, ritade om komponenten en gång var. Värdet blev ändå detsamma,
+      eftersom ögonblicksbilden var densamma. Sedan React 18 batchas också de. Två separata klick batchas aldrig ihop.
     </Typography>
   </>
 );
@@ -57,12 +68,23 @@ export const StatePage = () => (
           <Typography variant='h3' component='h3'>
             Tre anrop, två sätt att skriva dem
           </Typography>
+          <Typography color='textSecondary'>
+            Båda knapparna med kod på anropar <code>setCount</code> tre gånger i samma klickhanterare. Gissa först vad <code>count</code> blir när du
+            trycker på ”setCount(count + 1) tre gånger”, och tryck sedan. Gör samma sak med den andra knappen. Räknaren längst ner visar hur många
+            gånger komponenten har ritats, och ritningen när sidan laddades räknas med. Titta på hur mycket den ökar per tryck. Trycker du Nollställ
+            när <code>count</code> redan är 0 står räknaren still: värdet ändras inte, och då hoppar React över ritningen.
+          </Typography>
           <BatchingDemo />
         </Stack>
 
         <Stack spacing={1}>
           <Typography variant='h3' component='h3'>
             Vad står i count direkt efter setCount?
+          </Typography>
+          <Typography color='textSecondary'>
+            Den här demon har ett eget <code>count</code>, skilt från demon ovan, och börjar därför på 0. Knappen anropar{' '}
+            <code>setCount(count + 1)</code> och läser <code>count</code> på raden direkt efter. Efter klicket syns två tal: <code>count</code> i den
+            nya ritningen, och vad <code>count</code> var inne i klickhanteraren. Jämför dem.
           </Typography>
           <SnapshotDemo />
         </Stack>
@@ -74,7 +96,7 @@ export const StatePage = () => (
         code: batchingSource,
         language: 'tsx',
         // Raderna som skiljer de två sätten åt: samma tre anrop, olika resultat.
-        highlight: ['setCount(count + 1);', 'setCount((current) => current + 1);'],
+        highlight: ['setCount(count + 1);', 'setCount((c) => c + 1);'],
       },
       {
         fileName: 'src/modules/state/components/snapshotDemo.tsx',

@@ -3,23 +3,27 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 
-// Läser av count direkt efter att det höjts, och visar vad som står där.
+// Beställer ett nytt count och läser count på raden direkt efter, och visar
+// båda talen. Det andra visar att beställningen inte ändrade count där och då.
 export const SnapshotDemo = () => {
   const [count, setCount] = useState(0);
+
+  // Det count som klickhanteraren såg. null betyder att ingen har klickat än,
+  // och då visas ingen avläsning.
   const [readBack, setReadBack] = useState<number | null>(null);
 
   const handleClick = () => {
     setCount(count + 1);
 
-    // count är fortfarande värdet ur fotot. Raden ovanför ändrade inte
-    // variabeln. Den beställde ett nytt värde till nästa ritning.
+    // count är fortfarande värdet ur ögonblicksbilden. Raden ovanför ändrade
+    // inte variabeln, den beställde ett nytt värde till nästa ritning.
     setReadBack(count);
   };
 
   return (
     <Stack spacing={2}>
       <Typography>
-        Räknaren står på <strong>{count}</strong>.
+        <code>count</code> i den här ritningen: <strong>{count}</strong>
       </Typography>
 
       <Button variant='contained' onClick={handleClick} sx={{ alignSelf: 'flex-start' }}>
@@ -28,7 +32,8 @@ export const SnapshotDemo = () => {
 
       {readBack !== null && (
         <Typography color='textSecondary'>
-          Direkt efter anropet till setCount var count fortfarande <strong>{readBack}</strong>, inte {readBack + 1}.
+          Inne i klickhanteraren, direkt efter anropet till <code>setCount</code>, var <code>count</code> fortfarande <strong>{readBack}</strong>,
+          inte {readBack + 1}. Klickhanteraren hörde till ritningen där <code>count</code> var {readBack}.
         </Typography>
       )}
     </Stack>
