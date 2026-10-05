@@ -20,7 +20,7 @@ type LastAction = 'click' | 'toggle' | null;
 
 // Samma objekt varje gång. Det ligger utanför komponenten och skapas därför en
 // gång när filen laddas, inte om vid varje render.
-const stableSettings: Settings = { label: 'kort' };
+const stableSettings = { label: 'kort' };
 
 // Ett barn. De två nedan är samma komponent. Det enda som skiljer är memo.
 //
