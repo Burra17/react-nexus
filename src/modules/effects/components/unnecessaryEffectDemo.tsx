@@ -36,9 +36,10 @@ const BadForm = ({ firstName, lastName }: NameProps) => {
   // Komponenten ritas först om för de nya propsen, effekten sätter state
   // efteråt, och React måste rita om en gång till för att visa det.
   //
-  // ESLint stoppar normalt raden nedan, och det är värt att lägga märke till:
-  // regeln heter set-state-in-effect och länkar själv till react.dev-sidan om
-  // att du förmodligen inte behöver en effekt. Undantaget görs bara för att
+  // ESLint, verktyget som granskar koden efter vanliga fel, stoppar normalt
+  // raden nedan, och det är värt att lägga märke till: regeln heter
+  // set-state-in-effect och hänvisar själv till sidan på react.dev om att du
+  // förmodligen inte behöver en effekt. Undantaget görs bara för att
   // felet är hela demonstrationen. Skriv aldrig så här i kod som ska göra
   // något på riktigt. Den rättade versionen står i GoodForm nedan.
   useEffect(() => {
@@ -51,7 +52,7 @@ const BadForm = ({ firstName, lastName }: NameProps) => {
 
 // Samma sak utan effekt och utan state.
 const GoodForm = ({ firstName, lastName }: NameProps) => {
-  // RÄTT: värdet räknas fram under renderingen. Raden körs om av sig själv när
+  // RÄTT: värdet räknas fram under ritningen. Raden körs om av sig själv när
   // propsen ändras, så det finns ingenting att hålla synkroniserat.
   const fullName = `${firstName} ${lastName}`;
 

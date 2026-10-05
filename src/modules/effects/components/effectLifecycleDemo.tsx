@@ -43,17 +43,18 @@ const ChannelConnection = ({ channel, onLog }: ChannelConnectionProps) => {
 export const EffectLifecycleDemo = () => {
   // Avmonterad från början, med flit. Monteringen är det som utlöser
   // dubbelkörningen i StrictMode, och den ska ske framför läsaren, inte innan
-  // hen hunnit titta på loggen.
+  // loggen ens syns.
   const [isMounted, setIsMounted] = useState(false);
   const [channel, setChannel] = useState<Channel>('allmänt');
   const [entries, setEntries] = useState<LogEntry[]>([]);
 
-  // useCallback gör att det är samma funktion mellan renderingarna.
+  // useCallback gör att det är samma funktion från ritning till ritning.
   //
-  // Utan den skapas en ny funktion varje gång demon ritas om, och eftersom den
-  // står i effektens beroendelista skulle effekten då köras om av varje rad den
-  // själv skriver. Det är samma referensjämförelse som fick memo att tystna i
-  // Rendering-modulen. Här hade den i stället gett en oändlig slinga.
+  // Utan den skapas en ny funktion varje gång demon ritas om, och en funktion
+  // är bara lika med sig själv. Funktionen står i effektens beroendelista, så
+  // kedjan hade blivit: effekten skriver en rad, raden ändrar state, demon ritas
+  // om, funktionen blir ny, effekten körs igen och skriver en rad till. En
+  // oändlig slinga.
   const addEntry = useCallback((kind: LogKind, message: string) => {
     setEntries((previous) => [...previous, { id: previous.length + 1, kind, message }]);
   }, []);
@@ -107,14 +108,16 @@ export const EffectLifecycleDemo = () => {
       {/* Vad monteringen ger för rader, och varför det inte är samma sak i de
           två lägena.
 
-          Teorin ovanför beskriver dubbelkörningen som tre rader. I ett byggt
-          projekt blir det en, eftersom StrictMode monterar om komponenter bara
-          i utvecklingsläge. Utan den här raden läser man en förklaring och ser
+          Teorin beskriver dubbelkörningen som tre rader. I den publicerade
+          versionen blir det en, eftersom StrictMode bara monterar om i
+          utvecklingsläge. import.meta.env.DEV är sant just då: Vite, verktyget
+          som bygger appen, sätter det när appen körs direkt från källkoden. Utan den här raden läser man en förklaring och ser
           en demo som visar något annat, och drar slutsatsen att man klickat
           fel.
 
-          Paret städning och uppsättning går ändå att se: knapparna ovan gör
-          samma sak för hand, i båda lägena. */}
+          Paret städning och uppsättning går ändå att se i båda lägena, genom
+          att avmontera och montera för hand. Det är inte exakt samma sak, och
+          noten säger varför. */}
       <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
