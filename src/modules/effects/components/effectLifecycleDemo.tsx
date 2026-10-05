@@ -118,14 +118,14 @@ export const EffectLifecycleDemo = () => {
       <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
-            Monteringen ger tre rader, inte en. StrictMode monterar om komponenten en gång i utvecklingsläge, så uppsättningen körs, städas och körs
-            igen. Det är ett test av att effekten tål att köras om.
+            Den första monteringen ger tre rader här, inte en. Appen körs i utvecklingsläge, där StrictMode monterar om komponenten en gång direkt, så
+            att uppsättningen körs, städas och körs igen. Det är ett test av att effekten tål att köras om.
           </>
         ) : (
           <>
-            Monteringen ger en enda rad här. Kör du appen lokalt ger den tre: StrictMode monterar då om komponenten en gång, så att uppsättningen
-            körs, städas och körs igen. Det är ett utvecklingsverktyg och finns inte i ett byggt projekt. Klicka avmontera och sedan montera igen, så
-            får du exakt samma tre rader. Det enda som skiljer är att du gör om monteringen för hand i stället för att React gör den åt dig.
+            Den första monteringen ger en rad här. I utvecklingsläge ger den tre, eftersom StrictMode då monterar om komponenten en gång direkt, så
+            att uppsättningen körs, städas och körs igen. Samma mönster, städning följd av uppsättning, får du här genom att avmontera och montera
+            igen. Skillnaden är att en riktig avmontering kastar komponentens state, medan StrictMode behåller det.
           </>
         )}
       </Typography>

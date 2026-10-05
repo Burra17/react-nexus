@@ -55,12 +55,26 @@ const GoodForm = ({ firstName, lastName }: NameProps) => {
   // propsen ändras, så det finns ingenting att hålla synkroniserat.
   const fullName = `${firstName} ${lastName}`;
 
-  return <NameCard title='Namnet räknas fram under renderingen' fullName={fullName} />;
+  return <NameCard title='Namnet räknas fram under ritningen' fullName={fullName} />;
 };
 
 export const UnnecessaryEffectDemo = () => {
   const [firstName, setFirstName] = useState('Ada');
   const [lastName, setLastName] = useState('Lovelace');
+  const [hasTyped, setHasTyped] = useState(false);
+
+  // Förklaringen visas efter första bokstaven. Flaggan sätts här, i fältets
+  // egen händelsehanterare, och inte i en effekt som reagerar på namnet.
+  // Den batchas med namnet och kostar ingen extra ritning.
+  const handleFirstName = (value: string) => {
+    setFirstName(value);
+    setHasTyped(true);
+  };
+
+  const handleLastName = (value: string) => {
+    setLastName(value);
+    setHasTyped(true);
+  };
 
   return (
     <Stack spacing={2}>
@@ -69,8 +83,8 @@ export const UnnecessaryEffectDemo = () => {
           fält hade de kunnat skrivas olika mycket, och då hade jämförelsen
           mellan räknarna inte betytt någonting. */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <TextField size='small' label='Förnamn' value={firstName} onChange={(event) => setFirstName(event.target.value)} />
-        <TextField size='small' label='Efternamn' value={lastName} onChange={(event) => setLastName(event.target.value)} />
+        <TextField size='small' label='Förnamn' value={firstName} onChange={(event) => handleFirstName(event.target.value)} />
+        <TextField size='small' label='Efternamn' value={lastName} onChange={(event) => handleLastName(event.target.value)} />
       </Stack>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -78,11 +92,14 @@ export const UnnecessaryEffectDemo = () => {
         <GoodForm firstName={firstName} lastName={lastName} />
       </Stack>
 
-      <Typography variant='body2' color='textSecondary'>
-        Skriv en bokstav i något av fälten och jämför korten. Det vänstra ritas om dubbelt så många gånger som det högra: en gång för de nya propsen,
-        en gång till för att effekten satte state. StrictMode ritar dessutom varje komponent en extra gång i utvecklingsläge, så båda siffrorna är
-        dubbelt så höga som i ett byggt projekt. Det är förhållandet mellan dem som är poängen, inte talen i sig.
-      </Typography>
+      {hasTyped && (
+        <Typography color='textSecondary'>
+          Kortet med effekten ritas om två gånger per bokstav: en gång för de nya propsen, och en gång till när effekten satt namnet i state. Kortet
+          som räknar fram namnet ritas om en gång. Därför låg kortet med effekten före redan vid laddningen: effekten satte namnet efter den första
+          ritningen, och det kostade en ritning till. I utvecklingsläge, där StrictMode ritar varje komponent två gånger, är båda talen dubbelt så
+          höga. Det är förhållandet mellan dem som är poängen.
+        </Typography>
+      )}
     </Stack>
   );
 };
