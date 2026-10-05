@@ -5,11 +5,12 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { RenderCounter } from '../../../shared/components/renderCounter';
 
-// Visar att en omrendering inte är samma sak som att skärmen ritas om.
+// Visar att en ritning inte byter ut det som redan finns i DOM:en.
 //
-// Textfältet är okontrollerat: React känner inte till vad som står i det.
-// Skulle React byta ut elementet vid varje omrendering skulle texten och
-// markörens läge försvinna. De står kvar, alltså rörs elementet inte.
+// Textfältet är okontrollerat: det har ingen value-prop, så det är
+// webbläsaren som håller texten, och React vet inte vad som står i det.
+// Hade React byggt ett nytt element vid varje ritning hade texten försvunnit.
+// Den står kvar, alltså behåller React samma element.
 export const DomUnchangedDemo = () => {
   const [count, setCount] = useState(0);
 
