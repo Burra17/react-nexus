@@ -9,12 +9,11 @@ import { RenderCounter } from '../../../shared/components/renderCounter';
 // Samma två fält, men DOM-elementet äger värdet.
 //
 // defaultValue i stället för value: JSX säger vad fältet ska börja på, och
-// sedan inget mer. Reacts dokumentation formulerar det som att JSX bara anger
-// startvärdet och inte styr vad värdet ska vara just nu.
+// efter första ritningen bestämmer DOM-elementet själv.
 //
 // Utan value finns inget att hålla synkroniserat, alltså behövs inget
 // onChange, alltså inget setState per tangenttryck, och därmed ingen
-// omrendering. Räknaren nedan står still medan du skriver.
+// ritning. Räknaren nedan står still medan du skriver.
 //
 // Priset står i texten under fälten: React vet ingenting om vad som står i
 // dem förrän någon frågar DOM:en. Ska något annat på sidan reagera på det du
@@ -23,8 +22,8 @@ export const UncontrolledForm = () => {
   // Refen är vägen till DOM-elementet. Den finns för att kunna LÄSA värdet vid
   // inskickning, inte för att styra det.
   //
-  // En ref ändrar inget när den sätts, och det är hela skillnaden mot state:
-  // den kommer ihåg något mellan renderingar utan att be om en ny.
+  // En ref kommer ihåg något mellan ritningarna, men att den ändras ritar inte
+  // om något. Det är hela skillnaden mot state.
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
@@ -48,9 +47,9 @@ export const UncontrolledForm = () => {
           Okontrollerat
         </Typography>
 
-        {/* inputRef pekar på det underliggande input-elementet, inte på MUI:s
-            omslutande div. Utan den skulle refen peka på fel nod och value
-            vara undefined. */}
+        {/* inputRef pekar på det underliggande input-elementet. En vanlig ref
+            på TextField hamnar på MUI:s omslutande div, och där finns inget
+            value att läsa. */}
         <TextField label='Namn' defaultValue='' inputRef={nameRef} size='small' />
         <TextField label='E-post' defaultValue='' inputRef={emailRef} size='small' />
 

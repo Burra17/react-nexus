@@ -16,9 +16,10 @@ const MIN_NAME_LENGTH = 2;
 
 // De tre lägen demon låter läsaren välja mellan.
 //
-// RHF har fler (onTouched och all), men tre val räcker för att känna
-// skillnaden, och fem knappar i rad blir en inställningspanel i stället för
-// en demonstration.
+// React Hook Form har två lägen till. onTouched väntar tills fältet lämnats
+// en gång och validerar sedan vid varje ändring, och all validerar både vid
+// ändring och när fältet lämnas. Tre val räcker för att känna skillnaden, och
+// fem knappar i rad blir en inställningspanel i stället för en demonstration.
 const MODES = [
   { value: 'onSubmit', label: 'onSubmit', hint: 'Standard. Felen dyker upp först när du skickar.' },
   { value: 'onBlur', label: 'onBlur', hint: 'Felet dyker upp när du lämnar fältet.' },
@@ -31,29 +32,36 @@ type ValidatedFormProps = {
   mode: ValidationMode;
 };
 
+// Valideringsformuläret har inget rollfält, så det använder bara namn och
+// e-post ur formulärets typ.
+type ValidatedFormValues = Pick<ProfileFormValues, 'name' | 'email'>;
+
 // Formuläret som valideras. Tar mode som prop.
 //
-// Reglerna ligger i register, som ett andra argument. Det är bibliotekets egna
-// regler och inget schemabibliotek: zod och liknande löser ett annat problem:
-// att beskriva en datamodell en gång och återanvända den. Det problemet har
-// inte den här modulen.
+// Reglerna ligger i register, som ett andra argument, och varje regel får sitt
+// eget felmeddelande. Det är bibliotekets egna regler och inget
+// schemabibliotek. Ett schemabibliotek som zod löser ett annat problem, att
+// beskriva en datamodell en gång och återanvända den, och det problemet har
+// inte den här sidan.
 const ValidatedForm = ({ mode }: ValidatedFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ProfileFormValues>({
+  } = useForm<ValidatedFormValues>({
     mode,
-    defaultValues: { name: '', email: '', role: '' },
+    defaultValues: { name: '', email: '' },
   });
 
   const [submitted, setSubmitted] = useState<string | null>(null);
 
   return (
     <Stack component='form' spacing={2} onSubmit={handleSubmit((values) => setSubmitted(`${values.name}, ${values.email}`))}>
-      {/* error och helperText kopplar MUI:s utseende till RHF:s tillstånd.
-          Felet står som text och inte bara som röd ram. En röd kant utan ord
-          säger att något är fel men inte vad. */}
+      {/* error och helperText kopplar MUI:s utseende till bibliotekets
+          tillstånd. Felet står som text och inte bara som röd ram. En röd kant
+          utan ord säger att något är fel men inte vad. Mellanslaget när inget
+          fel finns håller platsen, så att formuläret inte hoppar när ett
+          meddelande dyker upp. */}
       <TextField
         label='Namn'
         size='small'
@@ -125,10 +133,11 @@ export const ValidationDemo = () => {
       </Stack>
 
       <Paper variant='outlined' sx={{ p: 2, maxWidth: 420 }}>
-        {/* key tvingar fram en ny komponent när läget byts, och det är inte
-            en genväg utan en nödvändighet: useForm läser mode när formuläret
-            skapas och bryr sig inte om att propen ändras efteråt. Utan key
-            skulle knapparna se ut att göra något utan att göra det.
+        {/* När key ändras kastar React den gamla komponenten och skapar en ny,
+            med nytt state. Här är det inte en genväg utan en nödvändighet:
+            useForm läser mode när formuläret skapas och bryr sig inte om att
+            propen ändras efteråt. Utan key skulle knapparna se ut att göra
+            något utan att göra det.
 
             Att formuläret samtidigt töms är en bieffekt, och en välkommen
             sådan: varje läge provas från ett rent utgångsläge. */}

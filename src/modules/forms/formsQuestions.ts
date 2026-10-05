@@ -1,9 +1,9 @@
 import type { QuizQuestion } from '../../shared/components/quiz';
 
-// Kunskapskontrollen för modulen om formulär.
+// Kunskapskontrollen för sidan om formulär.
 //
 // En fråga per demodel: vad ordet kontrollerad betyder, varför biblioteket
-// slipper omrenderingarna, och när valideringen körs.
+// slipper ritningarna, och när valideringen körs.
 //
 // Controller får ingen egen fråga. Den är med i demon och i teorin, men tre
 // frågor om tre olika saker är bättre än fyra där den fjärde rör ett
@@ -18,7 +18,7 @@ export const formsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Att den har en `onChange`',
         explanation:
-          'Nej. En okontrollerad input kan mycket väl ha en `onChange`. Du kan lyssna på vad någon skriver utan att styra vad som står där. Det omvända gäller däremot: har du satt `value` MÅSTE du ha `onChange`, annars går det inte att skriva i fältet.',
+          'Nej. En okontrollerad input kan mycket väl ha en `onChange`. Du kan lyssna på vad någon skriver utan att styra vad som står där. Det omvända gäller däremot: har du satt `value` behöver du också `onChange`, annars står fältet stilla vid det du skickade in och React varnar i konsolen.',
       },
       {
         id: 'b',
@@ -30,56 +30,56 @@ export const formsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Att `value` skickas in',
         explanation:
-          'Rätt. React tvingar då fältet att alltid visa det värde du skickade. Utan `value` anger JSX bara ett startvärde, och DOM-elementet äger resten. En input kan inte vara både och, och inte heller byta sida under sin livstid.',
+          'Rätt. React tvingar då fältet att alltid visa det värde du skickade. Utan `value` anger JSX bara ett startvärde, och DOM-elementet äger resten. En input ska vara det ena eller det andra hela sin livstid, och React varnar om den byter sida.',
       },
     ],
   },
   {
     id: 'varfor-ritas-inte-om',
-    question: 'Varför ritas komponenten inte om när du skriver i ett fält som registrerats med `register`?',
+    question: 'Varför ritas komponenten inte om för varje tecken du skriver i ett fält som kopplats in med `register`?',
     correct: 'b',
     options: [
       {
         id: 'a',
         text: 'Biblioteket memoiserar formuläret',
         explanation:
-          'Nej. Det finns ingen memoisering inblandad, och en `memo` hade inte hjälpt ändå: den hindrar omritning när propsen är oförändrade, inte när komponentens eget state ändras.',
+          'Nej. Att memoisera en komponent, med `memo`, betyder att React hoppar över en ritning när komponentens props är oförändrade. Det finns ingen sådan inblandad här, och den hade inte hjälpt ändå: `memo` hindrar inte en ritning som komponentens eget state orsakar.',
       },
       {
         id: 'b',
-        text: '`register` ger fältet en `ref` men inget `value`, så värdet bor i DOM-elementet',
+        text: '`register` ger fältet inget `value`, så fältet är okontrollerat och värdet hålls utanför Reacts state',
         explanation:
-          'Rätt. `register` returnerar `onChange`, `onBlur`, `ref` och `name`, men aldrig `value`. Fältet är därmed okontrollerat i Reacts mening, och det finns ingen state att uppdatera vid varje tangenttryck. Omrenderingarna uteblir som en följd av hur värdet läses, inte som en optimering ovanpå.',
+          'Rätt. `register` returnerar `onChange`, `onBlur`, `ref` och `name`, men aldrig `value`. När du skriver sparar bibliotekets `onChange` värdet i ett eget lager utanför React, så det finns ingen state att uppdatera för varje tecken. Att inget ritas om är en följd av hur värdet läses, inte en optimering ovanpå.',
       },
       {
         id: 'c',
         text: 'Biblioteket samlar ihop uppdateringarna och kör dem i klump',
         explanation:
-          'Nej. Batchning finns i React och slår ihop flera state-ändringar till en omritning, men här sker ingen state-ändring alls medan du skriver. Det som inte händer behöver inte batchas.',
+          'Nej. Att samla ihop uppdateringar kallas batchning, och det gör React själv: flera state-ändringar i samma händelse blir en enda ritning. Men för de vanliga tecknen sker ingen state-ändring alls. Det som ritar om formuläret är när en egenskap det läser ur `formState` ändras, som `isDirty` vid första tecknet.',
       },
     ],
   },
   {
     id: 'nar-kors-valideringen',
-    question: 'När körs valideringen med bibliotekets standardinställning?',
+    question: 'När körs valideringen i React Hook Form om du inte väljer något `mode`?',
     correct: 'a',
     options: [
       {
         id: 'a',
-        text: 'Vid inskickning, och därefter vid varje ändring av det fält som fallerade',
+        text: 'Vid inskickning, och efter det vid varje ändring av ett fält',
         explanation:
-          'Rätt. Standardläget heter `onSubmit`, men andra halvan av meningen är den som brukar saknas: när ett fält väl har fallerat omvärderas det vid varje ändring. Det är därför felmeddelandet försvinner medan du rättar, trots att läget heter onSubmit.',
+          'Rätt. Standardläget heter `onSubmit`, men andra halvan av meningen är den som brukar saknas: efter den första inskickningen valideras varje fält du ändrar vid varje ändring, också fält som var giltiga när du skickade. Det är därför felmeddelandet försvinner medan du rättar, trots att läget heter onSubmit.',
       },
       {
         id: 'b',
         text: 'Vid varje tangenttryck, från början',
         explanation:
-          'Det är läget `onChange`, och det är inte standard. Det rättar dig medan du skriver: ett namn hinner vara ogiltigt efter första bokstaven, och felet står där tills du skrivit klart.',
+          'Det är läget `onChange`, och det är inte standard. Det rättar dig medan du skriver: med regeln minst två tecken är ett namn ogiltigt efter första bokstaven, och felet står kvar tills regeln är uppfylld.',
       },
       {
         id: 'c',
         text: 'När fältet tappar fokus',
-        explanation: 'Det är läget `onBlur`. Det är ofta en rimlig kompromiss, men du måste välja det. Det sker inte av sig självt.',
+        explanation: 'Det är läget `onBlur`, som väntar tills du lämnar fältet. Det är inte standard utan måste väljas.',
       },
     ],
   },
