@@ -9,13 +9,11 @@ import { RenderCounter } from '../../../shared/components/renderCounter';
 // Formuläret som de flesta skriver först.
 //
 // Varje fält får ett eget useState, och båda ligger här i formulärkomponenten.
-// Det är vad "kontrollerat" betyder i praktiken: React äger värdet, och
-// inputen visar det React säger åt den att visa.
-//
-// value är det enda som gör en input kontrollerad. Inte onChange, inte att
-// värdet råkar ligga i ett useState, utan att value skickas in. Reacts egen
-// dokumentation är tydlig med att en input inte kan vara både och, och inte
-// heller byta sida under sin livstid.
+// Värdet skickas in som value, och det är value som gör fältet kontrollerat:
+// React äger värdet, och inputen visar det React säger åt den att visa. Inte
+// onChange, och inte att värdet råkar ligga i ett useState. Ett fält ska
+// dessutom vara det ena eller det andra hela sin livstid, och React varnar i
+// konsolen om det byter sida.
 //
 // onChange är däremot obligatoriskt så fort value är satt. Utan den står
 // värdet stilla vid det du skickade in, och det går bokstavligen inte att
@@ -28,7 +26,7 @@ import { RenderCounter } from '../../../shared/components/renderCounter';
 // om hela formuläret, inklusive det andra fältet.
 //
 // Det är inte en nödvändig konsekvens av att vara kontrollerad, och den saken
-// står utskriven i demon. Se noten i formsPage.
+// står utskriven i rutan under de två formulären.
 export const ControlledForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

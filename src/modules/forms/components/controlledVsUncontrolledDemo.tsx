@@ -6,9 +6,10 @@ import { UncontrolledForm } from './uncontrolledForm';
 // De två formulären sida vid sida, så att räknarna går att jämföra utan att
 // hålla ett tal i huvudet mellan två vyer.
 //
-// Fälten är två och inte tre. Rollen, som är en Select, hör till nästa del:
-// en Select kan inte vara okontrollerad på ett vettigt sätt, och att visa den
-// här skulle betyda att förklara undantaget innan regeln.
+// Fälten är två och inte tre. Rollen hör till del 2 på sidan: den är en
+// Autocomplete, som inte lämnar ifrån sig ett vanligt input-element med
+// värdet i, och att visa den här skulle betyda att förklara undantaget innan
+// regeln.
 export const ControlledVsUncontrolledDemo = () => (
   <Stack spacing={2}>
     <Stack direction='row' sx={{ flexWrap: 'wrap', gap: 2, alignItems: 'flex-start' }}>
