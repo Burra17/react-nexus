@@ -31,7 +31,7 @@ const inspect = (result: Result): Inspection => {
     return {
       branch: "status === 'loading'",
       available: 'status',
-      text: `Inget svar än. Att läsa .message här gav ${String(missing)}. Fältet finns inte på den här varianten.`,
+      text: `Inget svar än. Koden läser ändå .message och får ${String(missing)}: fältet finns inte på den här varianten, men att läsa ett fält som saknas kraschar inte.`,
     };
   }
 
@@ -75,21 +75,21 @@ export const NarrowingDemo = () => {
           <Typography sx={{ fontFamily: 'monospace' }}>{inspection.branch}</Typography>
 
           <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
-            Fält TypeScript tillät här
+            Fält kompilatorn tillåter i grenen
           </Typography>
           <Typography sx={{ fontFamily: 'monospace' }}>{inspection.available}</Typography>
 
           <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
-            Resultat
+            Utfall
           </Typography>
           <Typography>{inspection.text}</Typography>
         </Stack>
       </Paper>
 
       <Typography variant='body2' color='textSecondary'>
-        Alla tre svaren har typen Result, men olika fält. Det är status som avgör vilken variant du håller i, och TypeScript följer med: i
-        error-grenen går det att skriva .message, i done-grenen .data, och i loading-grenen ingetdera. Raden som ändå försöker läsa .message står kvar
-        i koden nedan, märkt med @ts-expect-error.
+        I error-grenen får koden läsa <code>.message</code>, i done-grenen <code>.data</code> och i loading-grenen ingetdera. Raden i loading-grenen
+        som ändå läser <code>.message</code> står kvar i koden under Kod, märkt med <code>@ts-expect-error</code>. Den markeringen säger åt
+        kompilatorn att nästa rad ska vara ett typfel, och blir själv ett fel om raden någon gång slutar vara det.
       </Typography>
     </Stack>
   );
