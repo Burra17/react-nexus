@@ -40,7 +40,7 @@ export const LyingAssertionDemo = () => {
   return (
     <Stack spacing={2}>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
-        <Button variant='contained' onClick={() => handleRead(HONEST_RESPONSE)}>
+        <Button variant='outlined' onClick={() => handleRead(HONEST_RESPONSE)}>
           Läs svaret som har data
         </Button>
         <Button variant='outlined' onClick={() => handleRead(LYING_RESPONSE)}>
@@ -58,11 +58,14 @@ export const LyingAssertionDemo = () => {
         </Paper>
       )}
 
-      <Typography variant='body2' color='textSecondary'>
-        Båda knapparna kör exakt samma rader: samma <code>as Result</code>, samma kontroll av <code>status</code>, samma{' '}
-        <code>result.data.length</code>. Bygget är grönt för båda, eftersom <code>as</code> inte kontrollerar någonting. Det talar bara om för
-        TypeScript vad du påstår att värdet är. Den högra knappen visar vad påståendet var värt.
-      </Typography>
+      {outcome?.kind === 'crash' && (
+        <Typography color='textSecondary'>
+          Bygget gick igenom för båda svaren, eftersom kompilatorn tar <code>as</code> på orden. När svaret som saknar data når koden blir{' '}
+          <code>result.data</code> <code>undefined</code>, och <code>undefined</code> har ingen <code>length</code>. Felet kommer från webbläsaren när
+          koden kör, och koden fångar det med <code>try</code> och <code>catch</code> för att kunna visa det här. Att bara läsa ett fält som saknas,
+          som i demo 1, går bra. Det är när värdet används som det går fel.
+        </Typography>
+      )}
     </Stack>
   );
 };
