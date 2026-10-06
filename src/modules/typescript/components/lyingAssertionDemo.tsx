@@ -7,12 +7,15 @@ import type { Result } from '../types/result';
 
 // Två svar som båda påstår sig vara klara. Det andra saknar data.
 //
-// De är typade som unknown med flit: så ser data ut när den kommer utifrån, ur
-// ett API eller ur localStorage, innan någon har lovat något om formen.
+// De är typade som unknown med flit. unknown är typen för ett värde man inte
+// vet något om, och det går inte att använda förrän det kontrollerats eller
+// påståtts vara något. Så ser data ut när den kommer utifrån, från en server
+// eller ur webbläsarens lagring, innan någon har sagt något om formen.
 const HONEST_RESPONSE: unknown = { status: 'done', data: ['Ada', 'Grace', 'Katherine'] };
 const LYING_RESPONSE: unknown = { status: 'done' };
 
-// Utfallet av ett försök att läsa svaret.
+// Utfallet av ett försök att läsa svaret. Också det en diskriminerad union:
+// här heter diskriminanten kind, eftersom den kan heta vad som helst.
 type Outcome = { kind: 'ok'; text: string } | { kind: 'crash'; text: string };
 
 // Samma typ, samma kod, två svar. TypeScript skiljer dem inte åt. Det gör bara
@@ -22,12 +25,13 @@ export const LyingAssertionDemo = () => {
 
   const handleRead = (response: unknown) => {
     // Avsiktligt osäker kod, och hela poängen med demon. as utför ingen kontroll:
-    // TypeScript tar löftet på ordet och raden försvinner vid kompileringen, så
-    // ingenting finns kvar som kan upptäcka att svaret ljög.
+    // kompilatorn tar påståendet på orden, och as stryks i bygget, så ingenting
+    // finns kvar som kan upptäcka att svaret inte stämde.
     const result = response as Result;
 
-    // try/catch, och kraschen sker i en klickhanterare. Ett ofångat fel under
-    // renderingen hade avmonterat hela vyn i stället för att visa felet.
+    // try och catch fångar felet, så att demon kan visa det. Det fungerar här
+    // eftersom felet uppstår i en klickhanterare. Uppstod det medan komponenten
+    // ritades skulle React ta bort hela vyn i stället.
     try {
       if (result.status === 'done') {
         setOutcome({ kind: 'ok', text: `Listan har ${result.data.length} namn: ${result.data.join(', ')}` });

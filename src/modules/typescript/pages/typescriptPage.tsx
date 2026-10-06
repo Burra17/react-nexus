@@ -140,15 +140,15 @@ export const TypescriptPage = () => (
         fileName: 'src/modules/typescript/components/lyingAssertionDemo.tsx',
         code: lyingAssertionSource,
         language: 'tsx',
-        // Löftet som ingen kontrollerar, och svaret som inte håller det.
+        // Påståendet som ingen kontrollerar, och svaret som inte stämmer med det.
         highlight: ['const result = response as Result;', 'const LYING_RESPONSE'],
       },
       {
         fileName: 'tsconfig.app.json',
         code: tsconfigSource,
         language: 'json',
-        // De två flaggorna hör ihop: den ena kräver att allt går att radera, den
-        // andra att kompilatorn inte gissar vad som ska raderas.
+        // De två flaggorna hör ihop: den ena kräver att allt går att stryka, den
+        // andra att kompilatorn inte gissar vad som ska strykas.
         highlight: ['verbatimModuleSyntax', 'erasableSyntaxOnly'],
       },
     ]}

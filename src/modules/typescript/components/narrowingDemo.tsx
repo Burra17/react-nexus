@@ -20,12 +20,13 @@ type Inspection = {
 };
 
 // Här sker narrowing. TypeScript läser status och vet därefter exakt vilken av de
-// tre varianterna vi håller i, och därmed vilka fält som går att skriva.
+// tre varianterna vi håller i, och därmed vilka fält koden får läsa.
 const inspect = (result: Result): Inspection => {
   if (result.status === 'loading') {
-    // @ts-expect-error message finns bara på error-varianten, så den här raden är
-    // ett typfel. Den står kvar med flit: tsc failar bygget om den någon gång
-    // slutar vara ett fel, så påståendet i demon kan inte bli osant i tysthet.
+    // @ts-expect-error message finns bara på error-varianten, så raden nedan är
+    // ett typfel. Markeringen säger att det ska vara så. Slutar raden vara ett
+    // fel stoppar kompilatorn bygget, så demon kan inte börja visa något annat än
+    // texten säger utan att någon märker det.
     const missing: string | undefined = result.message;
 
     return {
