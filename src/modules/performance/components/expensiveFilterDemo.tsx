@@ -12,9 +12,10 @@ type Person = { id: number; name: string; role: string };
 
 const ROLES = ['utvecklare', 'designer', 'testare', 'arkitekt', 'analytiker'];
 
-// Stegen är uppmätta på förhand, inte valda på känsla. Filtreringen passerar
-// react.dev:s riktmärke på ungefär en millisekund strax över 20 000 poster, så
-// spannet lägger tröskeln i mitten: läsaren kan dra sig både under och över den.
+// Stegen är uppmätta i förväg, inte valda på känsla. På en vanlig dator passerar
+// filtreringen react.dev:s tumregel på en millisekund någonstans mellan 5 000 och
+// 20 000 poster, så spannet lägger gränsen i mitten: läsaren kan välja en lista
+// både under och över den.
 const SIZES = [1000, 5000, 20000, 50000, 100000, 200000];
 
 // Hur många mätvärden snittet räknas på.
@@ -34,17 +35,13 @@ const filterItems = (items: Person[], query: string): Person[] => {
   return items.filter((item) => item.name.toLowerCase().includes(needle) || item.role.toLowerCase().includes(needle));
 };
 
-// Bara två mått, och det är ett medvetet val.
+// Panelen visar två mått: tiderna och antalet körningar. Att antalet körningar
+// står still när memoiseringen träffar är det tydligaste beviset demon har.
 //
-// Första försöket visade också antal renderingar och hur många i rad som hoppat
-// över beräkningen. Båda var opålitliga lokalt: StrictMode dubblerar renderingar
-// och kan dessutom köra en useMemo-beräkning en extra gång för att upptäcka att
-// den inte är ren. Panelen visade då "5 körningar på 4 renderingar" och påstod
-// att beräkningen hoppats över direkt efter att den körts.
-//
-// Antal körningar är i stället ett absolut tal. Att det står helt stilla när
-// memoiseringen träffar är ett starkare bevis än ett förhållande som kräver en
-// brasklapp för att kunna läsas.
+// Antalet ritningar visas inte. I utvecklingsläget kör StrictMode varje
+// komponent två gånger och kan dessutom köra en useMemo-beräkning mer än en gång,
+// och då hade förhållandet mellan ritningar och körningar behövt en förklaring
+// för att gå att läsa.
 type Stats = {
   times: number[];
   runs: number;
@@ -56,40 +53,51 @@ export const ExpensiveFilterDemo = () => {
   const [query, setQuery] = useState('');
   const [unrelated, setUnrelated] = useState(0);
   const [memoized, setMemoized] = useState(false);
-  // Värdet läses aldrig. Det finns för att nollställningen ska ge en omrendering
-  // även när ingenting annat ändrades, så att panelen visar de tömda talen.
+  // Värdet läses aldrig, och därför står kommatecknet först: det hoppar över
+  // värdet och behåller bara funktionen som ändrar det. Det finns för att
+  // nollställningen ska ge en ritning. Mätvärdena ligger i en ref, och en ändring
+  // av en ref ritar inte om något, så utan det här state hade panelen visat de
+  // gamla talen.
   const [, setResetCount] = useState(0);
 
-  // Två lintregler stängs av här, och båda säger samma sak om koden nedan: den
-  // är inte ren renderingskod. Det stämmer.
+  // Två regler i ESLint, verktyget som granskar koden, stängs av här, och båda
+  // säger samma sak om koden nedan: den är inte ren. En ren komponent räknar bara
+  // fram vad som ska synas, ger samma resultat varje gång den körs och ändrar
+  // ingenting utanför sig själv.
   //
-  // react-hooks/refs stoppar normalt att en ref läses och skrivs under render.
-  // react-hooks/purity stoppar anrop som performance.now(), som ger olika svar
-  // varje gång. I vanlig kod är båda rätt: en render ska gå att köra om utan
-  // att något förändras. Här är mätningen hela demonstrationen, så undantaget
-  // görs medvetet. Skriv inte så här i kod som ska göra något på riktigt.
+  // react-hooks/refs stoppar normalt att en ref läses eller skrivs under
+  // ritningen. react-hooks/purity stoppar anrop som performance.now(), som ger
+  // olika svar varje gång. I vanlig kod har båda rätt. Här är mätningen hela
+  // demonstrationen, så undantaget görs medvetet. Skriv inte så här i kod som ska
+  // göra något på riktigt.
   //
-  // Det är dessutom precis den orenhet som gör att React Compiler får optimera
-  // bort en sådan här komponent. Se teoritexten om compilern.
+  // Mätvärdena ligger i en ref och inte i state, eftersom de skrivs under
+  // ritningen. En ändring av state hade gett en ny ritning, som skrivit igen, i
+  // all oändlighet. Samma orenhet är skälet till att React Compiler inte är
+  // påslagen i appen, se noten om kompilatorn i teorin ovan.
   /* eslint-disable react-hooks/refs, react-hooks/purity -- mätningen är själva demonstrationen, se kommentaren ovan */
   const statsRef = useRef<Stats>({ times: [], runs: 0 });
 
   // Listan byggs i en egen useMemo, och det är inte en detalj.
   //
-  // Att skapa 200 000 objekt tar tid. Låg den i samma mätning som filtreringen
-  // hade siffran mätt fel sak helt. Demon använder alltså useMemo för att kunna
-  // mäta useMemo rättvist. Ironin är avsiktlig och värd att lägga märke till.
+  // Att skapa 200 000 objekt tar tid. Låg det i samma mätning som filtreringen
+  // hade talet mätt fel sak. Demon använder alltså useMemo för att kunna mäta
+  // useMemo rättvist.
   const items = useMemo(() => makeItems(size), [size]);
 
   // Växeln, och den fungerar inte som man först gissar.
   //
-  // Hooks måste anropas i samma ordning varje render, så useMemo kan inte
-  // plockas bort med en if. I stället läggs ett värde som är nytt vid varje
-  // render i beroendelistan när växeln är av. Effekten blir densamma som ingen
-  // memoisering alls: beräkningen körs om varenda gång.
+  // useMemo är en hook, och en hook måste anropas i samma ordning vid varje
+  // ritning, eftersom React känner igen hookarna på ordningen. Därför kan useMemo
+  // inte plockas bort med en if-sats. I stället läggs ett värde i
+  // beroendelistan som är nytt vid varje ritning när växeln är av: {} skapar ett
+  // nytt objekt varje gång, och ett nytt objekt räknas alltid som ändrat, medan
+  // null är samma värde varje gång. Effekten blir densamma som ingen memoisering
+  // alls: beräkningen körs vid varje ritning.
   //
-  // Det är dessutom exakt det react.dev varnar för: ett enda "alltid nytt"
-  // värde räcker för att slå ut memoiseringen för en hel komponent.
+  // Det är exakt det react.dev varnar för: ett enda värde som alltid är nytt
+  // räcker för att memoiseringen aldrig ska slå till. Att slå om växeln byter
+  // värdet, och det ger därför själv en körning.
   const alwaysNew = memoized ? null : {};
 
   const visible = useMemo(
@@ -103,7 +111,9 @@ export const ExpensiveFilterDemo = () => {
 
       return result;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- alwaysNew används inte i beräkningen, den står här för att kunna slå av memoiseringen. Se kommentaren ovan.
+    // Regeln exhaustive-deps kräver att beroendelistan innehåller precis det som
+    // beräkningen använder. alwaysNew används inte, men står där med flit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- alwaysNew står här för att kunna slå av memoiseringen, se kommentaren om växeln
     [items, query, alwaysNew],
   );
 
@@ -113,9 +123,10 @@ export const ExpensiveFilterDemo = () => {
 
   // Nollställningen rör med flit inte söksträngen.
   //
-  // Tömdes fältet skulle beroendet ändras, beräkningen köras, och räknaren stå på
-  // ett direkt efter en knapp som heter Nollställ. Nu börjar den på noll med
-  // memoiseringen på och på ett utan, vilket är sant: då kördes den faktiskt.
+  // Tömdes fältet skulle ett beroende ändras och beräkningen köras, och antalet
+  // körningar stå på 1 direkt efter en knapp som heter Nollställ. Nu blir det 0
+  // när växeln är på. När växeln är av blir det 1, och det är sant: då körs
+  // beräkningen faktiskt vid ritningen som nollställningen ger.
   const reset = () => {
     statsRef.current = { times: [], runs: 0 };
     setUnrelated(0);
@@ -195,8 +206,9 @@ export const ExpensiveFilterDemo = () => {
         />
       </Stack>
 
-      {/* alignItems ligger i sx och inte som prop: MUI v9 tar inte längre emot
-          ett responsivt objekt direkt på Stack. */}
+      {/* Under varandra på smal skärm, på rad på bredare. alignItems ligger i sx,
+          eftersom Stack i MUI, komponentbiblioteket, bara tar emot ett värde per
+          skärmbredd där. */}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'center' } }}>
         <TextField
           size='small'
@@ -243,9 +255,10 @@ export const ExpensiveFilterDemo = () => {
         </Stack>
       </Paper>
 
-      {/* Samma grepp som RenderCounter: säg vilket läge läsaren faktiskt är i.
-          En modul om att mäta rätt får inte tiga om att den egna mätningen är
-          missvisande lokalt. */}
+      {/* Noten finns i två versioner och säger vilket läge appen körs i.
+          import.meta.env.DEV är sant i utvecklingsläget: Vite, verktyget som
+          bygger appen, sätter det då. En sida om att mäta rätt får inte tiga om
+          att den egna mätningen är missvisande i det läget. */}
       <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
