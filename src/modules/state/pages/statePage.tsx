@@ -95,15 +95,19 @@ export const StatePage = () => (
         fileName: 'src/modules/state/components/batchingDemo.tsx',
         code: batchingSource,
         language: 'tsx',
-        // Raderna som skiljer de två sätten åt: samma tre anrop, olika resultat.
-        highlight: ['setCount(count + 1);', 'setCount((c) => c + 1);'],
+        highlight: {
+          fragments: ['setCount(count + 1);', 'setCount((c) => c + 1);'],
+          why: 'Raderna som skiljer de två sätten åt: samma tre anrop, olika resultat.',
+        },
       },
       {
         fileName: 'src/modules/state/components/snapshotDemo.tsx',
         code: snapshotSource,
         language: 'tsx',
-        // Avläsningen som visar att count inte ändrats av raden ovanför.
-        highlight: ['setCount(count + 1);', 'setReadBack(count);'],
+        highlight: {
+          fragments: ['setCount(count + 1);', 'setReadBack(count);'],
+          why: 'Avläsningen som visar att count inte ändrats av raden ovanför.',
+        },
       },
       {
         fileName: 'src/shared/components/renderCounter.tsx',

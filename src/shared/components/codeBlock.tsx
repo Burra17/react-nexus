@@ -44,6 +44,12 @@ type CodeBlockProps = {
   // radnummer är en kopia av samma sort: flyttas raden pekar det tyst på fel
   // rad. Ett textfragment följer med raden det hör till.
   highlight?: string[];
+  // Varför just de raderna är markerade, i en mening som läsaren ser.
+  //
+  // Den står under filnamnet och syns också när stycket är hopfällt, så att man
+  // vet vad man ska leta efter innan man öppnar filen. Utan den ser läsaren att
+  // rader lyfts fram, men aldrig varför.
+  highlightNote?: string;
   // Stycket börjar helt hopfällt, oavsett hur kort filen är.
   //
   // Sätts på sidans sekundära filer. Tröskeln nedan mäter en fil i taget, men
@@ -82,7 +88,7 @@ const findHighlightedLines = (code: string, fragments: string[], fileName?: stri
   return highlighted;
 };
 
-export const CodeBlock = ({ code, language, fileName, highlight = [], startCollapsed = false }: CodeBlockProps) => {
+export const CodeBlock = ({ code, language, fileName, highlight = [], highlightNote, startCollapsed = false }: CodeBlockProps) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const lineCount = code.trimEnd().split('\n').length;
@@ -163,6 +169,25 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], startColla
           </IconButton>
         </Tooltip>
       </Box>
+
+      {/* Samma bakgrund och vänsterkant som de markerade raderna, så att
+          meningen också förklarar vad färgen betyder. */}
+      {highlightNote && (
+        <Box
+          sx={(theme) => ({
+            px: 2,
+            py: 1,
+            borderBottom: 1,
+            borderColor: 'divider',
+            backgroundColor: `rgba(${theme.vars.palette.primary.mainChannel} / 0.14)`,
+            boxShadow: `inset 3px 0 0 ${theme.vars.palette.primary.main}`,
+          })}
+        >
+          <Typography variant='body2' color='textSecondary'>
+            <strong>Markerat:</strong> {highlightNote}
+          </Typography>
+        </Box>
+      )}
 
       {/* Ett stycke som inte visar någon kod renderas inte alls, i stället för
           att klippas bort med CSS. Överflödet som göms med overflow: hidden

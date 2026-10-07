@@ -140,109 +140,127 @@ export const QueryCachePage = () => (
         fileName: 'src/modules/queryCache/components/sharedCacheDemo.tsx',
         code: sharedCacheDemoSource,
         language: 'tsx',
-        // Korten skapas i en loop och vet inget om varandra. Deduperingen
-        // följer av nyckeln, inte av någon samordning här.
-        highlight: ['Array.from({ length: cardCount }', 'const requestCount = readRequestCount(SHARING_DEMO);'],
+        highlight: {
+          fragments: ['Array.from({ length: cardCount }', 'const requestCount = readRequestCount(SHARING_DEMO);'],
+          why: 'Korten skapas i en loop och vet inget om varandra. Deduperingen följer av nyckeln, inte av någon samordning här.',
+        },
       },
       {
-        // Mätinstrumentet som varje påstående på sidan vilar på. Utan filen ser
-        // läsaren ett tal utan att kunna se vad "nollställ" gör med det.
         fileName: 'src/shared/components/requestCounterPanel.tsx',
         code: requestCounterPanelSource,
         language: 'tsx',
-        highlight: ['const [zeroPoint, setZeroPoint] = useState(total);', 'const sinceReset = total - zeroPoint;'],
+        highlight: {
+          fragments: ['const [zeroPoint, setZeroPoint] = useState(total);', 'const sinceReset = total - zeroPoint;'],
+          why: 'Räknarpanelen som varje påstående på sidan vilar på: nollpunkten som sparas när du nollställer, och skillnaden mot den som visas.',
+        },
       },
       {
         fileName: 'src/modules/queryCache/components/userListCard.tsx',
         code: userListCardSource,
         language: 'tsx',
-        // Ett vanligt anrop till hooken. Inget i kortet röjer att tre andra
-        // kort gör exakt samma sak.
-        highlight: ['const { data, isPending, isError, error, fetchStatus } = useFetchSharedUsers();'],
+        highlight: {
+          fragments: ['const { data, isPending, isError, error, fetchStatus } = useFetchSharedUsers();'],
+          why: 'Ett vanligt anrop till hooken. Inget i kortet röjer att tre andra kort gör exakt samma sak.',
+        },
       },
       {
         fileName: 'src/modules/queryCache/components/invalidationDemo.tsx',
         code: invalidationDemoSource,
         language: 'tsx',
-        // De tre knapparna: brett prefix, smalt prefix, och en enskild query
-        // som tvingas hämta om.
-        highlight: ['queryKey: usersKeys.all }', 'queryKey: usersKeys.lists() }', 'void ada.refetch()'],
+        highlight: {
+          fragments: ['queryKey: usersKeys.all }', 'queryKey: usersKeys.lists() }', 'void ada.refetch()'],
+          why: 'De tre knapparna: brett prefix, smalt prefix, och en enskild query som tvingas hämta om.',
+        },
       },
       {
         fileName: 'src/modules/queryCache/components/cacheInspector.tsx',
         code: cacheInspectorSource,
         language: 'tsx',
-        // Avläsningen av hela cachen, och markeringen av modulens egna poster.
-        highlight: ['const queries = queryClient.getQueryCache().getAll();', 'const isThisModule ='],
+        highlight: {
+          fragments: ['const queries = queryClient.getQueryCache().getAll();', 'const isThisModule ='],
+          why: 'Avläsningen av hela cachen, och markeringen av den här vyns egna poster.',
+        },
       },
       {
         fileName: 'src/shared/hooks/useRerenderOnCacheChange.ts',
         code: useRerenderOnCacheChangeSource,
         language: 'ts',
-        // Prenumerationen som gör att panelerna visar nuet och inte det läge
-        // som rådde vid senaste renderingen.
-        highlight: ['.subscribe('],
+        highlight: {
+          fragments: ['.subscribe('],
+          why: 'Prenumerationen som gör att panelerna visar hur cachen ser ut nu, och inte hur den såg ut när de senast ritades.',
+        },
       },
       {
         fileName: 'src/modules/queryCache/hooks/queries/useFetchSharedUsers.ts',
         code: useFetchSharedUsersSource,
         language: 'ts',
-        // En helt vanlig query. Allt delningsdemon visar följer av nyckeln.
-        highlight: ['queryKey: sharedUsersKeys.list(),'],
+        highlight: {
+          fragments: ['queryKey: sharedUsersKeys.list(),'],
+          why: 'En helt vanlig query. Allt delningsdemon visar följer av nyckeln.',
+        },
       },
       {
         fileName: 'src/modules/queryCache/hooks/queries/useFetchUsers.ts',
         code: useFetchUsersSource,
         language: 'ts',
-        // Samma anrop, annan nyckel: den som invalideringsdemon arbetar mot.
-        highlight: ['queryKey: usersKeys.lists(),'],
+        highlight: {
+          fragments: ['queryKey: usersKeys.lists(),'],
+          why: 'Samma anrop, annan nyckel: den som invalideringsdemon arbetar mot.',
+        },
       },
       {
         fileName: 'src/modules/queryCache/hooks/queries/useFetchUser.ts',
         code: useFetchUserSource,
         language: 'ts',
-        // Detaljposterna. Utan dem finns ingenting under den andra grenen, och
-        // skillnaden mellan de två prefixen går inte att visa.
-        highlight: ['queryKey: usersKeys.detail(id),'],
+        highlight: {
+          fragments: ['queryKey: usersKeys.detail(id),'],
+          why: 'Detaljposterna. Utan dem finns ingenting under den andra grenen, och skillnaden mellan de två prefixen går inte att visa.',
+        },
       },
       {
-        // Ligger i sources trots att den bara innehåller ett tal. Alla tre
-        // hookarna ovan skickar RESPONSE_DELAY_MS till servicen, och utan filen
-        // är det ett värde läsaren ser användas men inte kan se.
         fileName: 'src/modules/queryCache/hooks/queries/responseDelay.ts',
         code: responseDelaySource,
         language: 'ts',
-        highlight: ['export const RESPONSE_DELAY_MS'],
+        highlight: {
+          fragments: ['export const RESPONSE_DELAY_MS'],
+          why: 'Ett enda tal: svarstiden som alla tre hookarna ovan skickar till servicen.',
+        },
       },
       {
-        // Märkningen som håller isär sidans två räknare. Hookarna skickar den
-        // och demona läser av den.
         fileName: 'src/modules/queryCache/hooks/queries/requestDemos.ts',
         code: requestDemosSource,
         language: 'ts',
-        highlight: ['export const SHARING_DEMO', 'export const INVALIDATION_DEMO'],
+        highlight: {
+          fragments: ['export const SHARING_DEMO', 'export const INVALIDATION_DEMO'],
+          why: 'Märkningen som håller isär sidans två räknare. Hookarna skickar den och demona läser av den.',
+        },
       },
       {
         fileName: 'src/modules/queryCache/hooks/usersKeys.ts',
         code: usersKeysSource,
         language: 'ts',
-        // Nivåerna som gör prefixinvalidering möjlig.
-        highlight: ['all:', 'lists: () =>', 'details: () =>'],
+        highlight: {
+          fragments: ['all:', 'lists: () =>', 'details: () =>'],
+          why: 'Nivåerna som gör prefixinvalidering möjlig.',
+        },
       },
       {
         fileName: 'src/services/api/users.ts',
         code: usersServiceSource,
         language: 'ts',
-        // Listan, som byggdes först när den här vyn behövde den.
-        highlight: ['export const getUsers'],
+        highlight: {
+          fragments: ['export const getUsers'],
+          why: 'Funktionen som hämtar listan med användare.',
+        },
       },
       {
         fileName: 'src/services/mocks/handlers.ts',
         code: handlersSource,
         language: 'ts',
-        // Backendens lista, och räknaren som gör påståendena om anrop
-        // kontrollerbara. Den räknar per demo, enligt märkningen i anropet.
-        highlight: ["http.get('/api/users',", 'const countRequest ='],
+        highlight: {
+          fragments: ["http.get('/api/users',", 'const countRequest ='],
+          why: 'Backendens lista, och räknaren som gör påståendena om anrop kontrollerbara. Den räknar per demo, enligt märkningen i anropet.',
+        },
       },
     ]}
     quiz={queryCacheQuestions}

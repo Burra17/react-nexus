@@ -147,58 +147,64 @@ export const QueryBasicsPage = () => (
         fileName: 'src/modules/queryBasics/components/userQueryDemo.tsx',
         code: userQueryDemoSource,
         language: 'tsx',
-        // Raden som ersätter tre useState och en useEffect, och nyckeln som
-        // skrivs ut så att den går att se ändras.
-        highlight: ['const { data, status, fetchStatus', 'const queryKey = JSON.stringify'],
+        highlight: {
+          fragments: ['const { data, status, fetchStatus', 'const queryKey = JSON.stringify'],
+          why: 'Raden som ersätter tre useState och en useEffect, och nyckeln som skrivs ut så att den går att se ändras.',
+        },
       },
       {
         fileName: 'src/modules/queryBasics/hooks/queries/useFetchUser.ts',
         code: useFetchUserSource,
         language: 'ts',
-        // Nyckeln, avstängningen utan id, anropet till servicen och avstängningen av
-        // omförsöken.
-        highlight: ['queryKey: usersKeys.detail', '? skipToken', 'await getUser(', 'retry: false,'],
+        highlight: {
+          fragments: ['queryKey: usersKeys.detail', '? skipToken', 'await getUser(', 'retry: false,'],
+          why: 'Nyckeln, avstängningen utan id, anropet till servicen och avstängningen av omförsöken.',
+        },
       },
       {
         fileName: 'src/modules/queryBasics/components/cacheClockDemo.tsx',
         code: cacheClockDemoSource,
         language: 'tsx',
-        // Avmonteringen som får gcTime att börja ticka, och avläsningen av
-        // cachen utanför hooken, det enda sättet att se posten när ingen tittar.
-        highlight: ['<CachedUserCard staleTimeMs=', 'const cacheState = queryClient.getQueryState'],
+        highlight: {
+          fragments: ['<CachedUserCard staleTimeMs=', 'const cacheState = queryClient.getQueryState'],
+          why: 'Avmonteringen som får gcTime att börja ticka, och avläsningen av cachen utanför hooken, det enda sättet att se posten när ingen tittar.',
+        },
       },
       {
         fileName: 'src/modules/queryBasics/hooks/queries/useFetchCachedUser.ts',
         code: useFetchCachedUserSource,
         language: 'ts',
-        // De två klockorna, och den egna nyckelgrenen som håller demon isär
-        // från den första.
-        highlight: ['queryKey: usersKeys.clock(id)', 'staleTime: staleTimeMs,', 'gcTime: gcTimeMs,'],
+        highlight: {
+          fragments: ['queryKey: usersKeys.clock(id)', 'staleTime: staleTimeMs,', 'gcTime: gcTimeMs,'],
+          why: 'De två klockorna, och den egna nyckelgrenen som håller demon isär från den första.',
+        },
       },
       {
         fileName: 'src/modules/queryBasics/hooks/usersKeys.ts',
         code: usersKeysSource,
         language: 'ts',
-        // Hur nycklarna byggs ovanpå varandra, att felflaggan står i nyckeln
-        // medan fördröjningen inte gör det, och den egna grenen för klockorna.
-        highlight: ['details: () =>', 'detail: (id:', 'clock: (id:'],
+        highlight: {
+          fragments: ['details: () =>', 'detail: (id:', 'clock: (id:'],
+          why: 'Hur nycklarna byggs ovanpå varandra, att felflaggan står i nyckeln medan fördröjningen inte gör det, och den egna grenen för klockorna.',
+        },
       },
       {
         fileName: 'src/services/api/users.ts',
         code: usersServiceSource,
         language: 'ts',
-        // Servicen innehåller ingen React, bara en funktion som returnerar
-        // typad data.
-        highlight: ['export const getUser'],
+        highlight: {
+          fragments: ['export const getUser'],
+          why: 'Servicen innehåller ingen React, bara en funktion som returnerar data med en känd form.',
+        },
       },
       {
         fileName: 'src/services/mocks/handlers.ts',
         code: handlersSource,
         language: 'ts',
-        // Den mockade backenden: hur styrningen läses ur sökparametrarna, var
-        // fördröjningen läggs in, och räknaren som gör påståendena om anrop
-        // kontrollerbara. Den räknar per demo, enligt märkningen i anropet.
-        highlight: ['const readControls', 'await delay(delayMs);', 'const countRequest ='],
+        highlight: {
+          fragments: ['const readControls', 'await delay(delayMs);', 'const countRequest ='],
+          why: 'Den mockade backenden: hur styrningen läses ur sökparametrarna, var fördröjningen läggs in, och räknaren som gör påståendena om anrop kontrollerbara. Den räknar per demo, enligt märkningen i anropet.',
+        },
       },
     ]}
     quiz={queryBasicsQuestions}

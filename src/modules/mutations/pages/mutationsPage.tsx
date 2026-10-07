@@ -124,93 +124,108 @@ export const MutationsPage = () => (
         fileName: 'src/modules/mutations/components/withoutInvalidationDemo.tsx',
         code: withoutInvalidationDemoSource,
         language: 'tsx',
-        // Att hooken anropas inne i knappen och inte i föräldern är vad som gör
-        // de två knapparna oberoende.
-        highlight: [
-          'const RoleButton = ({ role }: RoleButtonProps) => {',
-          'const { mutate, isPending, data, isError, error } = useUpdateUserRole();',
-        ],
+        highlight: {
+          fragments: [
+            'const RoleButton = ({ role }: RoleButtonProps) => {',
+            'const { mutate, isPending, data, isError, error } = useUpdateUserRole();',
+          ],
+          why: 'Att hooken anropas inne i knappen och inte i föräldern är vad som gör de två knapparna oberoende.',
+        },
       },
       {
         fileName: 'src/modules/mutations/hooks/mutations/useUpdateUserRole.ts',
         code: useUpdateUserRoleSource,
         language: 'ts',
-        // Hela hooken är tre rader, och det som saknas är det intressanta.
-        highlight: ['mutationFn: (payload: UpdateUserRolePayload)'],
+        highlight: {
+          fragments: ['mutationFn: (payload: UpdateUserRolePayload)'],
+          why: 'Hela hooken är tre rader, och det som saknas är det intressanta.',
+        },
       },
       {
         fileName: 'src/modules/mutations/components/withInvalidationDemo.tsx',
         code: withInvalidationDemoSource,
         language: 'tsx',
-        // Ett anrop av hooken som båda knapparna använder, till skillnad från
-        // den första demon: båda blir inaktiva medan någon av dem sparar.
-        highlight: ['const { mutate, isPending, data, variables } = useUpdateUserRoleWithInvalidation();', 'variables?.role === role'],
+        highlight: {
+          fragments: ['const { mutate, isPending, data, variables } = useUpdateUserRoleWithInvalidation();', 'variables?.role === role'],
+          why: 'Ett anrop av hooken som båda knapparna använder, till skillnad från den första demon: båda blir inaktiva medan någon av dem sparar.',
+        },
       },
       {
         fileName: 'src/modules/mutations/hooks/mutations/useUpdateUserRoleWithInvalidation.ts',
         code: useUpdateUserRoleWithInvalidationSource,
         language: 'ts',
-        // Raden som saknades i den första demons hook.
-        highlight: ['void queryClient.invalidateQueries({ queryKey: mutationUsersKeys'],
+        highlight: {
+          fragments: ['void queryClient.invalidateQueries({ queryKey: mutationUsersKeys'],
+          why: 'Raden som saknades i den första demons hook.',
+        },
       },
       {
         fileName: 'src/modules/mutations/components/optimisticDemo.tsx',
         code: optimisticDemoSource,
         language: 'tsx',
-        // Samma ändring, två utfall. Skillnaden står i en enda flagga.
-        highlight: ['role: nextRole, shouldFail: false', 'role: nextRole, shouldFail: true'],
+        highlight: {
+          fragments: ['role: nextRole, shouldFail: false', 'role: nextRole, shouldFail: true'],
+          why: 'Samma ändring, två utfall. Skillnaden står i en enda flagga.',
+        },
       },
       {
         fileName: 'src/modules/mutations/hooks/mutations/useUpdateUserRoleOptimistic.ts',
         code: useUpdateUserRoleOptimisticSource,
         language: 'ts',
-        // De fyra raderna som utgör mönstret: avbryt, spara, skriv, rulla
-        // tillbaka. Och så invalideringen som kör oavsett utfall.
-        highlight: [
-          'await queryClient.cancelQueries({ queryKey });',
-          'const previousUsers = queryClient.getQueryData<User[]>(queryKey);',
-          'queryClient.setQueryData(queryKey, onMutateResult.previousUsers);',
-          'void queryClient.invalidateQueries({ queryKey });',
-        ],
+        highlight: {
+          fragments: [
+            'await queryClient.cancelQueries({ queryKey });',
+            'const previousUsers = queryClient.getQueryData<User[]>(queryKey);',
+            'queryClient.setQueryData(queryKey, onMutateResult.previousUsers);',
+            'void queryClient.invalidateQueries({ queryKey });',
+          ],
+          why: 'De fyra raderna som utgör mönstret: avbryt, spara, skriv, rulla tillbaka. Och så invalideringen som kör oavsett utfall.',
+        },
       },
       {
         fileName: 'src/modules/mutations/components/roleList.tsx',
         code: roleListSource,
         language: 'tsx',
-        // Samma lista i alla tre delarna, men under varsin nyckel.
-        highlight: ['useFetchMutationUsers(demo)'],
+        highlight: {
+          fragments: ['useFetchMutationUsers(demo)'],
+          why: 'Samma lista i alla tre demona, men under varsin nyckel.',
+        },
       },
       {
         fileName: 'src/modules/mutations/hooks/queries/useFetchMutationUsers.ts',
         code: useFetchMutationUsersSource,
         language: 'ts',
-        // staleTime: Infinity är inte en optimering här utan det som gör
-        // demonstrationerna mätbara.
-        highlight: ['staleTime: Infinity,'],
+        highlight: {
+          fragments: ['staleTime: Infinity,'],
+          why: 'staleTime: Infinity är inte en optimering här utan det som gör demonstrationerna mätbara.',
+        },
       },
       {
         fileName: 'src/modules/mutations/hooks/mutationUsersKeys.ts',
         code: mutationUsersKeysSource,
         language: 'ts',
-        // Demonstrationens namn står i nyckeln trots att det inte påverkar
-        // svaret. Skälet står i filen.
-        highlight: ['list: (demo: MutationDemo) =>'],
+        highlight: {
+          fragments: ['list: (demo: MutationDemo) =>'],
+          why: 'Demonstrationens namn står i nyckeln trots att det inte påverkar svaret. Skälet står i filen.',
+        },
       },
       {
         fileName: 'src/services/api/mutationUsers.ts',
         code: mutationUsersServiceSource,
         language: 'ts',
-        // Skrivningen. Servicen innehåller ingen React. Den tar en nyttolast
-        // och returnerar typad data.
-        highlight: ['export const updateMutationUserRole'],
+        highlight: {
+          fragments: ['export const updateMutationUserRole'],
+          why: 'Skrivningen. Servicen innehåller ingen React. Den tar emot det som ska sparas och returnerar data med en känd form.',
+        },
       },
       {
         fileName: 'src/services/mocks/handlers.ts',
         code: handlersSource,
         language: 'ts',
-        // Modulens egen datamängd, och den enda handlern i filen som ändrar
-        // något.
-        highlight: ['const MUTATION_USERS', "http.put('/api/mutations/users/:id'", 'MUTATION_USERS[user.id] = { ...user, role };'],
+        highlight: {
+          fragments: ['const MUTATION_USERS', "http.put('/api/mutations/users/:id'", 'MUTATION_USERS[user.id] = { ...user, role };'],
+          why: 'Den här vyns egen datamängd, och den enda handlern i filen som ändrar något.',
+        },
       },
     ]}
     quiz={mutationsQuestions}

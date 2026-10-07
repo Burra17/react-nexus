@@ -116,54 +116,64 @@ export const ArchitecturePage = () => (
         fileName: 'src/modules/architecture/components/flowTraceDemo.tsx',
         code: flowTraceDemoSource,
         language: 'tsx',
-        // Interceptorerna som hakas på och av. De är hela skälet till att
-        // axiosClient kan lämnas orörd.
-        highlight: ['const requestId = axiosClient.interceptors.request.use', 'axiosClient.interceptors.request.eject(requestId);'],
+        highlight: {
+          fragments: ['const requestId = axiosClient.interceptors.request.use', 'axiosClient.interceptors.request.eject(requestId);'],
+          why: 'Interceptorerna som hakas på och av. De är hela skälet till att axiosClient kan lämnas orörd.',
+        },
       },
       {
         fileName: 'src/modules/architecture/hooks/queries/useFetchArchitectureUsers.ts',
         code: useFetchArchitectureUsersSource,
         language: 'ts',
-        // Hooken vet nyckeln men ingenting om HTTP.
-        highlight: ['queryKey: architectureKeys.trace()', 'queryFn: () => getUsers('],
+        highlight: {
+          fragments: ['queryKey: architectureKeys.trace()', 'queryFn: () => getUsers('],
+          why: 'Hooken vet nyckeln men ingenting om HTTP.',
+        },
       },
       {
         fileName: 'src/services/api/users.ts',
         code: usersServiceSource,
         language: 'ts',
-        // Servicen innehåller ingen React, bara en funktion som returnerar
-        // typad data.
-        highlight: ['export const getUsers'],
+        highlight: {
+          fragments: ['export const getUsers'],
+          why: 'Servicen innehåller ingen React, bara en funktion som returnerar data med en känd form.',
+        },
       },
       {
         fileName: 'src/services/axios/axiosClient.ts',
         code: axiosClientSource,
         language: 'ts',
-        // Basadressen, och kontrollen som gör att ett svar som inte är JSON
-        // aldrig når cachen.
-        highlight: ['baseURL:', "if (contentType.includes('application/json'))"],
+        highlight: {
+          fragments: ['baseURL:', "if (contentType.includes('application/json'))"],
+          why: 'Basadressen, och kontrollen som gör att ett svar som inte är JSON aldrig når cachen.',
+        },
       },
       {
         fileName: 'src/services/mocks/handlers.ts',
         code: handlersSource,
         language: 'ts',
-        // Andra änden av kedjan.
-        highlight: ["http.get('/api/users',"],
+        highlight: {
+          fragments: ["http.get('/api/users',"],
+          why: 'Andra änden av kedjan: MSW:s svar på anropet till /api/users.',
+        },
       },
       {
         fileName: 'src/main.tsx',
         code: mainSource,
         language: 'tsx',
-        // Avsteget: MSW startas i alla lägen, och appen väntar in den innan
-        // den ritas.
-        highlight: ["import('./services/mocks/browser')", 'await worker.start('],
+        highlight: {
+          fragments: ["import('./services/mocks/browser')", 'await worker.start('],
+          why: 'Avsteget: MSW startas i alla lägen, och appen väntar in den innan den ritas.',
+        },
       },
       {
         fileName: 'src/modules/architecture/hooks/architectureKeys.ts',
         code: architectureKeysSource,
         language: 'ts',
-        // Avsteget: roten bär modulens namn och inte bara resursens.
-        highlight: ["all: ['architecture'] as const,"],
+        highlight: {
+          fragments: ["all: ['architecture'] as const,"],
+          why: 'Det fjärde avsteget på korten: nyckeln börjar med modulens namn och inte med resursens.',
+        },
       },
     ]}
     quiz={architectureQuestions}

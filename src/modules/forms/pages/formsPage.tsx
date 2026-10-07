@@ -121,41 +121,46 @@ export const FormsPage = () => (
         fileName: 'src/modules/forms/components/controlledForm.tsx',
         code: controlledFormSource,
         language: 'tsx',
-        // value in, onChange ut, och all state i formulärkomponenten, vilket
-        // är det som gör att båda fälten ritas om.
-        highlight: ['const [name, setName] = useState', 'value={name} onChange='],
+        highlight: {
+          fragments: ['const [name, setName] = useState', 'value={name} onChange='],
+          why: 'value in, onChange ut, och all state i formulärkomponenten, vilket är det som gör att båda fälten ritas om.',
+        },
       },
       {
         fileName: 'src/modules/forms/components/uncontrolledForm.tsx',
         code: uncontrolledFormSource,
         language: 'tsx',
-        // defaultValue i stället för value, och refen som bara används för att
-        // läsa vid inskickning.
-        highlight: ['const nameRef = useRef<HTMLInputElement>(null);', "defaultValue='' inputRef={nameRef}", 'nameRef.current?.value'],
+        highlight: {
+          fragments: ['const nameRef = useRef<HTMLInputElement>(null);', "defaultValue='' inputRef={nameRef}", 'nameRef.current?.value'],
+          why: 'defaultValue i stället för value, och refen som bara används för att läsa vid inskickning.',
+        },
       },
       {
         fileName: 'src/modules/forms/components/hookFormDemo.tsx',
         code: hookFormDemoSource,
         language: 'tsx',
-        // Spridningen som kopplar in fältet, och Controller för det fält som
-        // inte klarar sig utan.
-        highlight: ["{...register('name')}", 'defaultValues: { name:', '<Controller'],
+        highlight: {
+          fragments: ["{...register('name')}", 'defaultValues: { name:', '<Controller'],
+          why: 'Spridningen som kopplar in fältet, och Controller för det fält som inte klarar sig utan.',
+        },
       },
       {
         fileName: 'src/modules/forms/components/validationDemo.tsx',
         code: validationDemoSource,
         language: 'tsx',
-        // Reglerna som andra argument till register, och nyckeln som tvingar
-        // fram ett nytt formulär när läget byts.
-        highlight: ['mode,', "required: 'Namn måste fyllas i.',", '<ValidatedForm key={mode} mode={mode} />'],
+        highlight: {
+          fragments: ['mode,', "required: 'Namn måste fyllas i.',", '<ValidatedForm key={mode} mode={mode} />'],
+          why: 'Reglerna som andra argument till register, och nyckeln som tvingar fram ett nytt formulär när läget byts.',
+        },
       },
       {
         fileName: 'src/modules/forms/types/profile.ts',
         code: profileTypesSource,
         language: 'ts',
-        // Rollerna som en as const-array i stället för en enum, och mönstret
-        // för e-post.
-        highlight: ['export const ROLES', 'export const EMAIL_PATTERN'],
+        highlight: {
+          fragments: ['export const ROLES', 'export const EMAIL_PATTERN'],
+          why: 'Rollerna som en as const-array i stället för en enum, och mönstret för e-post.',
+        },
       },
     ]}
     quiz={formsQuestions}
