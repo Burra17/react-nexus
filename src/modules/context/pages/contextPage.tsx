@@ -92,9 +92,10 @@ export const ContextPage = () => (
         fileName: 'src/modules/context/components/contextRenderDemo.tsx',
         code: contextRenderSource,
         language: 'tsx',
-        // Objektet som skapas på nytt vid varje ritning, den memoiserade
-        // varianten, och konsumenten som memo inte stoppar.
-        highlight: ['const freshValue', 'const stableValue', 'const MemoUserCard'],
+        highlight: {
+          fragments: ['const freshValue', 'const stableValue', 'const MemoUserCard'],
+          why: 'Objektet som skapas på nytt vid varje ritning, den memoiserade varianten, och konsumenten som memo inte stoppar.',
+        },
       },
     ]}
     quiz={contextQuestions}

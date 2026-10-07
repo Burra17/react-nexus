@@ -125,31 +125,37 @@ export const TypescriptPage = () => (
         fileName: 'src/modules/typescript/components/narrowingDemo.tsx',
         code: narrowingSource,
         language: 'tsx',
-        // Raden som inte går att skriva, och den sista grenen som klarar sig utan
-        // kontroll eftersom de andra varianterna redan är uteslutna.
-        highlight: ['// @ts-expect-error', 'result.data.join'],
+        highlight: {
+          fragments: ['// @ts-expect-error', 'result.data.join'],
+          why: 'Raden som inte går att skriva, och den sista grenen som klarar sig utan kontroll eftersom de andra varianterna redan är uteslutna.',
+        },
       },
       {
         fileName: 'src/modules/typescript/types/result.ts',
         code: resultSource,
         language: 'ts',
-        // Diskriminanten: fältet som finns i alla tre varianterna.
-        highlight: ['export type Result'],
+        highlight: {
+          fragments: ['export type Result'],
+          why: 'Diskriminanten: fältet som finns i alla tre varianterna.',
+        },
       },
       {
         fileName: 'src/modules/typescript/components/lyingAssertionDemo.tsx',
         code: lyingAssertionSource,
         language: 'tsx',
-        // Påståendet som ingen kontrollerar, och svaret som inte stämmer med det.
-        highlight: ['const result = response as Result;', 'const LYING_RESPONSE'],
+        highlight: {
+          fragments: ['const result = response as Result;', 'const LYING_RESPONSE'],
+          why: 'Påståendet som ingen kontrollerar, och svaret som inte stämmer med det.',
+        },
       },
       {
         fileName: 'tsconfig.app.json',
         code: tsconfigSource,
         language: 'json',
-        // De två flaggorna hör ihop: den ena kräver att allt går att stryka, den
-        // andra att kompilatorn inte gissar vad som ska strykas.
-        highlight: ['verbatimModuleSyntax', 'erasableSyntaxOnly'],
+        highlight: {
+          fragments: ['verbatimModuleSyntax', 'erasableSyntaxOnly'],
+          why: 'De två flaggorna hör ihop: den ena kräver att allt går att stryka, den andra att kompilatorn inte gissar vad som ska strykas.',
+        },
       },
     ]}
     quiz={typescriptQuestions}

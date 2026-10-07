@@ -96,17 +96,19 @@ export const RenderingPage = () => (
         fileName: 'src/modules/rendering/components/renderTriggerDemo.tsx',
         code: renderTriggerSource,
         language: 'tsx',
-        // Objektet som ligger still, memo-inpackningen, och raden där ett nytt
-        // objekt skapas vid varje ritning.
-        highlight: ['const stableSettings =', 'const MemoChild = memo(Child);', 'const settings = newObjectEachRender'],
+        highlight: {
+          fragments: ['const stableSettings =', 'const MemoChild = memo(Child);', 'const settings = newObjectEachRender'],
+          why: 'Objektet som ligger still, memo-inpackningen, och raden där ett nytt objekt skapas vid varje ritning.',
+        },
       },
       {
         fileName: 'src/modules/rendering/components/domUnchangedDemo.tsx',
         code: domUnchangedSource,
         language: 'tsx',
-        // Textfältet som React behåller mellan ritningarna. Det saknar value,
-        // och det är det som gör det okontrollerat.
-        highlight: ['<TextField'],
+        highlight: {
+          fragments: ['<TextField'],
+          why: 'Textfältet som React behåller mellan ritningarna. Det saknar value, och det är det som gör det okontrollerat.',
+        },
       },
       {
         fileName: 'src/shared/components/renderCounter.tsx',

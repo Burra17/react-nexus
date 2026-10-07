@@ -94,9 +94,10 @@ export const PerformancePage = () => (
         fileName: 'src/modules/performance/components/expensiveFilterDemo.tsx',
         code: expensiveFilterSource,
         language: 'tsx',
-        // Tidtagningen, listans egen useMemo som håller mätningen ärlig, och
-        // knepet som stänger av memoiseringen utan att ta bort hooken.
-        highlight: ['const started = performance.now();', 'const items = useMemo', 'const alwaysNew'],
+        highlight: {
+          fragments: ['const started = performance.now();', 'const items = useMemo', 'const alwaysNew'],
+          why: 'Tidtagningen, listans egen useMemo som håller mätningen ärlig, och knepet som stänger av memoiseringen utan att ta bort hooken.',
+        },
       },
     ]}
     quiz={performanceQuestions}

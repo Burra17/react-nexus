@@ -14,7 +14,12 @@ export type ConceptSource = {
   fileName: string;
   code: string;
   language: CodeLanguage;
-  highlight?: string[];
+  // Raderna som pekas ut, och varför. Skälet är obligatoriskt: en markering
+  // utan skäl blir ett typfel i stället för en rad läsaren inte förstår.
+  highlight?: {
+    fragments: string[];
+    why: string;
+  };
 };
 
 type ConceptTemplateProps = {
@@ -106,7 +111,8 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
             code={source.code}
             language={source.language}
             fileName={source.fileName}
-            highlight={source.highlight}
+            highlight={source.highlight?.fragments}
+            highlightNote={source.highlight?.why}
             startCollapsed={index > 0}
           />
         ))}

@@ -132,33 +132,37 @@ export const EffectsPage = () => (
         fileName: 'src/modules/effects/components/effectLifecycleDemo.tsx',
         code: effectLifecycleSource,
         language: 'tsx',
-        // Uppsättningen, städningen som returneras, och beroendelistan som
-        // avgör när paret körs om.
-        highlight: ["onLog('SETUP',", 'return () => {', '}, [channel, onLog]);'],
+        highlight: {
+          fragments: ["onLog('SETUP',", 'return () => {', '}, [channel, onLog]);'],
+          why: 'Uppsättningen, städningen som returneras, och beroendelistan som avgör när paret körs om.',
+        },
       },
       {
         fileName: 'src/modules/effects/components/unnecessaryEffectDemo.tsx',
         code: unnecessaryEffectSource,
         language: 'tsx',
-        // De två raderna som är hela jämförelsen: värdet i state mot värdet
-        // framräknat under ritningen.
-        highlight: ['// FEL:', '// RÄTT:'],
+        highlight: {
+          fragments: ['// FEL:', '// RÄTT:'],
+          why: 'De två raderna som är hela jämförelsen: värdet i state mot värdet framräknat under ritningen.',
+        },
       },
       {
         fileName: 'src/modules/effects/components/raceConditionDemo.tsx',
         code: raceConditionSource,
         language: 'tsx',
-        // Raden som skriver ett svar utan att fråga om det fortfarande gäller,
-        // raden som kastar det i stället, och flaggan de båda hänger på.
-        highlight: ['// FEL:', '// RÄTT:', 'let ignore = false;'],
+        highlight: {
+          fragments: ['// FEL:', '// RÄTT:', 'let ignore = false;'],
+          why: 'Raden som skriver ett svar utan att fråga om det fortfarande gäller, raden som kastar det i stället, och flaggan de båda hänger på.',
+        },
       },
       {
         fileName: 'src/modules/effects/components/effectLog.tsx',
         code: effectLogSource,
         language: 'tsx',
-        // Loggpanelens egen effekt, ett exempel på när en effekt är rätt val:
-        // den rör webbläsarens rullningsläge, som ligger utanför React.
-        highlight: ['container.scrollTop = container.scrollHeight;'],
+        highlight: {
+          fragments: ['container.scrollTop = container.scrollHeight;'],
+          why: 'Loggpanelens egen effekt, ett exempel på när en effekt är rätt val: den rör webbläsarens rullningsläge, som ligger utanför React.',
+        },
       },
     ]}
     quiz={effectsQuestions}
