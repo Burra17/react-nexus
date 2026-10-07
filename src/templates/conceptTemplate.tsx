@@ -22,9 +22,9 @@ type ConceptTemplateProps = {
   theory: ReactNode;
   demo: ReactNode;
   sources: ConceptSource[];
-  // Obligatorisk, inte valfri. En quiz som går att hoppa över blir en quiz i
-  // modul 3 och 4 och glöms i modul 8 en kväll när man vill bli klar. Mallen
-  // finns till för att den elfte vyn ska se ut som den första.
+  // Obligatorisk, inte valfri. En quiz som går att hoppa över kommer med i de
+  // första vyerna och glöms sedan en kväll när man vill bli klar. Mallen finns
+  // till för att den elfte vyn ska se ut som den första.
   quiz: QuizQuestion[];
 };
 
@@ -89,7 +89,8 @@ export const ConceptTemplate = ({ title, theory, demo, sources, quiz }: ConceptT
           Kod
         </Typography>
         {/* Flera filer, eftersom en demo ofta är en komponent plus en hook.
-          Källkoden läses med ?raw ur de riktiga filerna, se CLAUDE.md.
+          Källkoden läses med ?raw ur de riktiga filerna, så att det som visas
+          är samma fil som körs och inte en kopia som kan hamna i otakt.
 
           Ordningen i sources är en prioritering: första filen är huvudfilen och
           visar sin kod, resten fälls ihop till en rad med filnamnet. Utan det är

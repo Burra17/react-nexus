@@ -11,8 +11,8 @@ const DELAY_MS = 200;
 // trasigt. Tar hämtningen längre tid är det däremot värre att inte visa något
 // alls. Då tror man att länken inte fungerade.
 //
-// useEffect här är en timer, inte datahämtning. Regeln i CLAUDE.md om att
-// aldrig hämta med useEffect gäller serverdata.
+// useEffect här är en timer, inte datahämtning. Appens regel att aldrig hämta
+// data med useEffect gäller serverdata, som TanStack Query sköter.
 export const DelayedProgress = () => {
   const [isVisible, setIsVisible] = useState(false);
 

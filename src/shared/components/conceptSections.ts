@@ -5,8 +5,8 @@
 // den filen exportera både en komponent och konstanter, och då slutar Fast
 // Refresh fungera för den: varje ändring tvingar fram en full omladdning i
 // stället för en uppdatering på plats. ESLint fångar det med
-// react-refresh/only-export-components, samma gräns som CLAUDE.md drar för
-// lazyPages.ts.
+// react-refresh/only-export-components, samma regel som gör att lazyPages.ts
+// bara innehåller komponenter.
 
 // Rubrikradens höjd. AppBar ligger fixed, så sektionsraden måste fästa precis
 // under den. Annars glider innehåll in i springan mellan dem.

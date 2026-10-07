@@ -8,7 +8,7 @@ import { useLocation, useNavigationType } from 'react-router-dom';
 //
 // Varför inte react-router-doms ScrollRestoration, som gör mer av samma sak:
 // den tar över hela scrollhanteringen, inklusive två fall som redan fungerar.
-// De gick sönder av att den tog över. Uppmätt i #71:
+// De gick sönder av att den tog över. Uppmätt, med protokollet i issue #71 i repot:
 //
 //   - Bakåt och framåt sköter webbläsaren själv. history.scrollRestoration är
 //     'auto', och den återställde positionen exakt (2200 respektive 600 px).
@@ -31,7 +31,7 @@ export const ScrollToTop = () => {
     }
 
     // Finns en hash är det ankaret som bestämmer vart man ska, inte vi.
-    // Sektionsraden i #67 bygger helt på det.
+    // Sektionsraden överst i vyn, som hoppar med ankarlänkar, bygger helt på det.
     if (hash) {
       return;
     }
