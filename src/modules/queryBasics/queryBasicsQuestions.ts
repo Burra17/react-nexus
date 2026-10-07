@@ -29,7 +29,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Att det ännu inte finns någon data att visa',
         explanation:
-          "Rätt. `isPending` är samma sak som `status === 'pending'`, och pending betyder att det ännu inte finns någon data. Om hämtningen kör just nu är en annan fråga, och den besvaras av `fetchStatus`.",
+          "`isPending` är samma sak som `status === 'pending'`, och pending betyder att det ännu inte finns någon data. Om hämtningen kör just nu är en annan fråga, och den besvaras av `fetchStatus`.",
       },
     ],
   },
@@ -48,7 +48,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'De tittar på samma query i cachen',
         explanation:
-          'Rätt. Nyckeln identifierar datan. Var i trädet komponenten sitter spelar ingen roll: samma nyckel är samma query, och vem som helst som frågar efter den får den.',
+          'Nyckeln identifierar datan. Var i trädet komponenten sitter spelar ingen roll: samma nyckel är samma query, och vem som helst som frågar efter den får den.',
       },
       {
         id: 'c',
@@ -66,7 +66,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'För att datan ägs av servern: din kopia kan bli inaktuell utan att något i komponenten märker det',
         explanation:
-          'Rätt. State du äger ändras bara när du ändrar det. En kopia av serverdata kan bli fel medan den ligger stilla, och då behövs något som vet när den hämtades och när den ska hämtas om.',
+          'State du äger ändras bara när du ändrar det. En kopia av serverdata kan bli fel medan den ligger stilla, och då behövs något som vet när den hämtades och när den ska hämtas om.',
       },
       {
         id: 'b',
@@ -96,7 +96,7 @@ export const queryBasicsQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'Den gamla datan direkt, och ett nytt anrop som går i bakgrunden',
         explanation:
-          'Rätt. Inaktuell data visas medan en ny hämtning körs, så du slipper stirra på en tom skärm. Det är därför både `status: success` och `fetchStatus: fetching` kan gälla samtidigt.',
+          'Inaktuell data visas medan en ny hämtning körs, så du slipper stirra på en tom skärm. Det är därför både `status: success` och `fetchStatus: fetching` kan gälla samtidigt.',
       },
       {
         id: 'c',

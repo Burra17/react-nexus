@@ -21,7 +21,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'I `services/api/`, tillsammans med de andra anropen',
         explanation:
-          'Rätt. Servicelagret ligger på rotnivå eftersom de flesta moduler inte hämtar någonting alls. En vy om `useState` har inget att hämta, och ett gemensamt `services/` slipper frågan i stället för att varje modul får en tom mapp. Servicen innehåller ingen React: den returnerar typad data, och hooken bestämmer vad som händer med den.',
+          'Servicelagret ligger på rotnivå eftersom de flesta moduler inte hämtar någonting alls. En vy om `useState` har inget att hämta, och ett gemensamt `services/` slipper frågan i stället för att varje modul får en tom mapp. Servicen innehåller ingen React: den returnerar typad data, och hooken bestämmer vad som händer med den.',
       },
       {
         id: 'c',
@@ -52,7 +52,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Arvet lönar sig först vid många resurser',
         explanation:
-          'Rätt. Basklassen tjänar in sig över tjugosju resurser. Här finns två eller tre, och då blir den en inpackning som döljer vad anropet gör. Samma mönster kan alltså vara rätt i ett projekt och fel i ett annat: skillnaden är skala, inte smak.',
+          'Basklassen tjänar in sig över tjugosju resurser. Här finns två eller tre, och då blir den en inpackning som döljer vad anropet gör. Samma mönster kan alltså vara rätt i ett projekt och fel i ett annat: skillnaden är skala, inte smak.',
       },
     ],
   },
@@ -66,7 +66,7 @@ export const architectureQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Query lägger HTML-strängen i cachen som data, vyn renderar tomma fält, och ingenting säger till',
         explanation:
-          'Rätt, och det är modulens skarpaste poäng. Status 200 betyder för axios att allt gick bra, så felhanteringen slår aldrig till. Ett fel som ser ut som ett lyckat svar är värre än ett fel, eftersom det inte upptäcks. Kontrollen finns därför på ett enda ställe som varje anrop passerar.',
+          'Det är modulens skarpaste poäng. Status 200 betyder för axios att allt gick bra, så felhanteringen slår aldrig till. Ett fel som ser ut som ett lyckat svar är värre än ett fel, eftersom det inte upptäcks. Kontrollen finns därför på ett enda ställe som varje anrop passerar.',
       },
       {
         id: 'b',

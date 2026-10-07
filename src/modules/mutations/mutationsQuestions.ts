@@ -20,13 +20,13 @@ export const mutationsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Servern svarade med gammal data',
         explanation:
-          'Nej. Svaret innehåller det nya värdet, och det går att se i mutationens `data`. Problemet ligger inte i vad servern skickade tillbaka utan i vad som gjordes med det.',
+          'Svaret innehåller det nya värdet, och det går att se i mutationens `data`. Problemet ligger inte i vad servern skickade tillbaka utan i vad som gjordes med det.',
       },
       {
         id: 'b',
         text: 'Cachen är en kopia, och ingenting har talat om för den att kopian inte längre stämmer',
         explanation:
-          'Rätt. Listan i vyn kommer från en query som hämtades tidigare. En mutation skriver på servern; den rör inte den kopian. Antingen säger du till att kopian är inaktuell med `invalidateQueries`, eller så skriver du det nya värdet i den själv med `setQueryData`.',
+          'Listan i vyn kommer från en query som hämtades tidigare. En mutation skriver på servern; den rör inte den kopian. Antingen säger du till att kopian är inaktuell med `invalidateQueries`, eller så skriver du det nya värdet i den själv med `setQueryData`.',
       },
       {
         id: 'c',
@@ -58,7 +58,7 @@ export const mutationsQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'I `onSettled`, som kör oavsett hur det gick',
         explanation:
-          'Rätt. Efter en optimistisk uppdatering står det i cachen något klienten skrivit och inte servern, oavsett utfall: gissningen eller ögonblicksbilden. `onSettled` invaliderar listan i båda fallen, och är det enda stället som täcker även det misslyckade.',
+          'Efter en optimistisk uppdatering står det i cachen något klienten skrivit och inte servern, oavsett utfall: gissningen eller ögonblicksbilden. `onSettled` invaliderar listan i båda fallen, och är det enda stället som täcker även det misslyckade.',
       },
     ],
   },
@@ -71,7 +71,7 @@ export const mutationsQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Ingenting, den har sitt eget tillstånd',
         explanation:
-          'Rätt. En `useQuery` identifieras av sin `queryKey` och delas av alla som frågar efter samma. En `useMutation` har ingen nyckel: varje anrop av hooken ger en egen mutation med eget `isPending`, `data` och `error`.',
+          'En `useQuery` identifieras av sin `queryKey` och delas av alla som frågar efter samma. En `useMutation` har ingen nyckel: varje anrop av hooken ger en egen mutation med eget `isPending`, `data` och `error`.',
       },
       {
         id: 'b',
