@@ -1,5 +1,6 @@
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
@@ -23,7 +24,7 @@ const USERS: AuthUser[] = [
   { name: 'Ada', role: 'utvecklare' },
   { name: 'Grace', role: 'amiral' },
   { name: 'Katherine', role: 'matematiker' },
-  { name: 'Gäst', role: 'inte inloggad' },
+  { name: 'Gäst', role: 'utan konto' },
 ];
 
 // Contexten exporteras inte, och det är avsiktligt på två sätt.
@@ -43,7 +44,9 @@ const AuthContext = createContext<AuthValue>({ currentUser: USERS[0], login: () 
 // föräldern gör det, oavsett context. Det lär Rendering-modulen ut. Utan memo hade
 // alla kort tickat vid varje klick, och då hade demon mätt föräldern i stället för
 // contexten.
-const UserCard = ({ title }: CardProps) => {
+// Noten om StrictMode visas bara på kort 1, eftersom demon bara behöver
+// förklara den en gång.
+const UserCard = ({ title, showStrictModeNote = false }: CardProps & { showStrictModeNote?: boolean }) => {
   const { currentUser } = useContext(AuthContext);
 
   return (
@@ -52,7 +55,7 @@ const UserCard = ({ title }: CardProps) => {
       <Typography sx={{ mb: 1 }}>
         {currentUser.name}, {currentUser.role}
       </Typography>
-      <RenderCounter />
+      <RenderCounter showStrictModeNote={showStrictModeNote} />
     </Paper>
   );
 };
@@ -139,6 +142,31 @@ export const ContextRenderDemo = () => {
 
   return (
     <Stack spacing={2}>
+      <Typography variant='body2' color='textSecondary'>
+        Komponenten här håller en provider för en context med en inloggad användare, <code>currentUser</code>, och en funktion som byter den,{' '}
+        <code>login</code>. Under providern ligger fyra kort. Varje kort har en räknare som ökar varje gång React kör kortets funktion, alltså vid
+        varje ritning. Kort 1 saknar <code>memo</code> och ritas därför om varje gång komponenten som håller providern ritas om: det är mätaren för
+        den. Kort 2, 3 och 4 ligger i <code>memo</code> och får samma props hela tiden, så för dem kan en ritning bara komma från contexten.
+      </Typography>
+
+      <Typography variant='body2' color='textSecondary'>
+        <strong>Först</strong>, med växeln av: tryck på <strong>Räkna upp något orelaterat</strong>. Talet i knappen räknar dina klick. Det ligger i
+        state i komponenten som håller providern, så den ritas om och skapar ett nytt <code>value</code>. Kort 1, 2 och 4 ökar, kort 3 står still.
+        Kort 2 och 4 ritas om trots att ingen användare bytts.
+      </Typography>
+
+      <Typography variant='body2' color='textSecondary'>
+        <strong>Sedan</strong>: slå på växeln. Bytet ger själv en ritning, eftersom <code>value</code> då blir ett annat objekt, så tryck på{' '}
+        <strong>Nollställ räknarna</strong> för att låta alla räknare börja om. Tryck på <strong>Räkna upp något orelaterat</strong> igen. Nu ökar
+        bara kort 1: komponenten som håller providern ritas om, men <code>value</code> är samma objekt som förut.
+      </Typography>
+
+      <Typography variant='body2' color='textSecondary'>
+        <strong>Sist</strong>: tryck på <strong>Byt användare</strong>. Nu är värdet nytt på riktigt, och kort 1, 2 och 4 ökar även med växeln på.
+        Knappen <strong>Logga in som gäst</strong> i kort 2 byter användare på samma sätt, fast inifrån en konsument via <code>login</code>. Trycker
+        du på den när Gäst redan är inloggad händer ingenting: state får samma värde som förut, och då hoppar React över ritningen.
+      </Typography>
+
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
         <Button variant='contained' onClick={() => setUserIndex((current) => (current + 1) % USERS.length)}>
           Byt användare
@@ -154,39 +182,32 @@ export const ContextRenderDemo = () => {
         label='Memoisera value med useMemo och useCallback'
       />
 
-      {/* Providerns egen räknare, och sidans enda not om StrictMode. Den behövs
-          för att knappen till höger ska synas göra något: utan den ser man att
-          barnen ritas om, men inte att det var providern som utlöste det. */}
-      <RenderCounter showStrictModeNote />
-
       {/* Nyckeln monterar om hela trädet och nollställer därmed alla räknare.
           Jämförelsen mellan av och på görs i minnet, inte sida vid sida, så den
           kräver att man kan köra om samma sekvens från noll. */}
       <AuthContext key={resetKey} value={value}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-          <UserCard title='1. Utan memo, läser currentUser' />
-          <MemoLoginCard title='2. I memo, läser bara login' />
-          <StaticCard title='3. I memo, läser ingen context' />
-          <MemoUserCard title='4. I memo, läser currentUser' />
-        </Stack>
+        {/* Två och två, så att kort 3 och 4 hamnar bredvid varandra. */}
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <UserCard title='1. Utan memo, läser currentUser' showStrictModeNote />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <MemoLoginCard title='2. I memo, läser bara login' />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <StaticCard title='3. I memo, läser ingen context' />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <MemoUserCard title='4. I memo, läser currentUser' />
+          </Grid>
+        </Grid>
       </AuthContext>
 
       <Typography variant='body2' color='textSecondary'>
-        Tryck på <strong>Räkna upp något orelaterat</strong> med växeln av: kort 2 och 4 ritas om trots att ingen användare bytts, eftersom{' '}
-        <code>value</code> är ett nytt objekt. Slå på växeln, nollställ och gör om. Nu står de still. Tryck sedan på <strong>Byt användare</strong>:
-        då ritas de om igen även med växeln på, eftersom värdet den här gången är nytt på riktigt.
-      </Typography>
-
-      <Typography variant='body2' color='textSecondary'>
-        Kort 3 och 4 är paret att titta noga på. Båda ligger i <code>React.memo</code> och får samma props hela tiden. Det enda som skiljer dem är att
-        kort 4 läser contexten, och det räcker. <code>memo</code> stoppar det som kommer uppifrån genom props, men en context når komponenten direkt
-        och går rakt förbi. Kort 2 säger samma sak från andra hållet: den vill bara åt <code>login</code> och behöver inte veta vem som är inloggad,
-        men ritas ändå om varje gång användaren byts.
-      </Typography>
-
-      <Typography variant='body2' color='textSecondary'>
-        Kort 1 är det enda utan <code>memo</code>, och det tickar vid varenda klick. Det är inte contextens fel: ett barn ritas om när föräldern gör
-        det. Kortet står där för att visa varför de andra tre behöver <code>memo</code> för att kunna mäta något alls.
+        Kort 3 och 4 är paret att jämföra. Båda ligger i <code>memo</code> och får samma props, och det enda som skiljer dem är att kort 4 läser
+        contexten. Varje gång <code>value</code> är nytt ritas kort 4 om medan kort 3 står still, eftersom <code>memo</code> bara stoppar det som
+        kommer genom props. Kort 2 visar gränsen för memoiseringen: det läser bara <code>login</code>, som är samma funktion så länge växeln är på,
+        men ritas ändå om när användaren byts, eftersom det får hela <code>value</code>.
       </Typography>
     </Stack>
   );
