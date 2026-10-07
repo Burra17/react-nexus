@@ -122,20 +122,75 @@ export const ExpensiveFilterDemo = () => {
     setResetCount((current) => current + 1);
   };
 
+  // Ett nytt antal poster startar en ny mätning. Annars blandar snittet tider
+  // från olika listor, och talet på skärmen gäller ingen av dem.
+  const changeSize = (next: number) => {
+    // Samma storlek igen ger ingen ny ritning, och då hade panelen visat tal
+    // som inte längre fanns kvar.
+    if (next === size) return;
+    statsRef.current = { times: [], runs: 0 };
+    setSize(next);
+  };
+
+  // Rubriken säger vad talet är: inget, ett enda mätvärde eller ett snitt.
+  const averageLabel =
+    times.length === 0
+      ? 'Tid för beräkningen'
+      : times.length === 1
+        ? 'Tid för den senaste körningen'
+        : `Snitt över de senaste ${times.length} körningarna, högst ${SAMPLE_SIZE}`;
+
+  // Decimalkomma, som i resten av texten på sidan.
+  const formatMs = (value: number) => value.toLocaleString('sv-SE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   return (
     <Stack spacing={3}>
+      <Typography variant='body2' color='textSecondary'>
+        Demon mäter en enda beräkning: filtreringen av en lista med påhittade personer, Person 0, Person 1 och så vidare, var och en med en av fem
+        roller. Filtret söker i både namn och roll. Listan visas inte, eftersom det då hade varit utritningen av raderna som tog tid och inte
+        filtreringen. Panelen visar hur lång tid filtreringen tar och hur många gånger den har körts. Komponenten kan ritas om utan att beräkningen
+        körs, och den skillnaden är vad demon handlar om.
+      </Typography>
+
+      <Typography variant='body2' color='textSecondary'>
+        Fältet ändrar söksträngen, som är ett beroende: ett värde i <code>useMemo</code>:s beroendelista. <strong>Räkna upp något orelaterat</strong>{' '}
+        ändrar ett state som filtreringen inte använder, så knappen ger en ritning men inget nytt beroende. Växeln avgör om filtreringen memoiseras.
+        Med växeln av står <code>useMemo</code> kvar i koden, men med ett värde i beroendelistan som är nytt vid varje ritning, så att beräkningen
+        körs varje gång. Att slå om växeln ger därför själv en körning. Mätningen börjar om när vyn öppnas, när du väljer ett annat antal poster och
+        när du trycker på <strong>Nollställ mätningen</strong>.
+      </Typography>
+
+      <Typography variant='body2' color='textSecondary'>
+        <strong>Först</strong>: klicka på 1 på reglaget och skriv några bokstäver i fältet. Tiden ligger runt en tiondels millisekund, långt under
+        riktmärket på en millisekund, och då finns inget att vinna på att memoisera. Klicka sedan på 100 och skriv igen. Nu tar varje körning
+        mångdubbelt längre. Slå gärna om växeln medan du skriver: det spelar ingen roll, eftersom varje bokstav ändrar söksträngen och beräkningen
+        körs ändå.
+      </Typography>
+
+      <Typography variant='body2' color='textSecondary'>
+        <strong>Sedan</strong>, med växeln av: tryck på <strong>Nollställ mätningen</strong> och därefter fem gånger på{' '}
+        <strong>Räkna upp något orelaterat</strong>. Raden <strong>Beräkningen har körts</strong> ökar vid varje tryck. Den började inte på 0: med
+        växeln av ger nollställningen själv en körning.
+      </Typography>
+
+      <Typography variant='body2' color='textSecondary'>
+        <strong>Sist</strong>: slå på växeln, tryck på <strong>Nollställ mätningen</strong> och sedan fem gånger på knappen igen. Nu står raden på 0.
+        Komponenten ritas om vid varje tryck, men inget beroende har ändrats, så <code>useMemo</code> lämnar tillbaka det sparade resultatet utan att
+        köra beräkningen. Skriv sedan en bokstav i fältet: då körs den igen, eftersom söksträngen är ett beroende.
+      </Typography>
+
       <Stack spacing={1}>
         <Typography id='storlek-etikett' variant='body2' color='textSecondary'>
-          Antal poster i listan
+          Antal poster i listan, i tusental
         </Typography>
         <Slider
           aria-labelledby='storlek-etikett'
           value={size}
-          onChange={(_event, next) => setSize(next as number)}
+          onChange={(_event, next) => changeSize(next as number)}
           min={SIZES[0]}
           max={SIZES[SIZES.length - 1]}
           step={null}
-          marks={SIZES.map((value) => ({ value, label: value >= 1000 ? `${value / 1000}k` : String(value) }))}
+          marks={SIZES.map((value) => ({ value, label: String(value / 1000) }))}
           valueLabelDisplay='auto'
         />
       </Stack>
@@ -164,17 +219,22 @@ export const ExpensiveFilterDemo = () => {
       <Paper variant='outlined' sx={{ p: 2 }}>
         <Stack spacing={1}>
           <Typography variant='body2' color='textSecondary'>
-            Snitt över de senaste {times.length} körningarna
+            {averageLabel}
           </Typography>
           <Typography variant='h3' component='p'>
-            {average === null ? 'ingen körning än' : `${average.toFixed(2)} ms`}
+            {average === null ? 'ingen körning' : `${formatMs(average)} ms`}
           </Typography>
+          {average === null && (
+            <Typography variant='body2' color='textSecondary'>
+              Beräkningen har hoppats över vid varje ritning sedan mätningen började. En överhoppad beräkning tar ingen tid alls.
+            </Typography>
+          )}
 
           <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
             Beräkningen har körts
           </Typography>
           <Typography sx={{ fontWeight: 600 }}>
-            {runs} {runs === 1 ? 'gång' : 'gånger'} sedan nollställningen
+            {runs} {runs === 1 ? 'gång' : 'gånger'} sedan mätningen började
           </Typography>
 
           <Typography variant='body2' color='textSecondary' sx={{ pt: 1 }}>
@@ -189,30 +249,18 @@ export const ExpensiveFilterDemo = () => {
       <Typography variant='body2' color='textSecondary'>
         {import.meta.env.DEV ? (
           <>
-            <strong>Du kör i utvecklingsläge, och siffran ovan är därför inte att lita på.</strong> StrictMode kör varje komponent en extra gång, och
-            koden är inte optimerad på samma sätt som i ett bygge. react.dev är uttrycklig med att prestanda ska mätas i ett produktionsbygge, på en
-            maskin som liknar användarens. Förhållandena i demon stämmer ändå: mer data tar längre tid, och en överhoppad beräkning tar ingen tid
-            alls.
+            <strong>Appen körs i utvecklingsläge, och talen ovan är därför för höga.</strong> I utvecklingsläget kör StrictMode varje komponent en
+            extra gång och koden är inte optimerad. StrictMode kör dessutom beräkningen mer än en gång per ritning, så raden{' '}
+            <strong>Beräkningen har körts</strong> ökar med mer än ett i taget. Förhållandena stämmer ändå: mer data tar längre tid, och en överhoppad
+            beräkning tar ingen tid. Rättvisande tal får du först i ett bygge, den optimerade version som användarna får.
           </>
         ) : (
           <>
-            <strong>Det här är ett produktionsbygge, så siffran är rimlig att lita på.</strong> Kör du samma demo lokalt med utvecklingsservern får du
-            högre tal: StrictMode kör då varje komponent en extra gång och koden är inte optimerad. Det är därför react.dev säger att prestanda ska
-            mätas i ett bygge, och på en maskin som liknar användarens, inte på en utvecklardator.
+            <strong>Det här är ett bygge, den optimerade version som användarna får, så talen påverkas inte av utvecklingsläget.</strong> De är ändå
+            uppmätta på din dator och inte på användarens. I utvecklingsläget blir de högre, eftersom StrictMode där kör varje komponent en extra gång
+            och koden inte är optimerad.
           </>
         )}
-      </Typography>
-
-      <Typography variant='body2' color='textSecondary'>
-        Dra reglaget till 1k och skriv i fältet: tiden ligger runt en tiondels millisekund, och det spelar ingen roll om växeln är på eller av. Det är
-        under react.dev:s riktmärke på ungefär en millisekund, och då finns ingenting att vinna. Dra till 100k och gör om. Nu syns skillnaden.
-      </Typography>
-
-      <Typography variant='body2' color='textSecondary'>
-        Det tydligaste beviset står på raden <strong>Beräkningen har körts</strong>. Nollställ, och tryck på{' '}
-        <strong>Räkna upp något orelaterat</strong> fem gånger. Med växeln av klättrar talet vid varje tryck. Med växeln på står det helt stilla:
-        beräkningen hoppades över varje gång, eftersom ingenting den beror på hade ändrats. Skriv sedan en bokstav i fältet: då rör det sig igen,
-        eftersom söksträngen är ett beroende. Det är hela mekanismen i ett enda tal.
       </Typography>
     </Stack>
   );

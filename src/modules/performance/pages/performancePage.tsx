@@ -1,3 +1,4 @@
+import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
 import { ExpensiveFilterDemo } from '../components/expensiveFilterDemo';
@@ -7,57 +8,72 @@ import { performanceQuestions } from '../performanceQuestions';
 const Theory = () => (
   <>
     <Typography>
-      Nästan all memoisering som skrivs läggs dit på känsla. Något kändes trögt, eller en kollega sa att det brukar vara bra, eller så klagade ESLint
-      på en beroendelista och <code>useCallback</code> fick tyst på den. Nästan ingen har kört en mätning före och en efter. Den här modulen handlar
-      inte om hur du memoiserar, det har du redan sett, utan om hur du vet att du behöver det.
+      Det mesta som memoiseras memoiseras på känsla. Något kändes trögt, en kollega sa att det brukar vara bra, eller så varnade ESLint, verktyget som
+      granskar koden, för en beroendelista och ett <code>useCallback</code> fick tyst på varningen. Nästan ingen har mätt före och efter. Den här
+      sidan handlar inte om hur man memoiserar, utan om hur man vet att man behöver det.
     </Typography>
 
     <Typography>
-      Först en inramning som knyter ihop det du redan mött. <code>useMemo</code>, <code>useCallback</code> och <code>React.memo</code> är inte tre
-      olika idéer utan <strong>en idé på tre nivåer</strong>: spara ett resultat mellan renderingar, så att arbetet kan hoppas över när ingenting
-      ändrats. <code>useMemo</code> sparar ett värde, <code>useCallback</code> en funktion, <code>React.memo</code> en hel komponent.
-      Rendering-modulen visade den tredje, Context-modulen de två första. Ingen av dem svarade på när det är värt besväret.
+      En komponent i React är en funktion som React kör igen varje gång komponenten ska ritas om, till exempel när dess state ändras. Varje sådan gång
+      kallas här en <strong>ritning</strong>. Allt som står i funktionen körs om vid varje ritning, också en dyr beräkning som att filtrera en lång
+      lista, fast svaret blir detsamma som förra gången. Att beräkningen körs kallas här en <strong>körning</strong>. En ritning och en körning är
+      alltså två olika saker, och poängen med att memoisera är att få den första utan den andra.
     </Typography>
 
     <Typography>
-      Svaret börjar med en mätning, och den är enklare än man tror. Lägg <code>console.time</code> före beräkningen och <code>console.timeEnd</code>{' '}
-      efter, gör det du vill mäta, och läs av. react.dev ger ett riktmärke: landar den samlade tiden på ungefär en millisekund eller mer kan det vara
-      värt att memoisera. Under det finns ingenting att vinna. Det tar tjugo sekunder att skriva och svarar på frågan som annars blir en gissning.
+      Att <strong>memoisera</strong> är att spara resultatet av en beräkning och lämna tillbaka det sparade resultatet så länge det beräkningen bygger
+      på är oförändrat. React har tre verktyg för det. <code>{'useMemo(() => beräkning, [beroenden])'}</code> sparar ett värde. Listan sist är{' '}
+      <em>beroendelistan</em>: vid varje ritning jämför React varje värde i den med förra ritningens, och bara om något har ändrats körs beräkningen
+      igen. <code>useCallback</code> sparar en funktion på samma sätt, så att det är samma funktion från ritning till ritning. <code>React.memo</code>{' '}
+      packar in en hel komponent och hoppar över dess ritning när föräldern ritas om, om alla props är oförändrade. Det är en idé på tre nivåer: spara
+      resultatet, så att arbetet kan hoppas över.
     </Typography>
 
     <Typography>
-      Två saker gör mätningen svårare än den ser ut. Den första är att <strong>din maskin inte är användarens</strong>: react.dev föreslår att man
-      bromsar processorn på konstgjord väg för att komma närmare verkligheten. Den andra är att <strong>utvecklingsläget inte är produktion</strong>.
-      StrictMode renderar varje komponent två gånger, koden är inte optimerad, och siffrorna blir därefter. Demon nedan säger rakt ut vilket läge du
-      är i, eftersom en modul om att mäta rätt inte får tiga om att dess egen mätning är missvisande lokalt.
+      När lönar det sig? Svaret börjar med en mätning, och den är enklare än man tror. Skriv <code>{"console.time('filtrera')"}</code> före
+      beräkningen och <code>{"console.timeEnd('filtrera')"}</code> efter, med samma etikett i båda. Tiden skrivs ut i webbläsarens konsol, som finns
+      bland utvecklarverktygen och öppnas med F12. Demon nedan mäter på samma sätt, men med <code>performance.now()</code>, som ger tiden i
+      millisekunder, så att resultatet kan visas på sidan.{' '}
+      <Link href='https://react.dev/reference/react/useMemo#how-to-tell-if-a-calculation-is-expensive'>react.dev</Link>, Reacts officiella
+      dokumentation, ger en tumregel: tar beräkningen säg en millisekund eller mer kan det vara värt att memoisera. Under det finns sällan något att
+      vinna.
     </Typography>
 
     <Typography>
-      Den tredje svårigheten är bruset. Samma beräkning kan ta 0,8 ms en gång och 2,3 ms nästa, eftersom JavaScript-motorn optimerar kod som körs ofta
-      och skräpsamlingen kan pausa tråden när som helst. Ett enstaka mätvärde betyder därför ingenting. Demon visar ett snitt över de tio senaste
-      körningarna, och det är inte en detalj. Det är skillnaden mellan att mäta och att titta på en siffra.
+      Tre saker gör mätningen svårare än den ser ut. Den första är att <strong>din dator inte är användarens</strong>. react.dev föreslår att man
+      bromsar processorn på konstgjord väg för att komma närmare en långsammare enhet, och Chromes utvecklarverktyg har ett val för det. Den andra är
+      att <strong>utvecklingsläget inte är ett bygge</strong>. Utvecklingsläget är appen som körs direkt från källkoden medan den skrivs, ett bygge är
+      den optimerade version som användarna får. I utvecklingsläget kör StrictMode, ett hjälpmedel som bara finns där, varje komponent en extra gång
+      för att hitta fel, och koden är inte optimerad, så talen blir för höga. Den tredje är <strong>bruset</strong>. Samma beräkning kan ta 0,8 ms en
+      gång och 2,3 ms nästa, eftersom webbläsaren snabbar upp kod som körs ofta och då och då stannar för att städa bort minne som inte längre
+      används. Ett enstaka mätvärde säger därför lite. Demon visar ett snitt över de senaste körningarna, högst tio.
     </Typography>
 
     <Typography>
-      Sedan kommer det obekväma: <strong>memoisering är inte gratis, och den lönar sig mer sällan än man tror.</strong> Jämförelsen av beroendena
-      kostar också tid, koden blir längre och svårare att läsa, och vinsten uteblir helt om beroendena ändras ändå. Skriver användaren i ett sökfält
-      ändras söksträngen vid varje tangenttryck. Då betalar du jämförelsen och kör beräkningen. react.dev lägger till en varning som är värd att
-      minnas: ett enda värde som alltid är nytt räcker för att slå ut memoiseringen för en hel komponent.
+      Sedan kommer det obekväma: <strong>memoisering är inte gratis, och den lönar sig mer sällan än man tror.</strong> Jämförelsen av beroendelistan
+      görs vid varje ritning och kostar lite tid, koden blir längre och svårare att läsa, och vinsten uteblir helt om ett beroende ändras ändå.
+      Skriver användaren i ett sökfält ändras söksträngen vid varje tangenttryck, och då betalar du jämförelsen och kör beräkningen ändå. Jämförelsen
+      följer samma regel som i resten av React: tal och text jämförs på innehållet, men objekt på om det är samma objekt. Ett objekt som skrivs i
+      komponentens funktion, som <code>{'{}'}</code>, är ett nytt objekt vid varje ritning. react.dev varnar för just det: ett enda värde som alltid
+      är nytt räcker för att memoiseringen aldrig ska slå till.
     </Typography>
 
     <Typography>
-      Ofta är det bättre att ta bort behovet än att optimera det. react.dev listar fem vanor som gör mycket memoisering onödig: låt komponenter som
-      omsluter andra ta emot JSX som <code>children</code>, håll state så lokalt som möjligt, håll renderingskoden ren, undvik effekter som bara
-      sätter state, och rensa onödiga beroenden ur de effekter du har. Ingen av dem är en optimering. De är sätt att låta bli att skapa problemet.
+      Ofta är det bättre att ta bort behovet än att optimera det. react.dev listar fem vanor som gör mycket memoisering onödig. Håll state så lokalt
+      som möjligt, så att en ändring bara ritar om den del av trädet som behöver det. Låt en komponent som omsluter andra ta emot dem färdiga som{' '}
+      <code>children</code>, så att de inte ritas om när omslutaren ändrar sitt eget state. Håll ritningen ren, alltså låt komponentens funktion bara
+      räkna fram vad som ska synas, utan att ändra något utanför sig själv. De två sista handlar om effekter, kod som körs efter ritningen: undvik
+      effekter som bara sätter state, och rensa onödiga beroenden ur dem. Ingen av vanorna är en optimering. De gör att det onödiga arbetet aldrig
+      uppstår.
     </Typography>
 
     <Typography>
-      <strong>En not om React Compiler.</strong> Det finns numera en kompilator som memoiserar åt dig, automatiskt, så att manuella{' '}
-      <code>useMemo</code>, <code>useCallback</code> och <code>React.memo</code> inte längre behövs. Den fungerar bäst med React 19, som det här repot
-      kör, men här är den avstängd, och skälet är värt att veta. Renderräknaren som modulerna bygger på skriver till en ref mitt under renderingen,
-      vilket inte är ren kod, och en kompilator som förutsätter renhet får då optimera bort hela komponenten. Med compilern påslagen slutade räknarna
-      räkna i fyra moduler medan apparna i övrigt fungerade som vanligt. Kompilatorn gör alltså inget fel. Det är mätinstrumentet som medvetet bryter
-      mot regeln den bygger på. Samma orenhet är också skälet till att två lintregler är avstängda i demons källkod nedan.
+      <strong>En not om React Compiler.</strong> Det finns numera en kompilator, ett steg i bygget som går igenom koden innan den körs, som lägger in
+      memoisering automatiskt. Den förutsätter att varje komponent är ren. Upptäcker den en komponent som bryter mot det hoppar den över den, men ett
+      regelbrott den missar kan göra att komponenten kompileras ändå, och då kan uppdateringar utebli. Demon nedan bryter mot regeln med flit: den
+      skriver sina mätvärden till en ref, ett värde som React sparar mellan ritningarna utan att rita om, mitt under ritningen. Därför är kompilatorn
+      inte påslagen i den här appen, och därför är två av ESLints regler avstängda i demons källkod. Att kunna memoisera för hand behövs ändå:
+      kompilatorn är inte påslagen i alla projekt, och den som ska förstå vad den gör behöver känna mekanismen.
     </Typography>
 
     <Typography>
