@@ -18,6 +18,7 @@ import useFetchSharedUsersSource from '../hooks/queries/useFetchSharedUsers.ts?r
 import useFetchUserSource from '../hooks/queries/useFetchUser.ts?raw';
 import useFetchUsersSource from '../hooks/queries/useFetchUsers.ts?raw';
 import requestCounterPanelSource from '../../../shared/components/requestCounterPanel.tsx?raw';
+import useRequestCountSource from '../../../shared/hooks/useRequestCount.ts?raw';
 import useRerenderOnCacheChangeSource from '../../../shared/hooks/useRerenderOnCacheChange.ts?raw';
 import usersKeysSource from '../hooks/usersKeys.ts?raw';
 import { queryCacheQuestions } from '../queryCacheQuestions';
@@ -141,7 +142,7 @@ export const QueryCachePage = () => (
         code: sharedCacheDemoSource,
         language: 'tsx',
         highlight: {
-          fragments: ['Array.from({ length: cardCount }', 'const requestCount = readRequestCount(SHARING_DEMO);'],
+          fragments: ['Array.from({ length: cardCount }'],
           why: 'Korten skapas i en loop och vet inget om varandra. Deduperingen följer av nyckeln, inte av någon samordning här.',
         },
       },
@@ -150,8 +151,21 @@ export const QueryCachePage = () => (
         code: requestCounterPanelSource,
         language: 'tsx',
         highlight: {
-          fragments: ['const [zeroPoint, setZeroPoint] = useState(total);', 'const sinceReset = total - zeroPoint;'],
-          why: 'Räknarpanelen som varje påstående på sidan vilar på: nollpunkten som sparas när du nollställer, och skillnaden mot den som visas.',
+          fragments: [
+            'const total = useRequestCount(demo);',
+            'const [zeroPoint, setZeroPoint] = useState(total);',
+            'const sinceReset = total - zeroPoint;',
+          ],
+          why: 'Räknarpanelen som varje påstående på sidan vilar på: talet som läses från den mockade backenden, nollpunkten som sparas när du nollställer, och skillnaden mot den som visas.',
+        },
+      },
+      {
+        fileName: 'src/shared/hooks/useRequestCount.ts',
+        code: useRequestCountSource,
+        language: 'ts',
+        highlight: {
+          fragments: ['useSyncExternalStore(subscribeToRequestCounts'],
+          why: 'Hooken som ritar om panelen i samma ögonblick som den mockade backenden räknar ett anrop, och inte först när svaret kommer.',
         },
       },
       {
@@ -187,7 +201,7 @@ export const QueryCachePage = () => (
         language: 'ts',
         highlight: {
           fragments: ['.subscribe('],
-          why: 'Prenumerationen som gör att panelerna visar hur cachen ser ut nu, och inte hur den såg ut när de senast ritades.',
+          why: 'Prenumerationen som gör att avläsningen av cachen visar hur den ser ut nu, och inte hur den såg ut när den senast ritades.',
         },
       },
       {

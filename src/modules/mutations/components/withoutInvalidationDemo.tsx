@@ -2,10 +2,7 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useIsMutating } from '@tanstack/react-query';
-import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
-import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { useUpdateUserRole } from '../hooks/mutations/useUpdateUserRole';
 import { RoleList } from './roleList';
 
@@ -51,23 +48,6 @@ const RoleButton = ({ role }: RoleButtonProps) => {
 };
 
 export const WithoutInvalidationDemo = () => {
-  // Mätutrustning, inte en del av mönstret. Räknarpanelen läser ett tal
-  // utanför React, och prenumerationen ritar om komponenten när något ändras i
-  // query-cachen, så att talet visar nuet.
-  useRerenderOnCacheChange();
-
-  // Cacheprenumerationen ovan räcker inte i just den här demon, och skälet är
-  // demonstrationens egen poäng: mutationen rör aldrig cachen, så ingenting
-  // händer där som kan utlösa en omritning. Utan raden nedan skulle räknaren
-  // stå still efter ett klick och säga emot Network-fliken.
-  //
-  // useIsMutating räknar pågående mutationer, och antalet ändras både när en
-  // startar och när den blir klar. Returvärdet används inte, det är
-  // omritningen vi är ute efter.
-  useIsMutating();
-
-  const requestCount = readRequestCount('utanInvalidering');
-
   return (
     <Stack spacing={3}>
       <RoleList demo='utanInvalidering' ownedUserId={USER_ID} />
@@ -86,7 +66,7 @@ export const WithoutInvalidationDemo = () => {
       </Alert>
 
       <RequestCounterPanel
-        total={requestCount}
+        demo='utanInvalidering'
         caption='Ettan från början är listans första hämtning. Nollställ och klicka en gång: ett anrop går iväg, och inget mer. Utan invalidering finns det ingen hämtning efteråt.'
       />
     </Stack>

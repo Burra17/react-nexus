@@ -3,11 +3,12 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { useRequestCount } from '../hooks/useRequestCount';
 
 type RequestCounterPanelProps = {
-  // Backendens egen räkning av den här demons anrop sedan sidladdning. Panelen
-  // läser den, den ändrar den inte.
-  total: number;
+  // Vilken demo panelen mäter. Backenden räknar anropen per demo, enligt
+  // märkningen i anropet, och panelen läser den räkningen. Den ändrar den inte.
+  demo: string;
   // Vad läsaren ska göra med talet i just den här demon.
   caption: string;
 };
@@ -27,7 +28,12 @@ type RequestCounterPanelProps = {
 // nollställning i den ena rör inte den andra. Exporterade backenden i stället
 // en funktion som nollade totalsumman skulle en demo kunna radera en annan
 // demos mätning mitt i.
-export const RequestCounterPanel = ({ total, caption }: RequestCounterPanelProps) => {
+export const RequestCounterPanel = ({ demo, caption }: RequestCounterPanelProps) => {
+  // Backendens egen räkning av demons anrop sedan sidladdning. Panelen ritas om
+  // i samma ögonblick som backenden räknar ett anrop, inte först när svaret
+  // kommer.
+  const total = useRequestCount(demo);
+
   // Startvärdet sätts vid första renderingen, så att panelen börjar på noll.
   //
   // Hämtningar som demon själv gör när sidan öppnas landar strax efter, och de

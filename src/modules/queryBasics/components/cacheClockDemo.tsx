@@ -8,7 +8,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { CACHE_CLOCK_DEMO, useFetchCachedUser } from '../hooks/queries/useFetchCachedUser';
 import { usersKeys } from '../hooks/usersKeys';
@@ -130,7 +129,6 @@ export const CacheClockDemo = () => {
   // getQueryState returnerar undefined när posten är borta. Skillnaden mellan
   // "finns kvar men inaktuell" och "borttagen" är hela lektionen.
   const cacheState = queryClient.getQueryState(usersKeys.clock(USER_ID));
-  const requestCount = readRequestCount(CACHE_CLOCK_DEMO);
 
   // Postens egen gcTime, och inte reglagets. Posten behåller det största värde
   // den sett, så efter en sänkning av reglaget gäller fortfarande det gamla.
@@ -292,7 +290,7 @@ export const CacheClockDemo = () => {
           ovan är avläsningar av cachen just nu; den här är en mätning läsaren
           själv startar, och den behöver en knapp. */}
       <RequestCounterPanel
-        total={requestCount}
+        demo={CACHE_CLOCK_DEMO}
         caption='Anrop som nått den mockade backenden, inte renderingar. React kan rendera en komponent två gånger under utveckling, men ett anrop är ett anrop. Nollställ räknaren innan du trycker på Kom tillbaka, så visar talet vad återbesöket kostade.'
       />
     </Stack>

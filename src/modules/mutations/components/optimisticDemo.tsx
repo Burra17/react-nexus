@@ -2,10 +2,7 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useIsMutating } from '@tanstack/react-query';
-import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
-import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { useUpdateUserRoleOptimistic } from '../hooks/mutations/useUpdateUserRoleOptimistic';
 import { useFetchMutationUsers } from '../hooks/queries/useFetchMutationUsers';
 import { RoleList } from './roleList';
@@ -30,15 +27,8 @@ export const OptimisticDemo = () => {
   // hämtning. Det är själva poängen med en delad cache.
   const { data } = useFetchMutationUsers('optimistisk');
 
-  // Mätutrustning, inte en del av mönstret, av samma skäl som i den andra
-  // demon: räknarpanelen läser ett tal utanför React och behöver ritas om.
-  useRerenderOnCacheChange();
-  useIsMutating();
-
   const currentRole = data?.find((user) => user.id === USER_ID)?.role;
   const nextRole = ROLES.find((role) => role !== currentRole) ?? ROLES[0];
-
-  const requestCount = readRequestCount('optimistisk');
 
   return (
     <Stack spacing={3}>
@@ -91,7 +81,7 @@ export const OptimisticDemo = () => {
       </Alert>
 
       <RequestCounterPanel
-        total={requestCount}
+        demo='optimistisk'
         caption='Nollställ före varje knapp. Båda kostar två anrop: skrivningen och hämtningen från onSettled. Här ändrar omhämtningen sällan något på skärmen, eftersom ingen annan ändrar listan under tiden. I en riktig app är det den som fångar en ändring någon annan hunnit göra.'
       />
     </Stack>

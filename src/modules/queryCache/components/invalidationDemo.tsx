@@ -4,13 +4,11 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
-import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { INVALIDATION_DEMO } from '../hooks/queries/requestDemos';
 import { useFetchUser } from '../hooks/queries/useFetchUser';
 import { useFetchUsers } from '../hooks/queries/useFetchUsers';
 import { usersKeys } from '../hooks/usersKeys';
-import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { CacheInspector } from './cacheInspector';
 
 type DetailCardProps = {
@@ -55,10 +53,6 @@ export const InvalidationDemo = () => {
   const list = useFetchUsers();
   const ada = useFetchUser('ada');
   const bo = useFetchUser('bo');
-
-  useRerenderOnCacheChange();
-
-  const requestCount = readRequestCount(INVALIDATION_DEMO);
 
   return (
     <Stack spacing={3}>
@@ -106,7 +100,7 @@ export const InvalidationDemo = () => {
       </Stack>
 
       <RequestCounterPanel
-        total={requestCount}
+        demo={INVALIDATION_DEMO}
         caption='Nollställ före varje knapptryck. Talet är beviset: det breda prefixet träffar tre poster, det smala en, och den sista knappen en enda utan att märka något som inaktuellt.'
       />
 
