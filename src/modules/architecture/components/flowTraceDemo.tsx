@@ -19,43 +19,36 @@ type TraceStep = {
   // Varför det här lagret finns. Det är hela modulens innehåll, och flödet är
   // bara tråden att hänga besluten på.
   decision: string;
-  // Om tidsstämpeln är tagen i samma ögonblick som händelsen, eller först
-  // efter att React ritat om. Se noten under panelen.
-  isExact: boolean;
 };
 
 const STEPS: TraceStep[] = [
   {
     id: 'hook',
     label: 'Hooken startar hämtningen',
-    file: 'modules/architecture/hooks/queries/useFetchArchitectureUsers.ts',
+    file: 'src/modules/architecture/hooks/queries/useFetchArchitectureUsers.ts',
     decision:
-      'Hooken är gränsen mellan React och data. Den vet vilken nyckel som gäller och hur länge svaret får räknas som färskt, men ingenting om HTTP. Därför kan servicen bytas ut utan att någon komponent märker det, och därför kan en komponent använda hooken utan att veta att det finns ett nätverk inblandat.',
-    isExact: false,
+      'Hooken är gränsen mellan React och data. Den vet vilken nyckel som gäller, men ingenting om HTTP: den anropar bara servicen. Demon har en egen hook i stället för att låna en annan moduls, och det är inte en kopia i den mening regeln förbjuder. Den hämtar först när du trycker, och dess nyckel är demons egen, så att posten i cachen inte blandas ihop med en annan vys. Servicen den anropar är densamma som de andra modulernas.',
   },
   {
     id: 'request',
-    label: 'Anropet lämnar klienten',
-    file: 'services/api/users.ts → services/axios/axiosClient.ts',
+    label: 'Servicen skickar anropet',
+    file: 'src/services/api/users.ts → src/services/axios/axiosClient.ts',
     decision:
-      'Servicelagret ligger på rotnivå och inte i modulen. De flesta moduler i appen demonstrerar något som inte har med HTTP att göra. En vy om useState har inget att hämta, och ett gemensamt services/ slipper frågan helt i stället för att varje modul får en tom mapp. Servicen innehåller ingen React: den tar argument och returnerar typad data, vilket är varför den går att läsa utan att veta något om komponenten som råkade anropa den.',
-    isExact: true,
+      'Servicen anropar axiosClient, och axios skickar anropet. Servicelagret ligger i services/ på rotnivå, alltså bredvid modulerna och inte inne i någon av dem, eftersom de flesta moduler inte hämtar något alls. Servicen innehåller ingen React. Den tar argument och returnerar data med en känd form, och går därför att läsa utan att veta något om komponenten som anropade den.',
   },
   {
     id: 'response',
     label: 'Svaret kommer tillbaka',
-    file: 'services/axios/axiosClient.ts',
+    file: 'src/services/axios/axiosClient.ts',
     decision:
-      'Här sitter appens enda interceptor, och den kontrollerar att svaret faktiskt är JSON. Appen är en ensidesapp, så allt som inte matchar en fil besvaras med index.html, också ett anrop under /api som mocken missade. Utan kontrollen ser axios en webbsida med status 200 som en lyckad hämtning. En regel som ska gälla varje anrop hör hemma på ett ställe, inte upprepad i varje service.',
-    isExact: true,
+      'Här kör axiosClient sin egen interceptor på svaret, den enda i appen utöver de två som den här vyn lägger till. Den kontrollerar att svaret är JSON. Appen är en ensidesapp, en enda HTML-sida som byter innehåll utan att laddas om, och därför svarar servern med den sidan, index.html, på varje adress den inte känner igen. Det gäller också ett anrop under /api som MSW missat, och svaret har då status 200, som betyder att allt gick bra. Utan kontrollen hade axios tagit webbsidan för data. Är svaret inte JSON väcker interceptorn MSW och gör om anropet en gång, eftersom MSW kan ha somnat. En regel som ska gälla varje anrop hör hemma på ett ställe, inte upprepad i varje service.',
   },
   {
     id: 'cache',
     label: 'Query lägger svaret i cachen',
-    file: 'services/queryClient.ts',
+    file: 'src/services/queryClient.ts',
     decision:
-      'Cachen tillhör appen och inte komponenten som råkade hämta. Det är därför fyra komponenter med samma nyckel ger ett anrop, och därför data finns kvar när du kommer tillbaka till en vy. QueryClient lämnas med bibliotekets standardvärden orörda. Sätts staleTime globalt blir det osynlig magi, och en hook som kopieras härifrån till ett annat projekt beter sig då annorlunda utan att något i den avslöjar varför.',
-    isExact: false,
+      'Cachen tillhör appen och inte komponenten som hämtade. Därför ger flera komponenter som frågar efter samma nyckel bara ett anrop, och därför finns datan kvar när du kommer tillbaka till en vy. Filen services/queryClient.ts, som inte visas i Kod-delen, skapar cachen och lämnar bibliotekets standardinställningar orörda, till exempel hur länge ett svar räknas som färskt. En inställning för hela appen hade varit osynlig i hookarna, och en hook som kopieras härifrån till ett annat projekt hade betett sig annorlunda utan att något i den avslöjar varför.',
   },
 ];
 
@@ -76,7 +69,10 @@ export const FlowTraceDemo = () => {
 
   // Första stämpeln per steg vinner. En omkörning nollställer hela objektet.
   const mark = useCallback((id: StepId) => {
-    setTrace((current) => (id in current ? current : { ...current, [id]: performance.now() }));
+    // Tiden tas här, när händelsen inträffar. Inne i uppdateringen hade den
+    // tagits först när React behandlar den, och det kan vara senare.
+    const at = performance.now();
+    setTrace((current) => (id in current ? current : { ...current, [id]: at }));
   }, []);
 
   // DET HÄR ÄR MODULENS VIKTIGASTE RAD, och skälet står här:
@@ -144,7 +140,7 @@ export const FlowTraceDemo = () => {
 
   const formatOffset = (at: number | undefined) => {
     if (at === undefined || startedAt === undefined) {
-      return 'väntar';
+      return '–';
     }
 
     return `+${Math.round(at - startedAt)} ms`;
@@ -249,9 +245,10 @@ export const FlowTraceDemo = () => {
       </Stack>
 
       <Alert severity='info'>
-        <strong>Tiderna räknas från steg 1, och två av dem är ungefärliga.</strong> Steg 2 och 3 stämplas i interceptorerna, i samma ögonblick som
-        anropet går och svaret kommer. Steg 1 och 4 sker inne i Query och avläses först när React ritat om, så de ligger några millisekunder sent.
-        Glappet mellan 2 och 3 är det enda som är en riktig mätning, och det är där nätverket ligger.
+        <strong>Tiderna räknas från steg 1 och tas i samma ögonblick som varje händelse inträffar.</strong> Steg 2 kommer några millisekunder efter
+        steg 1, när servicen har anropat axios. Mellan steg 2 och 3 ligger själva anropet. Det tar runt 900 millisekunder, eftersom hooken ber MSW att
+        vänta så länge innan den svarar, så att stegen hinner synas var för sig. Det finns inget nätverk, så utan fördröjningen hade svaret kommit
+        nästan direkt. Steg 4 kommer samtidigt som steg 3, räknat i hela millisekunder.
       </Alert>
     </Stack>
   );

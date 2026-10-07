@@ -1,3 +1,4 @@
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import mainSource from '../../../main.tsx?raw';
@@ -5,56 +6,71 @@ import usersServiceSource from '../../../services/api/users.ts?raw';
 import axiosClientSource from '../../../services/axios/axiosClient.ts?raw';
 import handlersSource from '../../../services/mocks/handlers.ts?raw';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
-import useFetchUsersSource from '../../queryCache/hooks/queries/useFetchUsers.ts?raw';
 import { DecisionList } from '../components/decisionList';
 import { FlowTraceDemo } from '../components/flowTraceDemo';
 import flowTraceDemoSource from '../components/flowTraceDemo.tsx?raw';
 import architectureKeysSource from '../hooks/architectureKeys.ts?raw';
+import useFetchArchitectureUsersSource from '../hooks/queries/useFetchArchitectureUsers.ts?raw';
 import { architectureQuestions } from '../architectureQuestions';
 
 const Theory = () => (
   <>
     <Typography>
-      De tio föregående modulerna handlade om React. Den här handlar om appen du läst dem i. Och den ställer en annan sorts fråga än de andra: inte
-      hur något fungerar, utan <strong>varför det ligger där det ligger</strong>. En mappstruktur är nämligen inte en sanning någon upptäckt. Den är
-      en rad beslut, tagna av människor med ofullständig information, och nästan alla hade kunnat tas annorlunda med ett annat resultat som också hade
-      fungerat.
+      Den här vyn handlar om appen du läser i. React Nexus är en lärobok, men den är också en app byggd i React, och{' '}
+      <Link href='https://github.com/Burra17/react-nexus'>källkoden ligger öppet på GitHub</Link>, i ett så kallat repo. Varje sida i appen kallas här
+      en <strong>vy</strong>. Koden bakom vyerna ligger i mappar, och mappen för ett ämne kallas en <strong>modul</strong>. Vyn ställer en annan sorts
+      fråga än de andra: inte hur något fungerar, utan <strong>varför det ligger där det ligger</strong>. En mappstruktur är inte en sanning någon
+      upptäckt. Den är en rad beslut, tagna av människor med ofullständig information, och nästan alla hade kunnat tas annorlunda med ett resultat som
+      också hade fungerat.
     </Typography>
 
     <Typography>
-      Tråden att följa är vad som händer när en vy behöver data. Anropet färdas genom fyra lager:{' '}
-      <code>page → hook → service → axiosClient → API</code>. Varje gräns mellan dem är någonting någon bestämt. Hooken vet vilken nyckel som gäller
-      men ingenting om HTTP. Servicen vet hur man pratar med API:et men ingenting om React. <code>axiosClient</code> vet vad som gäller för varje
-      anrop, oavsett vem som gjorde det. Ingen av gränserna är gratis: varje lager är en fil till att öppna när något går fel. Det du får tillbaka är
-      att kunna byta ut ett lager utan att röra de andra, och att kunna läsa ett lager utan att förstå resten.
+      Tråden att följa är vad som händer när en vy behöver data. Appen har ingen riktig server. I stället svarar <strong>MSW</strong>, Mock Service
+      Worker, ett bibliotek som fångar anropen inne i webbläsaren och svarar med påhittad data, som om en server hade gjort det. Det MSW svarar för
+      kallas här API:et, gränssnittet appen hämtar data från. Anropen görs med <strong>axios</strong>, ett bibliotek för HTTP-anrop, alltså de
+      förfrågningar en webbläsare skickar till en server. Datan hålls av <strong>TanStack Query</strong>, ett bibliotek som hämtar data, sparar svaret
+      i en cache som hela appen delar och vet när det behöver hämtas igen. En komponent läser datan med bibliotekets hook <code>useQuery</code>, och
+      varje post i cachen känns igen på en <strong>nyckel</strong>, en lista som <code>{"['architecture', 'trace']"}</code>.
     </Typography>
 
     <Typography>
-      Det mesta i strukturen följer av två enkla regler, och de är värda mer än kartan de gav upphov till. Den första:{' '}
-      <strong>skapa en del först när något faktiskt behöver den.</strong> Därför fanns inget <code>services/</code> förrän modul 7 behövde hämta
-      något, ingen <code>mutations/</code>-mapp förrän den första mutationen fanns, och fortfarande ingen <code>shared/forms/</code> trots att kartan
-      nämner den. Bara en modul har formulär. Tomma mappar är ceremoni. Den andra:{' '}
+      Anropet passerar fyra led i koden innan det når API:et: <code>vy → hook → service → axiosClient → API</code>. Vyn är komponenten som visar
+      datan. Hooken är en egen funktion runt <code>useQuery</code>, som vet vilken nyckel som gäller men ingenting om HTTP. Servicen är en vanlig
+      funktion som vet hur man pratar med API:et men ingenting om React. <code>axiosClient</code> är appens enda uppsättning av axios, inställd en
+      gång för alla anrop. Varje gräns mellan leden är ett beslut, och ingen av dem är gratis: varje led är en fil till att öppna när något går fel.
+      Det du får tillbaka är att kunna läsa ett led utan att förstå resten, och att kunna ändra ett utan att röra de andra. Byts MSW mot en riktig
+      server behöver varken hookarna eller vyerna ändras.
+    </Typography>
+
+    <Typography>
+      Det mesta i strukturen följer av två enkla regler. Den första: <strong>skapa en del först när något faktiskt behöver den.</strong> Mappen{' '}
+      <code>services/</code>, där servicarna ligger, fanns inte förrän den första modulen som hämtar data byggdes. En mapp för formulärkomponenter som
+      flera moduler delar finns fortfarande inte, eftersom bara modulen för Forms har formulär. En tom mapp är struktur utan nytta. Den andra:{' '}
       <strong>
-        flytta något till <code>shared/</code> när en andra modul behöver det, och flytta, kopiera inte.
+        när en andra modul behöver något flyttas det till <code>shared/</code>, mappen för det flera moduler använder, och det flyttas, det kopieras
+        inte.
       </strong>{' '}
       Två kopior driver isär första gången den ena rättas.
     </Typography>
 
     <Typography>
-      Den här appens struktur har ett produktionsprojekt som förlaga, och på fyra ställen avviker den medvetet. De fyra nedan är valda för att var och
-      en är en egen <em>sorts</em> beslut: en förenkling som följer av skala, ett dyrare val som togs av pedagogiska skäl, ett avsteg från
-      bibliotekets egen dokumentation, och, viktigast av dem, ett avsteg från appens egen kodregel. Det är den sista som säger mest om hur arkitektur
-      faktiskt fungerar: en regel är ett verktyg och inte en lag, och priset för att avvika är att skriva ut skälet. Gör man inte det läses avvikelsen
-      som okunskap nästa gång någon jämför de två projekten, och reflexen blir att rätta tillbaka.
+      Appens struktur har ett produktionsprojekt som förlaga, en riktig app vars mappindelning den här följer, och på fyra ställen avviker den med
+      flit. Korten nedan visar de fyra. De är valda för att vart och ett är en egen <em>sorts</em> beslut: en förenkling som följer av att appen är
+      liten, ett dyrare val av pedagogiska skäl, ett avsteg från ett biblioteks dokumentation, och ett avsteg från appens egen kodregel. Det sista
+      säger mest om hur arkitektur fungerar: en regel är ett verktyg och inte en lag, och priset för att avvika är att skriva ut skälet. Gör man inte
+      det läses avvikelsen som okunskap nästa gång någon jämför de två projekten, och reflexen blir att rätta tillbaka.
     </Typography>
 
     <Typography>
-      En sista sak, som gäller allt du läst hittills. Ingenting i den här modulen är instrumenterat för demonstrationens skull. Panelen nedan
-      observerar anropet med två interceptorer som modulen hakar på <code>axiosClient</code> när den monteras och tar bort igen när den lämnas, plus
-      de fält vilken komponent som helst kan läsa ur en <code>useQuery</code>. <code>axiosClient.ts</code> innehåller inte en rad som finns där för
-      den här sidans skull. Hade den gjort det skulle panelen beskriva något annat än det som faktiskt körs, och en lärobok som ljuger om sin egen kod
-      är värre än ingen lärobok.
+      Demon nedan mäter ett riktigt anrop utan att appens kod har ändrats för dess skull. Den använder två <strong>interceptorer</strong>. En
+      interceptor är en funktion som axios kör för varje anrop som går ut eller varje svar som kommer in, och den kan läggas till och tas bort
+      utifrån. Demon lägger till två när vyn öppnas och tar bort dem när den lämnas, och den lyssnar på händelserna i Querys cache.{' '}
+      <code>axiosClient.ts</code> har en egen interceptor, som kontrollerar varje svar, men ingen rad för den här vyns skull. Hade det funnits en
+      sådan rad skulle demon beskriva något annat än det som faktiskt körs. Servicen har däremot två valfria inställningar, en fördröjning och ett
+      felsvar, som bara finns för att MSW ska gå att styra från vyerna. De står i Kod-delen med skälet utskrivet.
     </Typography>
+
+    <Typography>Det här är bokens sista vy, men den går lika bra att läsa först: det den bygger på förklaras här.</Typography>
   </>
 );
 
@@ -69,7 +85,9 @@ export const ArchitecturePage = () => (
             1. Spåra ett riktigt anrop
           </Typography>
           <Typography color='textSecondary'>
-            Tryck på knappen och se anropet vandra genom fyra lager. Klicka på ett steg för att läsa varför just det lagret finns.
+            Hooken i demon hämtar inte när vyn öppnas, utan först när du trycker på knappen, så att varje anrop syns från början. Varje tryck gör ett
+            nytt anrop till API:et. De fyra stegen visar händelser längs vägen, med tiden räknad från steg 1. Klicka på ett steg för att läsa varför
+            just den delen av koden finns.
           </Typography>
           <FlowTraceDemo />
         </Stack>
@@ -79,18 +97,20 @@ export const ArchitecturePage = () => (
             2. Fyra avsteg, och skälen
           </Typography>
           <Typography color='textSecondary'>
-            Rubriken över varje kort är viktigare än exemplet under. Det är sorten av beslut som går att ta med sig någon annanstans.
+            Varje kort visar ett ställe där appen avviker från förlagan. Den lilla rubriken i versaler överst säger vilken sorts beslut det är, och
+            den är viktigare än exemplet under: sorten går att ta med sig till ett annat projekt.
           </Typography>
           <DecisionList />
         </Stack>
+
+        <Typography color='textSecondary'>
+          Kod-delen nedan visar de riktiga filerna som appen kör, i flödets ordning: demon själv, hooken den använder, servicen, axiosClient, MSW:s
+          svar i handlers.ts, main.tsx där appen och MSW startas, och nyckelfabriken från det fjärde kortet.
+        </Typography>
       </Stack>
     }
-    // Ordningen är flödets: panelen först, sedan kedjan den spårar, och sist de
+    // Ordningen är flödets: demon först, sedan kedjan den spårar, och sist de
     // två filer som bär avsteg som inte syns i kedjan.
-    //
-    // Den här modulen är unik i att Kod-delen inte är koden bakom demon utan
-    // koden demon beskriver. Att de flesta filerna redan är bekanta är
-    // meningen: nu ses de som ett system i stället för som fem lektioner.
     sources={[
       {
         fileName: 'src/modules/architecture/components/flowTraceDemo.tsx',
@@ -101,11 +121,11 @@ export const ArchitecturePage = () => (
         highlight: ['const requestId = axiosClient.interceptors.request.use', 'axiosClient.interceptors.request.eject(requestId);'],
       },
       {
-        fileName: 'src/modules/queryCache/hooks/queries/useFetchUsers.ts',
-        code: useFetchUsersSource,
+        fileName: 'src/modules/architecture/hooks/queries/useFetchArchitectureUsers.ts',
+        code: useFetchArchitectureUsersSource,
         language: 'ts',
         // Hooken vet nyckeln men ingenting om HTTP.
-        highlight: ['queryKey: usersKeys.lists()', 'queryFn: () => getUsers('],
+        highlight: ['queryKey: architectureKeys.trace()', 'queryFn: () => getUsers('],
       },
       {
         fileName: 'src/services/api/users.ts',
@@ -134,8 +154,8 @@ export const ArchitecturePage = () => (
         fileName: 'src/main.tsx',
         code: mainSource,
         language: 'tsx',
-        // Avsteget: workern startas i alla lägen, och renderingen väntar in
-        // den.
+        // Avsteget: MSW startas i alla lägen, och appen väntar in den innan
+        // den ritas.
         highlight: ["import('./services/mocks/browser')", 'await worker.start('],
       },
       {
