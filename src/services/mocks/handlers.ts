@@ -6,8 +6,8 @@ import type { User } from '../api/users';
 // Filen är appens enda backend och betjänar alla vyer, så här finns sökvägar och
 // data som den vy du läser just nu inte använder. Den besvarar riktiga
 // HTTP-anrop i webbläsaren, med hjälp av Mock Service Worker, i stället för att
-// lämna ifrån sig ett löst löfte inne i koden. Det är därför anropen syns i
-// webbläsarens Network-flik och går att räkna.
+// svara direkt inne i koden utan att något anrop görs. Det är därför anropen
+// syns i webbläsarens Network-flik och går att räkna.
 //
 // Fem användare och inte två. De demonstrationer som hämtar en enskild
 // användare klarar sig på två, men en lista på två ser inte ut som en lista,
@@ -29,7 +29,9 @@ const USERS: Record<string, User> = {
 // vy ska bete sig likadant oavsett vad läsaren gjort dessförinnan.
 //
 // Objekten kopieras med spread och inte genom att peka på USERS poster, så att
-// en skrivning här inte når den delade datamängden via referensen.
+// en skrivning här inte når den delade datamängden via referensen. Här är det
+// data som kopieras, med flit, och inte kod: regeln om att flytta och inte
+// kopiera gäller kod som flera moduler använder.
 const MUTATION_USERS: Record<string, User> = {
   ada: { ...USERS.ada },
   bo: { ...USERS.bo },
@@ -71,18 +73,18 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 // Hur många anrop den mockade backenden faktiskt tagit emot, per demo.
 //
 // Räknaren finns för de demonstrationer som påstår saker om när ett anrop sker
-// och när det uteblir. Ett sådant påstående måste gå att kontrollera mot något
-// annat än en renderräknare: React kör renderingar två gånger i utvecklingsläge
-// men inte i ett bygge, så ett mått som är ett förhållande mellan renderingar
-// och anrop ljuger på utvecklarens maskin. Absoluta tal gör det inte.
+// och när det uteblir. Ett sådant påstående måste gå att kontrollera mot
+// anropen själva. React ritar varje komponent två gånger i utvecklingsläget men
+// inte i ett bygge, så ett mått som jämför ritningar med anrop visar fel tal på
+// utvecklarens dator. Antalet anrop gör det inte.
 //
 // Den räknas upp här och ingen annanstans, för att det som räknas ska vara
 // anrop som verkligen nådde backenden, inte hookar som kördes.
 //
 // Varje handler räknar, också skrivningen. Räknaren mäter anrop och inte
 // hämtningar. En skrivning som följs av en invalidering kostar ett skrivanrop
-// plus de hämtningar invalideringen utlöser, och räknades bara GET skulle
-// panelen visa ett tal som säger emot Network-fliken.
+// plus de hämtningar invalideringen utlöser, och räknades bara hämtningar
+// skulle räknaren visa ett tal som säger emot Network-fliken.
 //
 // Talet hålls isär per demo, enligt märkningen i anropets demo-parameter. En
 // enda totalsumma för hela appen räcker inte så fort två demonstrationer står
@@ -160,8 +162,8 @@ export const handlers = [
   // Felet styrs av samma fail-parameter som hämtningarna, och det är avsiktligt:
   // en demonstration som visar hur en misslyckad skrivning tas tillbaka behöver
   // ett fel den kan beställa. Att felet kommer FÖRE skrivningen spelar roll:
-  // ett misslyckat anrop ska inte ha ändrat något, annars visar demon en
-  // rollback av en ändring som blev kvar på servern.
+  // ett misslyckat anrop ska inte ha ändrat något, annars visar demon hur en
+  // ändring tas tillbaka i vyn medan den i själva verket blev kvar på servern.
   http.put('/api/mutations/users/:id', async ({ request, params }) => {
     const { delayMs, shouldFail, demo } = readControls(request);
 

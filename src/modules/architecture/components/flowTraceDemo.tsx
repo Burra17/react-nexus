@@ -16,8 +16,8 @@ type TraceStep = {
   id: StepId;
   label: string;
   file: string;
-  // Varför det här lagret finns. Det är hela modulens innehåll, och flödet är
-  // bara tråden att hänga besluten på.
+  // Varför den här delen av koden finns. Det är vad vyn handlar om, och
+  // flödet är tråden att hänga besluten på.
   decision: string;
 };
 
@@ -54,10 +54,13 @@ const STEPS: TraceStep[] = [
 
 // Är det här cachehändelsen om demons egen hämtning?
 //
-// Cachen är appens, så prenumerationen får händelser om varje query i hela
-// appen, även poster andra moduler lagt in i samma flik. Utan filtret skulle
-// panelen stämpla någon annans hämtning som sin egen.
-const isTraceQuery = (queryKey: readonly unknown[]) => queryKey[0] === architectureKeys.all[0] && queryKey[1] === 'trace';
+// Cachen är appens, så den här komponenten får höra om varje post i hela
+// appen, även poster som andra vyer lagt in. Utan filtret skulle demon stämpla
+// någon annans hämtning som sin egen. Nyckeln jämförs del för del, eftersom två
+// listor med samma innehåll ändå är två olika listor.
+const TRACE_KEY = architectureKeys.trace();
+
+const isTraceQuery = (queryKey: readonly unknown[]) => queryKey[0] === TRACE_KEY[0] && queryKey[1] === TRACE_KEY[1];
 
 export const FlowTraceDemo = () => {
   const queryClient = useQueryClient();
@@ -75,19 +78,19 @@ export const FlowTraceDemo = () => {
     setTrace((current) => (id in current ? current : { ...current, [id]: at }));
   }, []);
 
-  // DET HÄR ÄR MODULENS VIKTIGASTE RAD, och skälet står här:
+  // Interceptorerna läggs till härifrån när komponenten visas, och tas bort
+  // igen när den försvinner från sidan. axiosClient.ts rörs inte med en enda
+  // rad.
   //
-  // Interceptorerna registreras HÄRIFRÅN och tas bort igen när komponenten
-  // avmonteras. axiosClient.ts rörs inte med en enda rad.
+  // Hade demon krävt loggning inne i axiosClient skulle vyn visa en ändrad
+  // version av just den kod den påstår sig förklara. Att interceptorer går att
+  // lägga till och ta bort utifrån är också skälet till att de är rätt plats
+  // för regler som ska gälla varje anrop.
   //
-  // Hade panelen krävt loggning inne i axiosClient skulle modulen visa en
-  // förvanskad version av just den kod den påstår sig förklara, och då vore
-  // den värdelös. Att interceptorer går att haka på och av utifrån är också
-  // precis varför de är rätt plats för regler som ska gälla varje anrop.
-  //
-  // Vår response-interceptor registreras efter appens egen, och axios kör dem
-  // i registreringsordning. Content-type-kontrollen hinner alltså först, vilket
-  // är rätt: gör den om anropet vill vi stämpla det slutliga svaret.
+  // Axios kör svarens interceptorer i den ordning de lades till. Appens egen,
+  // som kontrollerar att svaret är JSON och vid behov gör om anropet, lades
+  // till först och körs därför först. Den här stämplar alltså det svar som
+  // faktiskt kom fram.
   useEffect(() => {
     const requestId = axiosClient.interceptors.request.use((config) => {
       mark('request');
@@ -107,15 +110,16 @@ export const FlowTraceDemo = () => {
     };
   }, [mark]);
 
-  // Steg 1 och 4 går inte att observera med en interceptor, eftersom de sker
-  // inne i Query. Vi prenumererar på cachen i stället.
+  // Steg 1 och 4 sker inne i Query och går inte att se med en interceptor.
+  // Komponenten lyssnar i stället på cachens händelser.
   //
-  // Att det blir en prenumeration och inte två effekter som läser hookens
-  // fetchStatus är inte en smaksak: setState rakt i en effektkropp ger
-  // kaskadrenderingar, och lintregeln react-hooks/set-state-in-effect stoppar
-  // det. En callback från ett externt system är undantaget regeln pekar ut,
-  // och query-cachen ÄR ett externt system, vilket är hela skälet till att
-  // useRerenderOnCacheChange i shared/hooks finns och ser ut som den gör.
+  // En effekt som läste hookens fält och satte state hade gett en extra
+  // ritning för varje ändring, och lintregeln react-hooks/set-state-in-effect
+  // stoppar det. En funktion som något utanför React anropar, här cachen, är
+  // det undantag regeln tillåter.
+  //
+  // status säger om posten har data, fetchStatus om en hämtning pågår. Steg 1
+  // är när hämtningen börjar, steg 4 när den är klar och data finns.
   useEffect(() => {
     const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
       if (!isTraceQuery(event.query.queryKey)) {
@@ -213,11 +217,11 @@ export const FlowTraceDemo = () => {
                     {/* overflowWrap: 'anywhere' behövs för att en sökväg inte
                         har några mellanslag att brytas vid. Utan den svämmar
                         raden över sin spalt på en smal skärm och tvingar fram
-                        horisontell scroll för hela sidan, uppmätt till 511 px
-                        innehåll i en 375 px vid.
+                        horisontell scroll för hela sidan. Uppmätt blev raden 511
+                        pixlar bred på en skärm som är 375 pixlar.
 
-                        Att korta av sökvägen med ellips vore fel: det är just
-                        VAR i strukturen lagret ligger som modulen handlar om. */}
+                        Att korta av sökvägen med tre punkter vore fel: var i
+                        strukturen koden ligger är just vad vyn handlar om. */}
                     <Typography variant='caption' color='textSecondary' sx={{ fontFamily: 'monospace', overflowWrap: 'anywhere' }}>
                       {step.file}
                     </Typography>
