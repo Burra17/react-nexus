@@ -92,8 +92,8 @@ export const ContextPage = () => (
         fileName: 'src/modules/context/components/contextRenderDemo.tsx',
         code: contextRenderSource,
         language: 'tsx',
-        // Objektet som skapas på nytt vid varje render, den memoiserade
-        // varianten, och konsumenten som memo inte räddar.
+        // Objektet som skapas på nytt vid varje ritning, den memoiserade
+        // varianten, och konsumenten som memo inte stoppar.
         highlight: ['const freshValue', 'const stableValue', 'const MemoUserCard'],
       },
     ]}
