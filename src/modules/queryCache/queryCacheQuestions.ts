@@ -16,7 +16,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Ett',
         explanation:
-          'Rätt. Nyckeln pekar ut en post i appens cache, och den första hämtningen räcker för alla som väntar på den. Det kallas dedupering, och det är därför en lista kan visas på fem ställen utan att kosta fem anrop.',
+          'Nyckeln pekar ut en post i appens cache, och den första hämtningen räcker för alla som väntar på den. Det kallas dedupering, och det är därför en lista kan visas på fem ställen utan att kosta fem anrop.',
       },
       {
         id: 'b',
@@ -41,7 +41,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Den raderas ur cachen',
         explanation:
-          'Nej. En post kastas ur cachen först en stund efter att den sista konsumenten slutat titta på den, styrt av en egen klocka som heter `gcTime`. Invalidering rör inte den klockan: en invaliderad post ligger kvar och visas medan den hämtas om.',
+          'En post kastas ur cachen först en stund efter att den sista konsumenten slutat titta på den, styrt av en egen klocka som heter `gcTime`. Invalidering rör inte den klockan: en invaliderad post ligger kvar och visas medan den hämtas om.',
       },
       {
         id: 'b',
@@ -53,7 +53,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Den märks som inaktuell, och de poster som någon tittar på hämtas om',
         explanation:
-          'Rätt. Invalidering säger "det här gäller inte längre" och låter Query avgöra vem som behöver agera. Datan ligger kvar under tiden, så skärmen blir aldrig tom.',
+          'Invalidering säger "det här gäller inte längre" och låter Query avgöra vem som behöver agera. Datan ligger kvar under tiden, så skärmen blir aldrig tom.',
       },
     ],
   },
@@ -73,7 +73,7 @@ export const queryCacheQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'Allt vars nyckel börjar med `["queryCache", "users"]`: både listorna och detaljerna',
         explanation:
-          'Rätt. Ju kortare prefix, desto bredare träff. Det är därför fabriken lägger `all` överst: en rad invaliderar allt som hör till resursen, utan att du behöver minnas vilka nycklar som finns.',
+          'Ju kortare prefix, desto bredare träff. Det är därför fabriken lägger `all` överst: en rad invaliderar allt som hör till resursen, utan att du behöver minnas vilka nycklar som finns.',
       },
       {
         id: 'c',

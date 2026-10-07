@@ -27,7 +27,7 @@ export const performanceQuestions: QuizQuestion[] = [
         id: 'b',
         text: 'Utvecklingsläget kör mer än produktionsbygget: bland annat renderar StrictMode varje komponent två gånger',
         explanation:
-          'Rätt. react.dev säger uttryckligen att mätningar i utvecklingsläge inte ger tillförlitliga resultat, och pekar särskilt på StrictMode. Mät i ett bygge, och helst på en maskin som liknar användarens.',
+          'Enligt react.dev ger mätningar i utvecklingsläge inte tillförlitliga resultat, och sidan pekar särskilt på StrictMode. Mät i ett bygge, och helst på en maskin som liknar användarens.',
       },
       {
         id: 'c',
@@ -47,7 +47,7 @@ export const performanceQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Full effekt: beräkningen körs bara en gång per sökning',
         explanation:
-          'Nej. Varje tangenttryck ger en ny söksträng, alltså ett nytt beroende. `useMemo` jämför, ser att det ändrats, och kör beräkningen om.',
+          'Varje tangenttryck ger en ny söksträng, alltså ett nytt beroende. `useMemo` jämför, ser att det ändrats, och kör beräkningen om.',
       },
       {
         id: 'b',
@@ -59,7 +59,7 @@ export const performanceQuestions: QuizQuestion[] = [
         id: 'c',
         text: 'Ingenting, eftersom beroendet ändras vid varje render ändå',
         explanation:
-          'Rätt. Memoisering hjälper bara när beroendena står still. Ändras de vid varje interaktion betalar du jämförelsen och kör ändå beräkningen. Vinsten kommer först när något annat än söksträngen orsakar renderingen.',
+          'Memoisering hjälper bara när beroendena står still. Ändras de vid varje interaktion betalar du jämförelsen och kör ändå beräkningen. Vinsten kommer först när något annat än söksträngen orsakar renderingen.',
       },
     ],
   },
@@ -72,7 +72,7 @@ export const performanceQuestions: QuizQuestion[] = [
         id: 'a',
         text: 'Mäter hur lång tid beräkningen faktiskt tar',
         explanation:
-          'Rätt. `console.time` runt beräkningen tar tjugo sekunder att skriva och svarar på frågan. react.dev nämner ungefär en millisekund som riktmärke för när det kan vara värt att memoisera.',
+          '`console.time` runt beräkningen tar tjugo sekunder att skriva och svarar på frågan. react.dev nämner ungefär en millisekund som riktmärke för när det kan vara värt att memoisera.',
       },
       {
         id: 'b',
