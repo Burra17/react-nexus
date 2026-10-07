@@ -93,14 +93,31 @@ const serverError = () => HttpResponse.json({ message: 'Kunde inte hämta använ
 // märkning hör inte till någon panel och räknas inte.
 const requestCounts = new Map<string, number>();
 
+// De som vill veta när räknaren ändras. Räknaren ligger utanför React, och
+// utan den här listan kan ingen komponent veta när den ska ritas om: talet på
+// skärmen skulle då stå still tills något annat råkade orsaka en ritning,
+// till exempel att svaret kom.
+const requestCountListeners = new Set<() => void>();
+
 const countRequest = (demo: string | null) => {
   if (demo !== null) {
     requestCounts.set(demo, (requestCounts.get(demo) ?? 0) + 1);
+    requestCountListeners.forEach((listener) => listener());
   }
 };
 
 // Hur många anrop en demo gjort sedan sidladdning.
 export const readRequestCount = (demo: string) => requestCounts.get(demo) ?? 0;
+
+// Anmäler en funktion som anropas varje gång ett anrop räknas, och returnerar
+// en funktion som avanmäler den. Formen är den useSyncExternalStore väntar sig.
+export const subscribeToRequestCounts = (listener: () => void) => {
+  requestCountListeners.add(listener);
+
+  return () => {
+    requestCountListeners.delete(listener);
+  };
+};
 
 export const handlers = [
   // Listan står före :id-varianten. Ordningen spelar ingen roll för MSW, som

@@ -2,10 +2,7 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useIsMutating } from '@tanstack/react-query';
-import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
-import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { useUpdateUserRoleWithInvalidation } from '../hooks/mutations/useUpdateUserRoleWithInvalidation';
 import { RoleList } from './roleList';
 
@@ -17,14 +14,6 @@ const ROLES = ['Testare', 'Produktägare'];
 
 export const WithInvalidationDemo = () => {
   const { mutate, isPending, data, variables } = useUpdateUserRoleWithInvalidation();
-
-  // Mätutrustning, inte en del av mönstret. Räknarpanelen läser ett tal
-  // utanför React, och de två raderna ritar om komponenten när något händer i
-  // cachen eller med en mutation, så att talet visar nuet.
-  useRerenderOnCacheChange();
-  useIsMutating();
-
-  const requestCount = readRequestCount('medInvalidering');
 
   return (
     <Stack spacing={3}>
@@ -64,7 +53,7 @@ export const WithInvalidationDemo = () => {
       </Alert>
 
       <RequestCounterPanel
-        total={requestCount}
+        demo='medInvalidering'
         caption='Nollställ och klicka en gång. Två anrop: skrivningen, och hämtningen som invalideringen utlöste. Det andra är priset för att vyn ska stämma.'
       />
     </Stack>

@@ -3,11 +3,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { readRequestCount } from '../../../services/mocks/handlers';
 import { RequestCounterPanel } from '../../../shared/components/requestCounterPanel';
 import { SHARING_DEMO } from '../hooks/queries/requestDemos';
 import { sharedUsersKeys } from '../hooks/usersKeys';
-import { useRerenderOnCacheChange } from '../../../shared/hooks/useRerenderOnCacheChange';
 import { UserListCard } from './userListCard';
 
 // Fyra kort från början. Talet ska vara tydligt skilt från ett, men inte så
@@ -18,12 +16,6 @@ export const SharedCacheDemo = () => {
   const queryClient = useQueryClient();
   const [cardCount, setCardCount] = useState(INITIAL_CARDS);
   const [isMounted, setIsMounted] = useState(false);
-
-  // Räknaren läses om varje gång något händer i cachen. Utan prenumerationen
-  // skulle talet stå kvar på det som gällde vid senaste renderingen.
-  useRerenderOnCacheChange();
-
-  const requestCount = readRequestCount(SHARING_DEMO);
 
   return (
     <Stack spacing={3}>
@@ -52,7 +44,7 @@ export const SharedCacheDemo = () => {
       </Stack>
 
       <RequestCounterPanel
-        total={requestCount}
+        demo={SHARING_DEMO}
         caption='Talet är träffar i den mockade backenden som svarar på anropen, inte renderingar och inte hookanrop. Nollställ före varje steg, så visar det exakt vad just det steget kostade.'
       />
 
