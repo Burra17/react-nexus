@@ -2,7 +2,8 @@ import { axiosClient } from '../axios/axiosClient';
 
 // Formen på det API:et svarar med för en användare. Typen ligger bredvid anropet
 // den hör till. Större kodbaser samlar ofta typerna i egna mappar, men här har
-// resursen bara den här typen, och en mapp för en enda fil är ceremoni.
+// resursen bara den här typen, och en mapp för en enda fil är struktur utan
+// nytta.
 export type User = {
   id: string;
   name: string;
@@ -34,7 +35,10 @@ export const toControlParams = (options: UserRequestOptions) => ({
   demo: options.demo,
 });
 
-// Hämtar hela listan med användare.
+// Hämtar hela listan med användare. Servicen innehåller ingen React: den
+// returnerar data, och hooken som anropar den bestämmer vad som händer med den.
+// Typen talar om vilken form datan har. TypeScript kontrollerar den när koden
+// byggs, men inte när den körs.
 //
 // Sökvägen står som /users och inte /api/users. Basen /api sitter i
 // axiosClient, så varje anrop här går ut som /api/users, vilket är den sökväg
@@ -45,13 +49,12 @@ export const getUsers = async (options: UserRequestOptions = {}): Promise<User[]
   return response.data;
 };
 
-// Hämtar en användare. Servicen innehåller ingen React: den returnerar typad
-// data, och hooken som anropar den bestämmer vad som händer med den.
+// Hämtar en användare.
 //
-// Anropet är en funktion och inte en metod på en basklass. I en kodbas med
-// många resurser lönar det sig ofta att låta varje resurs ärva Get, GetAll,
-// Create och Update från en gemensam klass. Här finns två, och då vore klassen
-// ett lager som döljer vad anropet gör.
+// Anropen är funktioner och inte metoder på en basklass. I en kodbas med många
+// resurser lönar det sig ofta att låta varje resurs ärva Get, GetAll, Create
+// och Update från en gemensam klass. Här finns en enda resurs, användare, och
+// då vore klassen ett lager som döljer vad anropet gör.
 export const getUser = async (id: string, options: UserRequestOptions = {}): Promise<User> => {
   const response = await axiosClient.get<User>(`/users/${id}`, { params: toControlParams(options) });
 
