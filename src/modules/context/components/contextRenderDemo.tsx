@@ -10,9 +10,9 @@ import { RenderCounter } from '../../../shared/components/renderCounter';
 
 type AuthUser = { name: string; role: string };
 
-// Ett värde och en funktion, precis som react.dev:s eget AuthContext-exempel.
-// Kombinationen är inte en tillfällighet: det är just därför value blir ett
-// objekt, och ett objekt är en ny referens varje gång det skapas.
+// Ett värde och en funktion som ändrar det, så att en konsument långt ner kan
+// byta användare. Kombinationen är skälet till att value blir ett objekt, och
+// ett objekt är en ny referens varje gång det skapas.
 type AuthValue = {
   currentUser: AuthUser;
   login: (name: string) => void;
@@ -27,23 +27,23 @@ const USERS: AuthUser[] = [
   { name: 'Gäst', role: 'utan konto' },
 ];
 
-// Contexten exporteras inte, och det är avsiktligt på två sätt.
+// Contexten exporteras inte. Provider och konsumenter ligger i samma fil, så hela
+// kedjan syns utan att byta fil. I en riktig app exporteras den, så att
+// konsumenter i andra filer kan läsa den.
 //
-// Mekaniken hänger ihop: provider och konsumenter är grannar i den här filen, så
-// läsaren ser hela kedjan utan att byta fil. Dessutom klagar
-// react-refresh/only-export-components på en fil som exporterar både en komponent
-// och något annat. En lokal const triggar ingen regel.
-//
-// Startvärdet används bara av en konsument utan provider ovanför sig. Här finns
-// alltid en, så det är en formalitet som gör typen enklare än null.
+// Argumentet är startvärdet, som en konsument bara får om det inte finns någon
+// provider ovanför den. Här finns alltid en. Ett vanligt alternativ är null som
+// startvärde, men då kan värdet vara null och varje konsument måste kontrollera
+// det innan den läser. Ett påhittat startvärde slipper det.
 const AuthContext = createContext<AuthValue>({ currentUser: USERS[0], login: () => {} });
 
-// Roll 1: läser currentUser, och är den enda konsumenten utan memo.
+// Kort 1: läser currentUser och saknar memo.
 //
-// Den finns för att visa varför de andra tre är memoiserade. Ett barn ritas om när
-// föräldern gör det, oavsett context. Det lär Rendering-modulen ut. Utan memo hade
-// alla kort tickat vid varje klick, och då hade demon mätt föräldern i stället för
-// contexten.
+// Ett barn ritas om när föräldern ritas om, oavsett context. Kortet följer därför
+// varje ritning av föräldern, alltså komponenten som håller providern, och är
+// mätaren för den. De andra tre korten ligger i memo. Annars hade de också
+// tickat vid varje klick och visat föräldern i stället för contexten.
+//
 // Noten om StrictMode visas bara på kort 1, eftersom demon bara behöver
 // förklara den en gång.
 const UserCard = ({ title, showStrictModeNote = false }: CardProps & { showStrictModeNote?: boolean }) => {
@@ -60,19 +60,23 @@ const UserCard = ({ title, showStrictModeNote = false }: CardProps & { showStric
   );
 };
 
-// Roll 4: exakt samma komponent som roll 1, inpackad i memo.
+// Kort 4: samma komponent som kort 1, inpackad i memo. memo och React.memo är
+// samma funktion.
 //
-// memo jämför props, och title är samma sträng varje gång, så förälderns
-// omrenderingar stoppas här. Men när användaren byts tickar räknaren ändå:
-// omrenderingen kommer då inte uppifrån via props utan från contexten komponenten
-// själv läser, och den vägen ser memo aldrig.
+// memo jämför props, och title är samma sträng varje gång, så föräldern kan inte
+// rita om kortet. Men varje gång value är nytt ritas det om ändå: den ritningen
+// kommer inte genom props utan från contexten kortet läser, och den vägen går
+// förbi memo.
 const MemoUserCard = memo(UserCard);
 
-// Roll 2: läser bara login och bryr sig inte om vem som är inloggad.
+// Kort 2: läser bara login och bryr sig inte om vem som är inloggad.
 //
-// Den behöver alltså inte ritas om när currentUser byts. Men den prenumererar på
-// hela contexten, inte på ett fält i den, så den följer med varje gång value blir
-// en ny referens.
+// Kortet behöver alltså inte ritas om när currentUser byts. Men en konsument får
+// alltid hela value och aldrig ett enskilt fält, så kortet ritas om varje gång
+// value är ett nytt objekt.
+//
+// Knappen anropar login inifrån en konsument. Är Gäst redan inloggad får state
+// samma värde som förut, och då ritar React inte om någonting.
 const LoginCardBase = ({ title }: CardProps) => {
   const { login } = useContext(AuthContext);
 
@@ -89,7 +93,7 @@ const LoginCardBase = ({ title }: CardProps) => {
 
 const MemoLoginCard = memo(LoginCardBase);
 
-// Roll 3: kontrollgrupp. Läser ingen context alls.
+// Kort 3: läser ingen context alls.
 const StaticCardBase = ({ title }: CardProps) => (
   <Paper variant='outlined' sx={{ p: 2, flex: 1 }}>
     <Typography sx={{ fontWeight: 600, mb: 1 }}>{title}</Typography>
@@ -100,19 +104,18 @@ const StaticCardBase = ({ title }: CardProps) => (
   </Paper>
 );
 
-// Kontrollgruppen måste vara memoiserad för att duga som kontrollgrupp.
+// Kort 3 behöver memo för att jämförelsen med kort 4 ska gå att lita på.
 //
-// Utan memo ritas den om ändå, inte för contextens skull, utan för att den är
-// barn till en förälder som renderar om. Det är precis vad Rendering-modulen lär
-// ut, och här hade det gjort räknaren oläsbar: den hade tickat av fel skäl.
+// Utan memo ritas det om varje gång föräldern ritas om, eftersom ett barn ritas
+// om med sin förälder, och då hade räknaren tickat av fel skäl.
 //
-// Med memo blir det här kortet och kort 4 ett par som skiljer sig på en enda sak.
-// Båda är memoiserade, båda får samma props. Det ena läser contexten, det andra
-// inte. Bara det ena ritas om.
+// Med memo blir kort 3 och kort 4 ett par som skiljer sig på en enda sak. Båda
+// ligger i memo och får samma props. Kort 4 läser contexten, kort 3 gör det inte.
+// Bara kort 4 ritas om när value är nytt.
 const StaticCard = memo(StaticCardBase);
 
-// Fyra konsumenter under en provider, och en växel som byter mellan ett
-// nyskapat och ett memoiserat value.
+// Fyra kort under en provider, och en växel som byter mellan ett value som
+// skapas på nytt vid varje ritning och ett som sparas med useMemo.
 export const ContextRenderDemo = () => {
   const [userIndex, setUserIndex] = useState(0);
   const [unrelated, setUnrelated] = useState(0);
@@ -123,19 +126,26 @@ export const ContextRenderDemo = () => {
 
   const setUserByName = useCallback((name: string) => {
     const index = USERS.findIndex((user) => user.name === name);
-    // findIndex kan ge -1, och då lämnas användaren i fred. Alla namn demon
-    // skickar in finns i listan, så grenen är ett skydd och inte en funktion.
+    // findIndex ger -1 om namnet inte finns, och då lämnas användaren som den
+    // är. Alla namn demon skickar in finns i listan, så grenen är bara ett skydd.
     setUserIndex((current) => (index === -1 ? current : index));
   }, []);
 
-  // Den memoiserade varianten, som react.dev visar den: useCallback håller
-  // funktionen, useMemo håller objektet. Så länge currentUser är oförändrad får
-  // konsumenterna samma referens och står still.
+  // Den memoiserade varianten, som på react.dev:s referenssida för useContext:
+  // useCallback håller funktionen och useMemo håller objektet. Objektet räknas
+  // fram på nytt bara när något i beroendelistan, [currentUser, setUserByName],
+  // har ändrats. Så länge användaren är densamma får konsumenterna samma
+  // referens och står still.
   const stableValue = useMemo<AuthValue>(() => ({ currentUser, login: setUserByName }), [currentUser, setUserByName]);
 
-  // Den ometiserade varianten. Både objektet och funktionen skapas på nytt vid
-  // varje render, precis som i react.dev:s exempel före optimeringen. Innehållet
-  // kan vara identiskt, men referensen är ny, och jämförelsen sker med Object.is.
+  // Den omemoiserade varianten. Objektet skapas på nytt vid varje ritning, och
+  // login lindas i en ny pilfunktion så att också funktionen är ny varje gång,
+  // som den hade varit utan useCallback. Innehållet kan vara identiskt, men
+  // referensen är ny, och React jämför med Object.is.
+  //
+  // Båda varianterna räknas fram vid varje ritning, fast bara den ena används.
+  // useMemo är en hook, och en hook måste anropas i samma ordning vid varje
+  // ritning, så den kan inte stå i en if-sats.
   const freshValue: AuthValue = { currentUser, login: (name: string) => setUserByName(name) };
 
   const value = memoized ? stableValue : freshValue;
@@ -182,9 +192,11 @@ export const ContextRenderDemo = () => {
         label='Memoisera value med useMemo och useCallback'
       />
 
-      {/* Nyckeln monterar om hela trädet och nollställer därmed alla räknare.
-          Jämförelsen mellan av och på görs i minnet, inte sida vid sida, så den
-          kräver att man kan köra om samma sekvens från noll. */}
+      {/* key är Reacts sätt att känna igen ett element mellan ritningarna. Får
+          den ett nytt värde räknar React elementet som nytt: det gamla trädet tas
+          bort och ett nytt monteras, med alla räknare från början. Så kan samma
+          klick köras om från noll med växeln i det andra läget, och talen
+          jämföras. */}
       <AuthContext key={resetKey} value={value}>
         {/* Två och två, så att kort 3 och 4 hamnar bredvid varandra. */}
         <Grid container spacing={2}>
