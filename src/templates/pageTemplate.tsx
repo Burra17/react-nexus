@@ -81,7 +81,8 @@ export const PageTemplate = () => {
           sammanhang. React Router scrollar inte till toppen av sig själv.
 
           Den gör bara det, ingenting mer. Bakåt, framåt och ankarlänkar lämnas
-          orörda. De fungerar redan, och skälen står i komponenten. Se #71. */}
+          orörda. De fungerar redan, och skälen står i komponenten, med
+          mätningen i issue #71 i repot. */}
       <ScrollToTop />
 
       <AppBar
@@ -190,7 +191,7 @@ export const PageTemplate = () => {
                 först när vyn ovanför laddats klart, så dess effekt hittar den
                 rubrik ett ankarhopp ska landa på. Utanför gränsen hade den
                 körts medan vyn fortfarande hämtades och inte hittat något.
-                Se #74. */}
+                Mätningen står i issue #74 i repot. */}
             <HashScroll />
           </Suspense>
         </Box>

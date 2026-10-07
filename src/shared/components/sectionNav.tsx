@@ -42,7 +42,8 @@ const useActiveSection = () => {
 // Sektionsraden som fastnar under rubrikraden.
 //
 // Vågrät och inte en högerspalt: en spalt hade krympt innehållet till ~944 px,
-// och kodblocken behöver 1149 px för att slippa scrolla i sidled. Se #67.
+// och kodblocken behöver 1149 px för att slippa scrolla i sidled. Måtten står
+// i issue #67 i repot.
 export const SectionNav = () => {
   const active = useActiveSection();
 

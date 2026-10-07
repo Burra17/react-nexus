@@ -8,7 +8,8 @@ import { useLocation } from 'react-router-dom';
 // webbläsaren utföra hopptillfället direkt vid sidladdningen, men då finns
 // elementet med det id:t ännu inte i DOM:en, eftersom vyn fortfarande hämtas.
 // När den sedan renderas är tillfället passerat, och ingen scrollar. Uppmätt
-// på /rendering#rubrik-kod: scrollY 0 med rubriken 11 359 px ner. Se #74.
+// på /rendering#rubrik-kod: scrollY 0 med rubriken 11 359 px ner. Mätningen
+// står i issue #74 i repot.
 //
 // Lösningen sitter i VAR komponenten står, inte i vad den gör.
 //
@@ -33,7 +34,7 @@ import { useLocation } from 'react-router-dom';
 //
 // scrollIntoView utan argument respekterar scroll-margin-top, som mallen sätter
 // på varje sektionsrubrik. Rubriken hamnar alltså under den klibbiga
-// sektionsraden från #67 och inte bakom den, med samma mått som ett klick
+// sektionsraden överst i vyn och inte bakom den, med samma mått som ett klick
 // inifrån appen använder.
 //
 // Krockar inte med ScrollToTop: den avstår så fort adressen har en hash.

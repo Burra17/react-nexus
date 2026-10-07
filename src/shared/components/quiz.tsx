@@ -59,9 +59,10 @@ const withInlineCode = (text: string) => text.split('`').map((del, index) => (in
 
 // Kopplar lagringen till komponentens state.
 //
-// Ligger i samma fil som komponenten eftersom den har exakt en användare.
-// Dashboarden i #54 kommer inte behöva den. Att räkna framsteg är en läsning
-// direkt ur services/storage/, inte en interaktion med låsning och omsvar.
+// Ligger i samma fil som komponenten eftersom den har exakt en användare. En
+// översikt över framstegen i alla vyer behöver den inte heller: att räkna
+// framsteg är en läsning direkt ur services/storage/, inte en interaktion med
+// låsning och omsvar.
 const useQuizProgress = (modulePath: string) => {
   const [answers, setAnswers] = useState<ModuleAnswers>(() => readModuleAnswers(modulePath));
 

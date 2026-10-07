@@ -7,8 +7,8 @@ import { lazy } from 'react';
 // tittar på startsidan för kod hen aldrig ser. Med lazy hamnar allt det i en
 // egen fil som hämtas vid första besöket på modulen.
 //
-// then-raden finns för att lazy vill ha en default-export, medan CLAUDE.md
-// säger namngivna exporter. Den plockar helt enkelt ut rätt namn.
+// then-raden finns för att lazy vill ha en default-export, medan appens
+// komponenter exporteras med namn. Den plockar helt enkelt ut rätt namn.
 //
 // Filen innehåller bara komponenter och inget annat. Blandas komponenter och
 // data i samma fil slutar Fast Refresh fungera för den, och varje ändring

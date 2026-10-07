@@ -12,8 +12,8 @@ declare module '@mui/material/styles' {
   }
 }
 
-// Typsnittet för kod. Exporteras separat eftersom kodvisaren i #5 behöver samma
-// stack, och den ska inte gissa sig till namnet.
+// Typsnittet för kod. Exporteras separat eftersom kodvisaren i Kod-delen
+// behöver samma stack, och den ska inte gissa sig till namnet.
 export const monoFontFamily = "'JetBrains Mono Variable', ui-monospace, Consolas, monospace";
 
 const sansFontFamily = "'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -96,7 +96,7 @@ export const theme = createTheme({
         //
         // none räcker och täcker båda fallen. JetBrains Mono bygger sina
         // kodligaturer på kontextuella alternativ och inte bara på liga, men
-        // none stänger av båda. Uppmätt, inte antaget. Se #64.
+        // none stänger av båda. Uppmätt, inte antaget: mätningen står i issue #64 i repot.
         //
         // Regeln står här och inte i en komponent, så att inline-kod och
         // kodblock behandlas lika. Sätts den per vy ser den elfte inte ut som
@@ -128,7 +128,7 @@ export const theme = createTheme({
         // radslut. Utan den får den första halvan en öppen högerkant och ser
         // trasig ut i stället för avsiktlig. Alternativet white-space: nowrap
         // valdes bort: det tvingar fram horisontell rullning på mobil, vilket
-        // är ett sämre fel än ett delat hörn. Se #81.
+        // är ett sämre fel än ett delat hörn. Avvägningen står i issue #81 i repot.
         'code:not(pre code)': {
           fontSize: '0.875em',
           padding: '0.15em 0.4em',

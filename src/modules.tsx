@@ -41,7 +41,8 @@ export type AppModule = {
 // fram ur sanningen kan inte hamna i otakt med den.
 export const isBuilt = (module: AppModule) => module.element !== undefined;
 
-// Katalogen över konceptmodulerna, i den ordning de byggs. Se roadmapen i #6.
+// Katalogen över konceptmodulerna, i den ordning de byggdes, som också är en
+// föreslagen läsordning.
 // Startsidan läser hela listan, sidomenyn bara de byggda.
 export const appModules: AppModule[] = [
   {

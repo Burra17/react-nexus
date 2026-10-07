@@ -12,7 +12,8 @@ import type { ReactNode } from 'react';
 // Siffran är räknad, inte uppskattad. Radbrytningarna lästes med Range över
 // textnoden, ett tecken i taget: när getBoundingClientRect().top ändras har en
 // ny rad börjat. Den förra metoden delade spaltens bredd med medelbredden på
-// a-z, vilket överskattar teckenbredden och gav 83 där sanningen var 95. Se #41.
+// a-z, vilket överskattar teckenbredden och gav 83 där sanningen var 95.
+// Mätningen står i issue #41 i repot.
 const MAX_LINE_LENGTH = '58ch';
 
 // Begränsar textens radlängd, utan att röra bredden på det som står omkring.
@@ -20,7 +21,7 @@ const MAX_LINE_LENGTH = '58ch';
 // Utan den blir en textrad 157 tecken, eftersom sidans innehållsyta är 1200 px
 // bred. Då tappar ögat raden på vägen från ett radslut till nästa radbörjan, och
 // man läser om samma rad utan att märka det. 45-75 tecken är det vanliga
-// spannet; shadcn/ui ligger på 66, uppmätt i #41 med metoden ovan.
+// spannet; shadcn/ui ligger på 66, uppmätt med metoden ovan.
 //
 // Spalten är vänsterställd i sidans behållare och centreras inte för sig.
 // Centrerades den skulle dess vänsterkant hamna drygt 300 px in, medan
