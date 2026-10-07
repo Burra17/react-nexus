@@ -159,7 +159,11 @@ export const CodeBlock = ({ code, language, fileName, highlight = [], highlightN
           bgcolor: 'background.default',
         }}
       >
-        <Typography variant='body2' sx={{ flexGrow: 1, fontFamily: monoFontFamily, color: 'text.secondary' }}>
+        {/* En sökväg har inga mellanslag att brytas vid. Utan overflowWrap:
+            'anywhere' klipps den av på en smal skärm, och läsaren ser bara
+            början av den. Att korta av den med tre punkter vore lika fel: var
+            filen ligger är det sökvägen ska säga. */}
+        <Typography variant='body2' sx={{ flexGrow: 1, minWidth: 0, overflowWrap: 'anywhere', fontFamily: monoFontFamily, color: 'text.secondary' }}>
           {fileName}
         </Typography>
 

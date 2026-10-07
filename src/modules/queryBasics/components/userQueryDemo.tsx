@@ -28,7 +28,11 @@ const StatusRow = ({ label, value }: { label: string; value: string }) => (
     <Typography variant='body2' color='textSecondary'>
       {label}
     </Typography>
-    <Typography variant='body2' sx={{ fontFamily: 'monospace' }}>
+    {/* Nyckeln skrivs ut som en lång rad utan mellanslag. Utan
+        overflowWrap: 'anywhere' bryts den inte, och på en smal skärm gör den
+        hela sidan bredare än fönstret. minWidth: 0 låter värdet krympa i raden
+        i stället för att trycka ut den. */}
+    <Typography variant='body2' sx={{ fontFamily: 'monospace', overflowWrap: 'anywhere', minWidth: 0, textAlign: 'right' }}>
       {value}
     </Typography>
   </Stack>
