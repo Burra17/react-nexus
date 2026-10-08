@@ -1,5 +1,7 @@
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Link as RouterLink } from 'react-router-dom';
 import handlersSource from '../../../services/mocks/handlers.ts?raw';
 import usersServiceSource from '../../../services/api/users.ts?raw';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
@@ -105,7 +107,12 @@ const Theory = () => (
       till. I samma veva försvann <code>onSuccess</code>, <code>onError</code> och <code>onSettled</code>, funktioner som kördes när en hämtning
       lyckats, misslyckats eller avslutats, från <code>useQuery</code>. De finns kvar på <code>useMutation</code>, hooken för att skriva till servern.
       Värt att veta är också att biblioteket har ett eget utvecklingsverktyg, TanStack Query Devtools, som visar hela cachen i en panel. Det är så man
-      inspekterar den i praktiken, medan panelerna i demona nedan är byggda för hand för att visa just de fält den här vyn handlar om.
+      inspekterar den i praktiken, medan panelerna i demona nedan är byggda för hand för att visa just de fält den här vyn handlar om. Verktyget går
+      att prova i{' '}
+      <Link component={RouterLink} to='/query-cache'>
+        Query: cache
+      </Link>
+      .
     </Typography>
   </>
 );

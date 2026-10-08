@@ -7,6 +7,7 @@ import handlersSource from '../../../services/mocks/handlers.ts?raw';
 import { ConceptTemplate } from '../../../templates/conceptTemplate';
 import { CacheInspector } from '../components/cacheInspector';
 import cacheInspectorSource from '../components/cacheInspector.tsx?raw';
+import { DevtoolsPanel } from '../components/devtoolsPanel';
 import { InvalidationDemo } from '../components/invalidationDemo';
 import invalidationDemoSource from '../components/invalidationDemo.tsx?raw';
 import { SharedCacheDemo } from '../components/sharedCacheDemo';
@@ -110,15 +111,19 @@ export const QueryCachePage = () => (
             och det är poängen: posterna tillhör appen, inte vyn som hämtade dem.
           </Typography>
           <CacheInspector />
-          {/* Noten om det riktiga verktyget står här och inte i teorin. Ett
+          {/* Noten och det riktiga verktyget står här och inte i teorin. Ett
               verktyg förklaras bäst där läsaren kan jämföra det med en panel
-              hen ser framför sig. Den ligger på sidan och inte i komponenten,
+              hen ser framför sig. De ligger på sidan och inte i komponenten,
               eftersom inspektorn renderas en gång till längre ner. */}
           <Typography variant='body2' color='textSecondary'>
-            I praktiken inspekterar man inte cachen med en panel man byggt själv, utan med React Query Devtools: ett tillägg som visar varje post, när
-            den senast hämtades, vad den innehåller, och som låter dig invalidera eller kasta den för hand. Panelen ovan visar samma uppgifter i
-            mindre format, så kan du läsa den kan du läsa verktyget.
+            I ett riktigt projekt inspekterar man inte cachen med en panel man byggt själv, utan med React Query Devtools, bibliotekets eget verktyg.
+            Där ligger det oftast som en knapp i ett hörn av skärmen. Här ligger det under panelen ovan, så att de två går att jämföra. Öppna det och
+            leta upp samma nycklar: verktyget visar dessutom när varje post senast hämtades, och klickar du på en nyckel ser du vad posten innehåller
+            och kan invalidera eller kasta den för hand. Panelen ovan visar samma uppgifter i mindre format, så kan du läsa den kan du läsa verktyget.
+            Tömmer du cachen med verktyget ligger namnen kvar i korten, eftersom de visar det svar de redan fått. Invalideringen i avsnitt 3 har då
+            ingenting att träffa förrän posterna finns igen, till exempel efter att du laddat om sidan.
           </Typography>
+          <DevtoolsPanel />
         </Stack>
 
         <Stack spacing={1}>
